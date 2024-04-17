@@ -2,9 +2,8 @@ from sqlalchemy import create_engine, false
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm  import sessionmaker
 
-# SQLALCHEMY_DATABASE_URL = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://saied:Stark2002@hcis.postgres.database.azure.com/test'
+SQLALCHEMY_DATABASE_URL = 'postgresql+asyncpg://saied:Stark2002@hcis.postgres.database.azure.com/test'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
