@@ -4,7 +4,7 @@ from sqlalchemy.orm  import sessionmaker
 
 # SQLALCHEMY_DATABASE_URL = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:stark@localhost/test'
+SQLALCHEMY_DATABASE_URL = 'postgresql://saied:Stark2002@hcis.postgres.database.azure.com/test'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
