@@ -63,3 +63,4 @@ class Doctor(base):
     numberOfRating = Column(Integer)
     price = Column(Integer, nullable=False)
     profilePicture = Column(String)
+    role = Column(String, nullable=False)

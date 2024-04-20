@@ -3,11 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm  import sessionmaker
 
 
-SQLALCHEMY_DATABASE_URL = 'postgresql+asyncpg://saied:Stark2002@hcis.postgres.database.azure.com/test'
+SQLALCHEMY_DATABASE_URL = 'postgresql://hcis:Hcis@1234@hcis00.postgres.database.azure.com/postgres'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-sessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+sessionLocal = sessionmaker(autocommit=True, autoflush=True, bind=engine)
 
 base = declarative_base()
 
