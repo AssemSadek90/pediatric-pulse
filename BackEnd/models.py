@@ -1,7 +1,6 @@
-from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean, text, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text
 from sqlalchemy.orm import relationship
-from .DataBase import base 
-from datetime import datetime
+from .DataBase import base
 
 class User(base):
     __tablename__ = 'user'
@@ -13,30 +12,29 @@ class User(base):
     password = Column(String, nullable=False)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
     PhoneNumber = Column(String)
-    age = Column(String)
+    age = Column(Integer)  # Change data type to integer for age
     profilePicture = Column(String)
     role = Column(String, nullable=False)
     appointments = relationship('Appointment', back_populates='user')
 
-class MedicalRecords(base):
-    __tablename__ = 'medical_records'
-    Id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
-    PatientId = Column(Integer, ForeignKey('patient.id'), nullable=False,)
+class MedicalRecord(base):
+    __tablename__ = 'medical_record'  # Change table name to singular form
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)  # Change column name to singular form
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)  # Fix foreign key reference
     notes = Column(String)
     treatment = Column(String, nullable=False)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
     healthCondition = Column(String, nullable=False)
 
-class Pationt(base):
+class Patient(base):
     __tablename__ = 'patient'
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
-    age = Column(String)
+    age = Column(Integer)  # Change data type to integer for age
     firstName = Column(String, nullable=False)
     lastName = Column(String, nullable=False)
     parentFirstName = Column(String, nullable=False)
-    parentlastName = Column(String, nullable=False)
+    parentLastName = Column(String, nullable=False)
     parentPhoneNumber = Column(String, nullable=False)
-
 
 class Appointment(base):
     __tablename__ = 'appointment'
@@ -45,10 +43,9 @@ class Appointment(base):
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     appointmentDate = Column(DateTime, nullable=False)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
-    appointmentStatus = Column(Boolean, nullable=False)
+    appointmentStatus = Column(String, nullable=False)  # Change data type for appointmentStatus
     userId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     user = relationship('User', back_populates='appointments')
-
 
 class Doctor(base):
     __tablename__ = 'doctor'
