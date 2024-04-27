@@ -5,6 +5,7 @@ from routes import auth,user
 from oauth2 import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import session
+from fastapi.middleware.cors import CORSMiddleware
 
 base.metadata.create_all(bind=engine)
 
@@ -12,5 +13,15 @@ base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.include_router(auth.router)
 app.include_router(user.router)
+
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update this to allow requests from your frontend domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
