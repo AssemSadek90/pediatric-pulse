@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, APIRouter
-from app.DataBase import engine, get_db
-from app.models import base, User, Doctor
+from DataBase import engine, get_db
+from models import base, User, Doctor
 from routes import auth,user
 from oauth2 import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
