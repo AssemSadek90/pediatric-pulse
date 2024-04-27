@@ -3,32 +3,47 @@ from sqlalchemy.orm import session
 
 import sys
 
-
-
 sys.path.append('BackEnd')
-import models as models
-import DataBase as DataBase
-import oauth2 as oauth2
-import utils as utils
-import schemas as schemas
 
+import models
+import DataBase
+import oauth2
+import utils
+import schemas
 
 router = APIRouter(
-    tags= ["user"]
+    tags=["user"]
 )
 
+@router.post("/signup", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
+async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.get_db)):
+    existing_user = db.query(models.User).filter(
+        (models.User.userName == user.userName) | (models.User.email == user.email)
+    ).first()
 
-@router.post("/signup", status_code=201, description="this is a post request to create a regular user (customer) if the Password does not meet complexity requirements. Please choose a stronger password. and if the User with the same username or email already exists it returns 409")
-def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.get_db)):
-
-    if db.query(models.User).filter(models.User.userName == user.userName).first() or db.query(models.User).filter(models.User.email == user.email).first(): raise HTTPException(
+    if existing_user:
+        raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User with the same username or email already exists",
+            detail="User with the same username or email already exists"
         )
 
-    user.password = utils.hash(user.password)
-    newUser = models.User(**user.dict())
-    db.add(newUser)
+    # Hash the password before creating the user
+    hashed_password = utils.hash(user.password)
+    
+    # Create a new instance of the User model with the hashed password
+    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = "customer")
+    
+    # Add the new_user instance to the session
+    db.add(new_user)
+    
+    # Commit the session to persist the changes
     db.commit()
-    db.refresh(newUser)
-    return {"message": "new user created successfully"}
+    
+    # Refresh the new_user instance to ensure it has the latest data from the database
+    db.refresh(new_user)
+    
+    # Generate an access token for the new user
+    access_token = oauth2.create_access_token(data={"user_id": new_user.userId, "type": "user"})
+    
+    # Return the response with the access token, role, and userId
+    return {"accessToken": access_token, "role": "customer", "userId": new_user.userId}

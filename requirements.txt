@@ -11,3 +11,4 @@ pydantic
 passlib
 psycopg2
 python-multipart
+bcrypt
