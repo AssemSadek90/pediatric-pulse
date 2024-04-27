@@ -50,7 +50,6 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
     if login_info.password != user.password:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
-    user = user.dict(exclude={"password"})
     # Create an access token
     access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
     return [{"accessToken":access_token}, {"user":user}]
