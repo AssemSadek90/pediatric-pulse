@@ -5,3 +5,8 @@ requests
 passlib
 jose
 python-jose
+datetime
+pydantic
+typing
+re
+sys
