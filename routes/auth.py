@@ -7,11 +7,12 @@ sys.path.append('BackEnd')
 import models as models
 import DataBase as DataBase
 import oauth2 as oauth2
+import schemas as schemas
 
 router = APIRouter(tags=["authentication"])
 
 @router.post("/login", description="This route is for user or doctor login")
-async def user_login(userInfo: OAuth2PasswordRequestForm = Depends(), db: session = Depends(DataBase.get_db)):
+async def user_login(userInfo: schemas.UserLogin = Depends(), db: session = Depends(DataBase.get_db)):
     # Check doctors first
     user = (
         db.query(models.Doctor)

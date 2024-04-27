@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class UserLogin(BaseModel):
-    userName: str
+    username: str
     password: str
 
 
