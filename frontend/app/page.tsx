@@ -1,17 +1,55 @@
 "use client"
-import { Vortex } from "@/components/ui/vortex";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { HeroParallax } from "@/components/ui/hero-parallax";
+import Link from "next/link";
 import Image from "next/image";
+import Navbar from "@/components/navbar";
+import { useEffect, useState } from "react";
+
+interface Doctor {
+  title: string;
+  link: string;
+  thumbnail: string;
+}
+
 export default function Home() {
+  const [doctors, setDoctors] = useState([] as Doctor[]);
+  const headers = {
+    "Content-Type": "application/json"
+  };
+  async function fetchDoctorList() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/doctorlist`,
+      { headers }
+    );
+    if (!response.ok) {
+      console.log("ERRORRR")
+    }
+    const data = await response.json();
+    setDoctors(data);
+  }
+
+  useEffect(() => {
+    fetchDoctorList();
+  }, []);
   return (
-    <main className="">
-      <div className="w-100 mx-auto h-screen overflow-hidden">
-      <Vortex
-        backgroundColor="black"
-        rangeY={800}
-        particleCount={500}
-        baseHue={120}
-        className="flex items-center flex-col justify-center px-2 md:px-10  py-4 w-full h-full"
-      >
+    <>
+    <Navbar />
+    {doctors && <main className="w-screen h-screen">
+      <div className="mx-auto h-screen">
+      <HeroParallax products={doctors} />
+      <div className="h-[40rem] relative w-screen bg-gray-100 flex flex-col items-center overflow-hidden">
+        <div className="w-screen absolute inset-0 h-screen">
+          <SparklesCore
+            id="tsparticlesfullpage"
+            background="transparent"
+            minSize={0.6}
+            maxSize={1.4}
+            particleDensity={20}
+            className="w-full h-full"
+            particleColor="#fb923c"
+          />
+        </div>
         <div>
           <Image
             className="w-auto h-80"
@@ -21,17 +59,19 @@ export default function Home() {
             height={1} 
           />
         </div>
-        <p className="text-orange-200 text-sm opacity-80 md:text-2xl max-w-xl mt-6 text-center">
-          We Provide High Quality Care for Your Child
-        </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
-          <button className="px-4 opacity-80 border-2 border-orange-200 text-orange-200 rounded-md h-full hover:bg-orange-200 hover:text-black hover:transition duration-150 ease-linear">
-            Contact Us
-          </button>
-          <button className="px-4 py-2 text-white ">About Us</button>
+          <Link href="/ContactUs">
+            <button className="px-4 py-2 opacity-80 border-orange-200 text-black rounded-md h-full hover:bg-orange-200 hover:text-black hover:transition duration-150 ease-linear">
+              Contact Us
+            </button>
+          </Link>
+          <Link href="/Signup">
+            <button className="px-4 py-2 opacity-80 border-orange-200 text-black rounded-md h-full hover:bg-orange-200 hover:text-black hover:transition duration-150 ease-linear">Sign Up</button>
+          </Link>     
         </div>
-      </Vortex>
+      </div>
     </div>
-    </main>
+    </main>}
+    </>
   );
 }
