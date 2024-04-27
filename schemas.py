@@ -6,6 +6,7 @@ class UserLogin(BaseModel):
     password: str
 
 
+
 class userSginup(BaseModel):
     userName: str
     email: str

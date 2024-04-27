@@ -11,7 +11,7 @@ import schemas as schemas
 
 router = APIRouter(tags=["authentication"])
 
-@router.post("/login", description="This route is for user or doctor login")
+@router.post("/login", description="This route is for user or doctor login", )
 async def user_login(userInfo: schemas.UserLogin = Depends(), db: session = Depends(DataBase.get_db)):
     # Check doctors first
     user = (
@@ -44,4 +44,4 @@ async def user_login(userInfo: schemas.UserLogin = Depends(), db: session = Depe
 
     # Create an access token
     access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
-    return [access_token, user]
+    return [{"accessToken": access_token}, {"user": user}]
