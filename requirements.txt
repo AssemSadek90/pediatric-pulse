@@ -10,4 +10,3 @@ sqlalchemy
 pydantic
 passlib
 psycopg2
-pydantic[email]
