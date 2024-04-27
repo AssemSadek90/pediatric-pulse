@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional
 
 class User(BaseModel):
     userId: int
     firstName: str
     lastName: str
-    email: EmailStr
+    email: str
     userName: str
     createdAt: str
     phone: str
@@ -20,7 +20,7 @@ class Doctor(BaseModel):
     doctorId: int
     firstName: str
     lastName: str
-    email: EmailStr
+    email: str
     userName: str
     createdAt: str
     rating: str
