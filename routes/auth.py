@@ -6,8 +6,8 @@ import sys
 
 
 sys.path.append('BackEnd')
-import app.models as models
-import app.DataBase as DataBase
+import models as models
+import DataBase as DataBase
 import oauth2 as oauth2
 
 router = APIRouter(
