@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -8,7 +8,8 @@ SQLALCHEMY_DATABASE_URL = 'postgresql://root:f6fNhkowhipAa5lamaVwQQ6XhwBU9cBO@dp
 try:
     engine = create_engine(SQLALCHEMY_DATABASE_URL)
     connected = True
-except OperationalError:
+except SQLAlchemyError as e:
+    print(f"An error occurred while connecting to the database: {e}")
     connected = False
 
 if connected:
@@ -25,4 +26,3 @@ def get_db():
         yield db
     finally:
         db.close()
-

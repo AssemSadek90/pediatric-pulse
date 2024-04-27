@@ -6,15 +6,15 @@ from oauth2 import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import session
 from fastapi.middleware.cors import CORSMiddleware
+import models, DataBase, oauth2, utils, schemas
 
 base.metadata.create_all(bind=engine)
 
 # Define other components of your application
 app = FastAPI()
-app.include_router(auth.router)
+#app.include_router(auth.router)
 app.include_router(user.router)
-
-
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
