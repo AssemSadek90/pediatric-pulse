@@ -8,7 +8,7 @@ def is_complex_password(password):
     Check if the password meets complexity requirements.
     """
     # Minimum length of 8 characters
-    if len(password) < 8:
+    if len(password) <= 8:
         return False
 
     # At least one uppercase letter
@@ -24,7 +24,7 @@ def is_complex_password(password):
         return False
 
     # At least one special character
-    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]_", password):
         return False
 
     # All checks passed

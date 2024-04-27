@@ -6,13 +6,14 @@ class UserLogin(BaseModel):
     password: str
 
 
-class user(BaseModel):
+class userSginup(BaseModel):
     userName: str
     email: str
     password: str
     firstName: str
     lastName: str
-    PhoneNumber: str
+    phone: str
+    role: Optional[str] = 'customer'
 
 
 class tokenData(BaseModel):
