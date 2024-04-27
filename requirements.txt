@@ -6,3 +6,6 @@ jose
 python-jose
 datetime
 typing
+sqlalchemy
+pydantic
+passlib
