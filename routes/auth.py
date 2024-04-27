@@ -6,9 +6,9 @@ import sys
 
 
 sys.path.append('BackEnd')
-import models
-import DataBase
-import oauth2
+import app.models as models
+import app.DataBase as DataBase
+import oauth2 as oauth2
 
 router = APIRouter(
     tags= ["authentication"]

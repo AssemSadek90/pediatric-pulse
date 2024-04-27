@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from schemas import tokenData
+from app.schemas import tokenData
 from fastapi.security import OAuth2PasswordBearer
 
 

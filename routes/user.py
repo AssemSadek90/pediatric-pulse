@@ -6,11 +6,11 @@ import sys
 
 
 sys.path.append('BackEnd')
-import models
-import DataBase
-import oauth2
-import utils
-import schemas
+import app.models as models
+import app.DataBase as DataBase
+import oauth2 as oauth2
+import app.utils as utils
+import app.schemas as schemas
 
 
 router = APIRouter(
