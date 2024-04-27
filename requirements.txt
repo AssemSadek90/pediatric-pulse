@@ -9,3 +9,4 @@ typing
 sqlalchemy
 pydantic
 passlib
+psycopg2
