@@ -52,4 +52,4 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
 
     # Create an access token
     access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
-    return [{"accessToken":access_token}, {"userRole":user.role}, {"userId":user.userId}]
+    return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.userId}]
