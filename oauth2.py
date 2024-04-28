@@ -56,9 +56,3 @@ def verify_access_token(token: str, credentials_exception=None):
             raise credentials_exception
         else:
             return {"message": "Invalid token"}
-
-def get_current_user(token:str = Depends(oauth2_schema), db: session = Depends(database.get_db())):
-    credentials_exception = HTTPException(status_code=401, detail= "couldent validate credentials", headers={"www-Authenticate":"Bearer"})
-    token = verify_access_token(token, credentials_exception)
-    user = user.getUserById(token.id, db)
-    return user
