@@ -110,4 +110,45 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
         "price": user.price
     }
 
-    return {"user": user_data}
+    return {"doctor": user_data}
+
+@router.put("/update/doctor/pic", description="This route updates the doctor's profile picture")
+async def update_doctor_pic(doctor: schemas.updateDoctor, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(token)
+    if not token_data:
+        return {"message": "Invalid token"}
+    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.id)
+    user_query.update({"profilePicture":doctor.profilePic})
+    db.commit()
+    return {"message": "Profile picture updated"}
+
+
+
+@router.get("/doctorList", description="This is a GET request to fetch all doctors.")
+async def doctorList(db: session = Depends(DataBase.get_db)):
+    users = db.query(models.Doctor).all()
+
+    if not users:
+        raise HTTPException(status_code=404, detail="No doctors found")
+    
+    doctors_data = []
+    for user in users:
+        # Construct the user data dictionary using the schema structure
+        user_data = {
+            "doctorId": user.id,
+            "userName": user.userName,
+            "email": user.email,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "rating": user.rating,
+            "numberOfRating": user.numberOfRating,
+            "profilePicture": user.profilePicture,
+            "price": user.price,
+            "role": user.role,
+            "createdAt": str(user.createdAt),  # Convert datetime to string
+        }
+        doctors_data.append(user_data)
+
+    return {"doctors": doctors_data}
+
+    

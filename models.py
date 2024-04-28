@@ -55,7 +55,7 @@ class Doctor(base):
     firstName = Column(String, nullable=False)
     lastName = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    userName = Column(String, nullable=False, unique=True)
+    userName = Column(String)
     password = Column(String, nullable=False)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
     rating = Column(Integer)

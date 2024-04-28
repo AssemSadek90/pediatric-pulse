@@ -69,3 +69,8 @@ class LoginResponse(BaseModel):
     accessToken: str
     role: str
     userId: int
+
+
+class updateDoctor(BaseModel):
+    profilePic: str
+    id: int
