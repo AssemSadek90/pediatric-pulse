@@ -49,11 +49,8 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
                     raise HTTPException(status_code=403, detail="User not found")
                 
     
-    # if not utils.verify_password(login_info.password, user.password):
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
-
-    # if login_info.password != user.password:
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    if not utils.verify_password(login_info.password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
     # Create an access token
     if isDoctor:

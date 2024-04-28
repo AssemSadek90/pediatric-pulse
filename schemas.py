@@ -52,6 +52,14 @@ class userSginup(BaseModel):
     phone: str
     role: Optional[str] = 'customer'
 
+class addDoctor(BaseModel):
+    email: str
+    password: str
+    firstName: str
+    lastName: str
+    role: Optional[str] = 'doctor'
+    price: int
+
 
 class tokenData(BaseModel):
     user_id: int

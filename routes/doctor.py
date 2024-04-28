@@ -16,38 +16,72 @@ router = APIRouter(
 )
 
 
-# @router.post("/doctor/signup", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
-# async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.get_db)):
-#     existing_user = db.query(models.User).filter(
-#         (models.User.userName == user.userName) | (models.User.email == user.email)
-#     ).first()
+def updatUserName(email, db):
+    doctor = db.query(models.Doctor).filter(models.Doctor.email == email).first()
 
-#     if existing_user:
-#         raise HTTPException(
-#             status_code=status.HTTP_409_CONFLICT,
-#             detail="User with the same username or email already exists"
-#         )
+    # Check if the doctor exists
+    if not doctor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Doctor not found"
+        )
 
-#     # Hash the password before creating the user
-#     hashed_password = utils.hash(user.password)
+    # Update the username
+    doctor.userName += doctor.id
+
+    # Commit the changes to the database
+    db.commit()
+
+
+
+import random
+
+@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
+async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get_db)):
+    existing_user = db.query(models.Doctor).filter(
+        models.Doctor.email == user.email
+    ).first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with the same email already exists"
+        )
+
+    # Hash the password before creating the user
+    hashed_password = utils.hash(user.password)
+
+    # Generate a random number between 1 and 10000
+    random_number = random.randint(1, 10000)
+
+    user_name = user.firstName + user.lastName + str(random_number)
+
+    while db.query(models.Doctor).filter(models.Doctor.userName == user_name).first():
+        user_name = user.firstName + user.lastName + str(random_number)
+
+    # Create a new instance of the User model with the hashed password
+    new_user = models.Doctor(
+        userName=user_name,
+        email=user.email,
+        password=hashed_password,
+        firstName=user.firstName,
+        lastName=user.lastName,
+        price=user.price,
+        role="doctor"
+    )
+
+    # Add the new_user instance to the session
+    db.add(new_user)
+    # Commit the session to persist the changes
+    db.commit()
+    # Refresh the new_user instance to ensure it has the latest data from the database
+    db.refresh(new_user)
+
+    # Generate an access token for the new user
+    access_token = oauth2.create_access_token(data={"user_id": new_user.id, "type": "doctor"})
     
-#     # Create a new instance of the User model with the hashed password
-#     new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = "customer")
-    
-#     # Add the new_user instance to the session
-#     db.add(new_user)
-    
-#     # Commit the session to persist the changes
-#     db.commit()
-    
-#     # Refresh the new_user instance to ensure it has the latest data from the database
-#     db.refresh(new_user)
-    
-#     # Generate an access token for the new user
-#     access_token = oauth2.create_access_token(data={"user_id": new_user.userId, "type": "user"})
-    
-#     # Return the response with the access token, role, and userId
-#     return {"accessToken": access_token, "role": "customer", "userId": new_user.userId}
+    # Return the response with the access token, role, and userId
+    return {"accessToken": access_token, "role": user.role, "userId": new_user.id}
 
 
 
