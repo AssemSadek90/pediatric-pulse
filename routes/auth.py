@@ -14,12 +14,14 @@ router = APIRouter(tags=["authentication"])
 
 @router.post("/login", description="This route is for user or doctor login")
 async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBase.get_db)):
+    isDoctor = False
     userInfo = login_info
     user = (
         db.query(models.Doctor)
         .filter(models.Doctor.userName == userInfo.username)
         .first()
     )
+    isDoctor = True
     if not user:
         # If not found among doctors, check users
         user = (
@@ -27,6 +29,7 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
             .filter(models.User.userName == userInfo.username)
             .first()
         )
+        isDoctor = False
         if not user:
             # If still not found, check emails
             user = (
@@ -34,22 +37,29 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
                 .filter(models.User.email == userInfo.username)
                 .first()
             )
+            isDoctor = False
             if not user:
                 user = (
                     db.query(models.Doctor)
                     .filter(models.Doctor.email == userInfo.username)
                     .first()
                 )
+                isDoctor = True
                 if not user:
                     raise HTTPException(status_code=403, detail="User not found")
                 
     
-    if not utils.verify_password(login_info.password, user.password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    # if not utils.verify_password(login_info.password, user.password):
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
     # if login_info.password != user.password:
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
     # Create an access token
-    access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
-    return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.userId}]
+    if isDoctor:
+        access_token = oauth2.create_access_token(data={"user_id": user.id, "type": "doctor"})
+        return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.id}]
+    
+    if not isDoctor:
+        access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
+        return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.userId}]

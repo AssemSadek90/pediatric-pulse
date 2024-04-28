@@ -56,3 +56,8 @@ class userSginup(BaseModel):
 class tokenData(BaseModel):
     user_id: int
 
+
+class LoginResponse(BaseModel):
+    accessToken: str
+    role: str
+    userId: int
