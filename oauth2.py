@@ -34,25 +34,13 @@ def create_access_token(data: dict):
 
 import jwt
 def verify_access_token(token: str, credentials_exception=None):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("user_id")
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    user_id: str = payload.get("user_id")
 
-        if not user_id:
-            if credentials_exception:
-                raise credentials_exception
-            else:
-                return {"message": "User ID not found in token"}
-
-        return {"id": user_id}  # Return a dictionary with 'id' key
-
-    except jwt.exceptions.DecodeError:
+    if not user_id:
         if credentials_exception:
             raise credentials_exception
         else:
-            return {"message": "Error decoding token"}
-    except jwt.exceptions.InvalidTokenError:
-        if credentials_exception:
-            raise credentials_exception
-        else:
-            return {"message": "Invalid token"}
+            return {"message": "User ID not found in token"}
+
+    return {"id": user_id}  # Return a dictionary with 'id' key
