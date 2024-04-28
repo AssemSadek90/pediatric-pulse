@@ -45,19 +45,27 @@ const login = () => {
     try{
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/login`,requestOptions);
       const data = await response.json();
-      localStorage.setItem("accessToken", data[0].accessToken)
-      localStorage.setItem("userId", data[2].userId)
-      if (response.status === 200){
-        if(data[1].role === "doctor"){
+      // Mock server
+      localStorage.setItem("accessToken", formData.username)
+      localStorage.setItem("userId", "1")
+      localStorage.setItem("role", "admin")
+
+      if (response.status === 200 || response.status === 201 ){
+        // back end server
+        // localStorage.setItem("accessToken", data[0].accessToken)
+        // localStorage.setItem("userId", data[2].userId)
+        // localStorage.setItem("role", data[1].role)
+
+        if(localStorage.getItem("role") === "doctor"){
           router.push('/Home/DoctorPortal')
         }
-        else if(data[1].role === "customer"){
+        else if(localStorage.getItem("role") === "customer"){
           router.push('/Home/PatientPortal')
         }
-        else if(data[1].role === "staff"){
+        else if(localStorage.getItem("role") === "staff"){
           router.push('/Home/StaffPortal')
         }
-        else if(data[1].role === "admin"){
+        else if(localStorage.getItem("role") === "admin"){
           router.push('/Home/AdminPanel')
         }
       }

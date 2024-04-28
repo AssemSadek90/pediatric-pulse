@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
 import { WavyBackground } from '@/components/ui/wavy-background'
 import Link from 'next/link';
+// import { CircularProgress } from '@mui/material';
 const BottomGradient = () => {
   return (
     <>
@@ -48,8 +49,13 @@ const signup = () => {
     };
     try{
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/signup`,requestOptions);
+      const data = await response.json();
+      localStorage.setItem("accessToken", data[0].accessToken)
+      localStorage.setItem("userId", data[2].userId)
       if (response.status === 201){
         router.push('/Home/PatientPortal')
+        console.log(`access token: ${localStorage.getItem("accessToken")}`)
+        console.log(`User Id: ${localStorage.getItem("userId")}`)
       }
     }
     catch(error){
