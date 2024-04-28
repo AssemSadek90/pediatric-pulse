@@ -1,11 +1,19 @@
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from . import schemas, database, models
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import session
-from .routes import users
 
+
+import sys
+sys.path.append('BackEnd')
+
+import models
+import DataBase
+import oauth2
+import utils
+import schemas
+from routes import user
 
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='login')
@@ -52,5 +60,5 @@ def verify_access_token(token: str, credentials_exception=None):
 def get_current_user(token:str = Depends(oauth2_schema), db: session = Depends(database.get_db())):
     credentials_exception = HTTPException(status_code=401, detail= "couldent validate credentials", headers={"www-Authenticate":"Bearer"})
     token = verify_access_token(token, credentials_exception)
-    user = users.getUserById(token.id, db)
+    user = user.getUserById(token.id, db)
     return user
