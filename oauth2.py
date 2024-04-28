@@ -5,7 +5,6 @@ from schemas import tokenData
 from fastapi.security import OAuth2PasswordBearer
 import jwt.exceptions
 from pydantic import BaseModel, ValidationError
-import jwt
 
 
 
