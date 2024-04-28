@@ -81,7 +81,7 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
     access_token = oauth2.create_access_token(data={"user_id": new_user.id, "type": "doctor"})
     
     # Return the response with the access token, role, and userId
-    return {"accessToken": access_token, "role": user.role, "userId": new_user.id}
+    return {"accessToken": access_token, "role": user.role, "doctorId": new_user.id}
 
 
 
