@@ -15,6 +15,7 @@ router = APIRouter(
     tags=["user"]
 )
 
+
 @router.post("/signup", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
 async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.get_db)):
     existing_user = db.query(models.User).filter(
@@ -47,3 +48,31 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
     
     # Return the response with the access token, role, and userId
     return {"accessToken": access_token, "role": "customer", "userId": new_user.userId}
+
+
+
+@router.get("/get/user/{userId}", description="This route returns user data via userId and takes the token in the header")
+async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(token)
+    if not token_data:
+        return {"message": "Invalid token"}
+    user = db.query(models.User).filter(models.User.userId == userId).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Construct the user data dictionary using the schema structure
+    user_data = {
+        "userId": user.userId,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "email": user.email,
+        "userName": user.userName,
+        "createdAt": str(user.createdAt),  # Convert datetime to string
+        "phone": user.PhoneNumber,
+        "age": user.age,
+        "profilePicture": user.profilePicture,
+        "role": user.role
+    }
+
+    return {"user": user_data}

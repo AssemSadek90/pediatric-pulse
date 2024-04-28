@@ -12,3 +12,5 @@ passlib
 psycopg2
 python-multipart
 bcrypt
+PyJWT
+jwt

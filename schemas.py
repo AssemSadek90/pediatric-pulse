@@ -54,4 +54,5 @@ class userSginup(BaseModel):
 
 
 class tokenData(BaseModel):
-    user_id: Optional[int] = None
+    user_id: int
+
