@@ -47,15 +47,17 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
     access_token = oauth2.create_access_token(data={"user_id": new_user.userId, "type": "user"})
     
     # Return the response with the access token, role, and userId
-    return {"accessToken": access_token, "role": "customer", "userId": new_user.userId}
+    return {"accessToken": access_token, "role": user.role, "userId": new_user.userId}
 
 
 
 @router.get("/get/user/{userId}", description="This route returns user data via userId and takes the token in the header")
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(token)
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         return {"message": "Invalid token"}
+    if token_data == False:
+        return {"message": "unauthorized"}
     user = db.query(models.User).filter(models.User.userId == userId).first()
 
     if not user:

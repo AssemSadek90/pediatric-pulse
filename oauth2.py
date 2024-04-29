@@ -29,22 +29,25 @@ def create_access_token(data: dict):
     return encoded_token
 
 # Verify an access token
-def verify_access_token(token: str, credentials_exception=None):
+def verify_access_token(id: int, token: str, credentials_exception=None):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("user_id")
+        user_id: int = payload.get("user_id")
 
         if not user_id:
             if credentials_exception:
                 raise credentials_exception
             else:
-                return {"message": "User ID not found in token"}
-
-        return {"id": user_id}
+                return False
+        if user_id != id:
+            return False
+        
+        return True
+    
     except JWTError:
         if credentials_exception:
             raise credentials_exception
         else:
-            return {"message": "Invalid token"}
+            return False
 
 

@@ -50,14 +50,12 @@ class userSginup(BaseModel):
     firstName: str
     lastName: str
     phone: str
-    role: Optional[str] = 'customer'
 
 class addDoctor(BaseModel):
     email: str
     password: str
     firstName: str
     lastName: str
-    role: Optional[str] = 'doctor'
     price: int
 
 

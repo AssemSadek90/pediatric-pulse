@@ -87,9 +87,11 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 
 @router.get("/get/doctor/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(token)
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         return {"message": "Invalid token"}
+    if token_data == False:
+        return {"message": "unauthorized"}
     user = db.query(models.Doctor).filter(models.Doctor.id == userId).first()
 
     if not user:
