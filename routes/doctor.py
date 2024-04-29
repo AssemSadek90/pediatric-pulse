@@ -145,6 +145,6 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
             }
         doctors_data.append(user_data)
 
-    return {"doctors": doctors_data}
+    return doctors_data
 
     
