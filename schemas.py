@@ -72,3 +72,14 @@ class LoginResponse(BaseModel):
 class updateDoctor(BaseModel):
     profilePic: str
     id: int
+
+
+class addPatient(BaseModel):
+    firstName: str
+    lastName: str
+    age: int
+    gender: str
+    parentFirstName: str
+    parentLastName: str
+    parentPhoneNumber: str
+    parentId: int

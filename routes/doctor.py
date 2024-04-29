@@ -132,23 +132,17 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
 
     if not users:
         raise HTTPException(status_code=404, detail="No doctors found")
-    
+    title = "Er. " + user
     doctors_data = []
     for user in users:
         # Construct the user data dictionary using the schema structure
+        title = "Er. " + user.firstName + " " + user.lastName
         user_data = {
-            "doctorId": user.id,
-            "userName": user.userName,
-            "email": user.email,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "rating": user.rating,
-            "numberOfRating": user.numberOfRating,
-            "profilePicture": user.profilePicture,
-            "price": user.price,
-            "role": user.role,
-            "createdAt": str(user.createdAt),  # Convert datetime to string
-        }
+            "title":title,
+            "link": "/Signup",
+            "thumbnail": user.profilePicture,
+            "id": user.id
+            }
         doctors_data.append(user_data)
 
     return {"doctors": doctors_data}

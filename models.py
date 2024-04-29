@@ -37,6 +37,9 @@ class Patient(base):
     parentFirstName = Column(String, nullable=False)
     parentLastName = Column(String, nullable=False)
     parentPhoneNumber = Column(String, nullable=False)
+    gender = Column(String, nullable=False)
+    parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
+    parent = relationship('User')
 
 class Appointment(base):
     __tablename__ = 'appointment'
