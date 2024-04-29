@@ -116,10 +116,10 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
 
 @router.put("/update/doctor/pic", description="This route updates the doctor's profile picture")
 async def update_doctor_pic(doctor: schemas.updateDoctor, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(token)
+    token_data = oauth2.verify_access_token(doctor.doctorId ,token)
     if not token_data:
         return {"message": "Invalid token"}
-    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.id)
+    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.doctorId)
     user_query.update({"profilePicture":doctor.profilePic})
     db.commit()
     return {"message": "Profile picture updated"}

@@ -71,7 +71,7 @@ class LoginResponse(BaseModel):
 
 class updateDoctor(BaseModel):
     profilePic: str
-    id: int
+    doctorId: int
 
 
 class addPatient(BaseModel):
