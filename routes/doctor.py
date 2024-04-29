@@ -89,7 +89,7 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "Invalid token"}
+        return {"message": "unauthorized"}
     if token_data == False:
         return {"message": "unauthorized"}
     user = db.query(models.Doctor).filter(models.Doctor.id == userId).first()
