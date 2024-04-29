@@ -47,7 +47,7 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
     access_token = oauth2.create_access_token(data={"user_id": new_user.userId, "type": "user"})
     
     # Return the response with the access token, role, and userId
-    return {"accessToken": access_token, "role": user.role, "userId": new_user.userId}
+    return {"accessToken": access_token, "role": new_user.role, "userId": new_user.userId}
 
 
 
