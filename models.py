@@ -17,11 +17,12 @@ class User(base):
     profilePicture = Column(String)
     role = Column(String, nullable=False)
     appointments = relationship('Appointment', back_populates='user')
+    patients = relationship('Patient', back_populates='parent')
 
 class MedicalRecord(base):
-    __tablename__ = 'medical_record'  # Change table name to singular form
-    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)  # Change column name to singular form
-    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)  # Fix foreign key reference
+    __tablename__ = 'medical_record'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
     notes = Column(String)
     treatment = Column(String, nullable=False)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
@@ -39,7 +40,7 @@ class Patient(base):
     parentPhoneNumber = Column(String, nullable=False)
     gender = Column(String, nullable=False)
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
-    parent = relationship('User')
+    parent = relationship('User', back_populates='patients')
 
 class Appointment(base):
     __tablename__ = 'appointment'
@@ -47,10 +48,14 @@ class Appointment(base):
     patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     appointmentDate = Column(DateTime, nullable=False)
-    createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
-    appointmentStatus = Column(String, nullable=False)  # Change data type for appointmentStatus
+    Date = Column(String, nullable=False)
+    From = Column(String, nullable=False)
+    To = Column(String, nullable=False)
+    appointmentStatus = Column(String, nullable=False)
+    isTaken = Column(Boolean, default=False)  # Change data type for appointmentStatus
     userId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     user = relationship('User', back_populates='appointments')
+    doctor = relationship('Doctor', back_populates='appointments')
 
 class Doctor(base):
     __tablename__ = 'doctor'
@@ -66,3 +71,11 @@ class Doctor(base):
     price = Column(Integer, nullable=False)
     profilePicture = Column(String)
     role = Column(String, nullable=False)
+    appointments = relationship('Appointment', back_populates='doctor')
+
+# class history(base):
+#     __tablename__ = 'history'
+#     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+#     allergies = Column(String)
+#     surgicalHistory = Column(String)
+#     medicationHistory = Column(String)
