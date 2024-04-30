@@ -36,14 +36,14 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     db.refresh(new_appointment)
     return{"message": "Appointment added successfully"}
 
-@router.get("/get/appointment/{patientId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
-async def get_appointment(patientId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(patientId, token)
+@router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
+async def get_appointment(parentId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
         return {"message": "unauthorized"}
     if token_data == False:
         return {"message": "unauthorized"}
-    appointments = db.query(models.Appointment).filter(models.Appointment.parentId == patientId).all()
+    appointments = db.query(models.Appointment).filter(models.Appointment.parentId == parentId).all()
     return appointments
 
 
