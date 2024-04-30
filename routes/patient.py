@@ -57,3 +57,13 @@ async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase
     patients = db.query(models.Patient).filter(models.Patient.parentId == parentId).all()
 
     return patients
+
+@router.get("/get/patient/{patientId}/{parentId}", description="This route returns patient data via patientId and takes the token for parent in the header")
+async def get_patient(patientId: int, parentId:int,  token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(parentId, token)
+    if not token_data:
+        return {"message": "unauthorized"}
+    if token_data == False:
+        return {"message": "unauthorized"}
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    return patient
