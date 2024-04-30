@@ -21,7 +21,7 @@ app.include_router(appointment.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this to allow requests from your frontend domain
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -12,8 +12,8 @@ class User(BaseModel):
     userName: str
     createdAt: str
     phone: str
-    age: int
-    profilePicture: str
+    age: Optional[int]
+    profilePicture: Optional[str]
     role: str
 
 class Doctor(BaseModel):
@@ -23,16 +23,36 @@ class Doctor(BaseModel):
     email: str
     userName: str
     createdAt: str
-    rating: str
-    numberOfRating: str
+    rating: Optional[int]
+    numberOfRating: Optional[int]
     price: str
-    profilePicture: str
+    profilePicture: Optional[str]
     role: str
 
+class doctorList(BaseModel):
+    title: Optional[str]
+    link: Optional[str]
+    thumbnail: Optional[str]
+    id: Optional[int]
 
+class PatientResponse(BaseModel):
+    id: Optional[int]
+    lastName: Optional[str]
+    parentLastName: Optional[str]
+    gender: Optional[str]
+    age: Optional[int]
+    firstName: Optional[str]
+    parentFirstName: Optional[str]
+    parentPhoneNumber: Optional[str]
+    parentId: Optional[int] 
 class UserLoginResponse(BaseModel):
     accessToken: str
-    user: User
+    role: str 
+    userId: int
+class DoctorLoginResponse(BaseModel):
+    accessToken: str
+    role: str 
+    docotrId: int
 
 class DoctorLoginResponse(BaseModel):
     accessToken: str
@@ -79,9 +99,6 @@ class addPatient(BaseModel):
     lastName: str
     age: int
     gender: str
-    parentFirstName: str
-    parentLastName: str
-    parentPhoneNumber: str
     parentId: int
 
 
@@ -92,3 +109,5 @@ class addApointment(BaseModel):
     From: str
     To: str
     isTaken: bool
+
+

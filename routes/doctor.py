@@ -15,28 +15,9 @@ router = APIRouter(
     tags=["doctor"]
 )
 
-
-def updatUserName(email, db):
-    doctor = db.query(models.Doctor).filter(models.Doctor.email == email).first()
-
-    # Check if the doctor exists
-    if not doctor:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Doctor not found"
-        )
-
-    # Update the username
-    doctor.userName += doctor.id
-
-    # Commit the changes to the database
-    db.commit()
-
-
-
 import random
 
-@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
+@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.UserLoginResponse)
 async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get_db)):
     existing_user = db.query(models.Doctor).filter(
         models.Doctor.email == user.email
@@ -79,14 +60,15 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 
     # Generate an access token for the new user
     access_token = oauth2.create_access_token(data={"user_id": new_user.id, "type": "doctor"})
-    
+        
     # Return the response with the access token, role, and userId
-    return {"accessToken": access_token, "role": new_user.role, "doctorId": new_user.id}
+    return {"accessToken": access_token, "role": new_user.role, "userId": new_user.id}
+
 
 
 
 @router.get("/get/doctor/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
-async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         return {"message": "unauthorized"}
@@ -114,6 +96,8 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
 
     return {"doctor": user_data}
 
+
+
 @router.put("/update/doctor/pic", description="This route updates the doctor's profile picture")
 async def update_doctor_pic(doctor: schemas.updateDoctor, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctor.doctorId ,token)
@@ -126,7 +110,8 @@ async def update_doctor_pic(doctor: schemas.updateDoctor, token: str, db: sessio
 
 
 
-@router.get("/doctorList", description="This is a GET request to fetch all doctors.")
+
+@router.get("/doctorList", description="This is a GET request to fetch all doctors.", response_model=list[schemas.doctorList])
 async def doctorList(db: session = Depends(DataBase.get_db)):
     users = db.query(models.Doctor).all()
 

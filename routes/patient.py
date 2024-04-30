@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request add new patient to this user.")
+@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request add new patient to this user.", response_model=schemas.PatientResponse)
 async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.get_db)):
 
     # Check if the parent user exists
@@ -28,9 +28,9 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     new_patient = models.Patient(
         firstName=user.firstName,
         lastName=user.lastName,
-        parentFirstName=user.parentFirstName,
-        parentLastName=user.parentLastName,
-        parentPhoneNumber=user.parentPhoneNumber,
+        parentFirstName=parent_user.firstName,
+        parentLastName=parent_user.lastName,
+        parentPhoneNumber=parent_user.PhoneNumber,
         parentId=user.parentId,
         age=user.age,
         gender=user.gender
@@ -44,11 +44,11 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     db.refresh(new_patient)
 
     # Return the response with the newly created patient
-    return {"patient": new_patient}
+    return new_patient
 
 
 @router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header")
-async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
+async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db), response_model=list[schemas.PatientResponse]):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
         return {"message": "unauthorized1"}
@@ -58,7 +58,7 @@ async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase
 
     return patients
 
-@router.get("/get/patient/{patientId}/{parentId}", description="This route returns patient data via patientId and takes the token for parent in the header")
+@router.get("/get/patient/{patientId}/{parentId}", description="This route returns patient data via patientId and takes the token for parent in the header", response_model=schemas.PatientResponse)
 async def get_patient(patientId: int, parentId:int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
@@ -67,3 +67,15 @@ async def get_patient(patientId: int, parentId:int,  token: str, db: session = D
         return {"message": "unauthorized"}
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     return patient
+
+@router.delete("/delete/patient/{patientId}", description="This route deletes a patient via patientId and takes the token for parent in the header")
+async def delete_patient(patientId: int, token: str, db: session = Depends(DataBase.get_db)):
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    token_data = oauth2.verify_access_token(patient.parentId, token)
+    if not token_data:
+        return {"message": "unauthorized"}
+    if token_data == False:
+        return {"message": "unauthorized"}
+    db.delete(patient)
+    db.commit()
+    return {"message": "Patient deleted successfully"}

@@ -12,7 +12,7 @@ import utils as utils
 
 router = APIRouter(tags=["authentication"])
 
-@router.post("/login", description="This route is for user or doctor login")
+@router.post("/login", description="This route is for user or doctor login", response_model=list[schemas.UserLoginResponse])
 async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBase.get_db)):
     isDoctor = False
     userInfo = login_info
@@ -55,8 +55,8 @@ async def user_login(login_info: schemas.UserLogin, db: session = Depends(DataBa
     # Create an access token
     if isDoctor:
         access_token = oauth2.create_access_token(data={"user_id": user.id, "type": "doctor"})
-        return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.id}]
-    
+        return [{"accessToken":access_token, "role":user.role, "userId":user.id}]
+
     if not isDoctor:
         access_token = oauth2.create_access_token(data={"user_id": user.userId, "type": "user"})
-        return [{"accessToken":access_token}, {"role":user.role}, {"userId":user.userId}]
+        return [{"accessToken":access_token, "role":user.role, "userId":user.userId}]

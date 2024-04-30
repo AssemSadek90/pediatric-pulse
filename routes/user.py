@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.post("/signup", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).")
+@router.post("/signup", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
 async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.get_db)):
     existing_user = db.query(models.User).filter(
         (models.User.userName == user.userName) | (models.User.email == user.email)
@@ -51,7 +51,7 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
 
 
 
-@router.get("/get/user/{userId}", description="This route returns user data via userId and takes the token in the header")
+@router.get("/get/user/{userId}", description="This route returns user data via userId and takes the token in the header", response_model=schemas.User)
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
@@ -64,6 +64,7 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
         raise HTTPException(status_code=404, detail="User not found")
 
     # Construct the user data dictionary using the schema structure
+   # Construct the user data dictionary using the schema structure
     user_data = {
         "userId": user.userId,
         "firstName": user.firstName,
@@ -72,9 +73,9 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
         "userName": user.userName,
         "createdAt": str(user.createdAt),  # Convert datetime to string
         "phone": user.PhoneNumber,
-        "age": user.age,
-        "profilePicture": user.profilePicture,
+        "age": user.age,  # Will be None if age is None
+        "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
         "role": user.role
     }
 
-    return {"user": user_data}
+    return user_data
