@@ -47,13 +47,13 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     return {"patient": new_patient}
 
 
-@router.get("/get/patient/{parentId}", description="This route returns patient data via parentId and takes the token in the header")
+@router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header")
 async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        return {"message": "unauthorized1"}
     if token_data == False:
-        return {"message": "unauthorized"}
+        return {"message": "unauthorized2"}
     patients = db.query(models.Patient).filter(models.Patient.parentId == parentId).all()
 
     return patients
