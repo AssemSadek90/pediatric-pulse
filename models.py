@@ -45,15 +45,12 @@ class Patient(base):
 class Appointment(base):
     __tablename__ = 'appointment'
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
-    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
+    parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
-    appointmentDate = Column(DateTime, nullable=False)
-    Date = Column(String, nullable=False)
+    appointmentDate = Column(String, nullable=False)
     From = Column(String, nullable=False)
     To = Column(String, nullable=False)
-    appointmentStatus = Column(String, nullable=False)
     isTaken = Column(Boolean, default=False)  # Change data type for appointmentStatus
-    userId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     user = relationship('User', back_populates='appointments')
     doctor = relationship('Doctor', back_populates='appointments')
 

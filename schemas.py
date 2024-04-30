@@ -83,3 +83,12 @@ class addPatient(BaseModel):
     parentLastName: str
     parentPhoneNumber: str
     parentId: int
+
+
+class addApointment(BaseModel):
+    doctorId: int
+    patientId: int
+    appointmentDate: str
+    From: str
+    To: str
+    isTaken: bool
