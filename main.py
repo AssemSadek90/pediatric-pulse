@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from DataBase import engine
 from models import base
 from routes import auth, user, doctor, patient, appointment, MedicalRecord
+from starlette.responses import RedirectResponse
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,4 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/docs")
