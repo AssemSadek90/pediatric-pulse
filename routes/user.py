@@ -79,3 +79,50 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     }
 
     return user_data
+
+
+@router.put("/update/user/{userId}", description="This route updates the user's info")
+async def update_doctor_pic(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId ,token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # Hash the password before creating the user
+    X = db.query(models.User).filter(models.User.userName == user.userName).first()
+    if X:
+        raise HTTPException(status_code=400, detail="Invalid userName")
+    
+    X = db.query(models.User).filter(models.User.email == user.email).first()
+    if X:
+        raise HTTPException(status_code=400, detail="Invalid email")
+    
+    hashed_password = utils.hash(user.password)
+    user_query = db.query(models.User).filter(models.User.userId == userId)
+    user_query.update({
+        "userName": user.userName, 
+        "email": user.email, 
+        "password": hashed_password, 
+        "firstName": user.firstName, 
+        "lastName": user.lastName,
+        "profilePicture":user.profilePicture, 
+        "PhoneNumber": user.phoneNumber,
+        "age": user.age
+        })
+    
+    db.commit()
+
+    user= db.query(models.User).filter(models.User.userId == userId).first()
+    newUser ={
+        "userId": user.userId,
+        "userName": user.userName,
+        "email": user.email,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "createdAt": str(user.createdAt),  # Convert datetime to string
+        "PhoneNumber": user.PhoneNumber,
+        "age": user.age,  # Will be None if age is None
+        "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
+        "role": user.role
+    }
+    
+    return newUser

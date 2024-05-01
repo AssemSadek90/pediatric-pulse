@@ -17,7 +17,7 @@ router = APIRouter(
 
 import random
 
-@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.UserLoginResponse)
+@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
 async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get_db)):
     existing_user = db.query(models.Doctor).filter(
         models.Doctor.email == user.email
@@ -67,14 +67,14 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 
 
 
-@router.get("/get/doctor/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
-async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
-    token_data = oauth2.verify_access_token(userId, token)
+@router.get("/get/doctor/{doctorId}", description="This route returns doctor data via doctorId and takes the token in the header")
+async def get_user_by_id(doctorId: int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
+    token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         return {"message": "unauthorized"}
     if token_data == False:
         return {"message": "unauthorized"}
-    user = db.query(models.Doctor).filter(models.Doctor.id == userId).first()
+    user = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -98,7 +98,7 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
 
 
 
-@router.put("/update/doctor/{doctorId: int}", description="This route updates the doctor's info")
+@router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info")
 async def update_doctor_pic(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:

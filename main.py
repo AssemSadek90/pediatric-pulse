@@ -1,12 +1,9 @@
-from fastapi import FastAPI, HTTPException, Depends, APIRouter
-from DataBase import engine, get_db
-from models import base, User, Doctor
-from routes import auth,user, doctor, patient, appointment
-from oauth2 import create_access_token
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import session
+from fastapi import FastAPI
+from DataBase import engine
+from models import base
+from routes import auth, user, doctor, patient, appointment
+
 from fastapi.middleware.cors import CORSMiddleware
-import models, DataBase, oauth2, utils, schemas
 
 base.metadata.create_all(bind=engine)
 
