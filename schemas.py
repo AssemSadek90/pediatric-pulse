@@ -25,7 +25,7 @@ class Doctor(BaseModel):
     createdAt: str
     rating: Optional[int]
     numberOfRating: Optional[int]
-    price: str
+    price: int
     profilePicture: Optional[str]
     role: str
 
@@ -110,6 +110,22 @@ class updateUser(BaseModel):
     age: Optional[int]
     profilePicture: str
 
+class updatePatient(BaseModel):
+    age: int
+    firstName: str
+    lastName: str
+    gender: str
+
+class Patient(BaseModel):
+    id: int
+    age: int
+    firstName: str
+    lastName: str
+    parentFirstName: str
+    parentLastName: str
+    parentPhoneNumber: str
+    gender: str
+    parentId: int
 
 
 
@@ -130,3 +146,27 @@ class addApointment(BaseModel):
     isTaken: bool
 
 
+
+class medicalRecordResponse(BaseModel):
+    id: int
+    patientId: int
+    notes: str
+    treatment: str
+    createdAt: str
+    healthCondition: str
+    vaccin: str
+    allergies: str
+    pastConditions: str
+    chronicConditions: str
+    surgicalHistory: str
+    medications: str
+
+
+class AppointmentResponse(BaseModel):
+    id: int
+    parentId: int
+    doctorId:int
+    appointmentDate: str
+    From: str
+    To: str
+    isTaken: bool
