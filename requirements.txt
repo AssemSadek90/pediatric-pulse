@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+requests
+passlib
+jose
+python-jose
+datetime
+typing
+sqlalchemy
+pydantic
+passlib
+psycopg2
+python-multipart
+bcrypt
+jwt
+PyJWT
