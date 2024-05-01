@@ -90,8 +90,15 @@ class LoginResponse(BaseModel):
 
 
 class updateDoctor(BaseModel):
+    userName: str
+    email: str
+    password: str
+    firstName: str
+    lastName: str
     profilePic: str
-    doctorId: int
+    price: int
+
+
 
 
 class addPatient(BaseModel):

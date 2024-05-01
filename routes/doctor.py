@@ -98,15 +98,50 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
 
 
 
-@router.put("/update/doctor/pic", description="This route updates the doctor's profile picture")
-async def update_doctor_pic(doctor: schemas.updateDoctor, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(doctor.doctorId ,token)
+@router.put("/update/doctor/{doctorId: int}", description="This route updates the doctor's info")
+async def update_doctor_pic(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:
         return {"message": "Invalid token"}
-    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.doctorId)
-    user_query.update({"profilePicture":doctor.profilePic})
+    # Hash the password before creating the user
+    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName).first()
+    if X:
+        return {"message": "invalid userName"}
+    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email).first()
+    if X:
+        return {"message": "invalid email"}
+    
+    hashed_password = utils.hash(doctor.password)
+    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctorId)
+    user_query.update({
+        "userName": doctor.userName, 
+        "email": doctor.email, 
+        "password": hashed_password, 
+        "firstName": doctor.firstName, 
+        "lastName": doctor.lastName,
+        "profilePicture":doctor.profilePic, 
+        "price": doctor.price
+        })
+    
     db.commit()
-    return {"message": "Profile picture updated"}
+
+    user= db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
+    newDoctor ={
+        "doctorId": user.id,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "email": user.email,
+        "userName": user.userName,
+        "createdAt": str(user.createdAt),
+        "profilePicture": user.profilePicture,
+        "role": user.role,
+        "rating": user.rating,
+        "numberOfRating": user.numberOfRating,
+        "price": user.price
+    }
+    
+    
+    return newDoctor
 
 
 
