@@ -49,6 +49,8 @@ class UserLoginResponse(BaseModel):
     accessToken: str
     role: str 
     userId: int
+
+
 class DoctorLoginResponse(BaseModel):
     accessToken: str
     role: str 
@@ -97,6 +99,16 @@ class updateDoctor(BaseModel):
     lastName: str
     profilePic: str
     price: int
+
+class updateUser(BaseModel):
+    userName: str
+    email: str
+    password: str
+    firstName: str
+    lastName: str
+    phoneNumber: Optional[str]
+    age: Optional[int]
+    profilePicture: str
 
 
 
