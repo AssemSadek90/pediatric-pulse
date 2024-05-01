@@ -1,8 +1,9 @@
 import { cn } from '@/utils/cn';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import React, { useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { CircularProgress } from '@mui/material';
+
 
 interface Patient {
     id: number;
@@ -15,14 +16,6 @@ interface Patient {
     gender: string;
     parentId: number;
 }
-const BottomGradient = () => {
-    return (
-        <>
-            <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
-            <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
-        </>
-    );
-};
 const LabelInputContainer = ({
     children,
     className,
@@ -36,8 +29,7 @@ const LabelInputContainer = ({
         </div>
     );
 };
-const changePatientInfo = () => {
-    const [loading, setLoading] = useState(false)
+const changePatientInfo = ({ currentPatient }: { currentPatient: Patient | undefined }) => {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -45,19 +37,19 @@ const changePatientInfo = () => {
         gender: "",
         parentId: localStorage.getItem("userId")
     })
-    const [currentPatientId, setCurrentPatientId] = useState()
+    const [loading, setLoading] = useState(false)
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
         const requestOptions = {
-            method: "UPDATE",
+            method: "PUT",
             headers: {
                 "Content-type": "application/json"
             },
             body: JSON.stringify(formData),
         };
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/update/patient/${formData}?token=${localStorage.getItem("accessToken")}`, requestOptions);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/update/patient/${currentPatient?.id}?token=${localStorage.getItem("accessToken")}`, requestOptions);
             if (response.status === 201 || response.status === 200) {
                 setLoading(false)
             }
@@ -66,7 +58,7 @@ const changePatientInfo = () => {
             }
         }
         catch (error) {
-            console.error('Error Adding Patient:', error)
+            console.error('Error Updating Patient:', error)
         }
     }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,26 +68,35 @@ const changePatientInfo = () => {
         });
     };
     return (
-        <div className='max-w-md w-full p-2 mx-auto rounded-none md:rounded-2xl shadow-input bg-white dark:bg-black flex flex-col'>
+        <div className='max-w-md w-full p-2 mx-auto my-auto rounded-none md:rounded-2xl shadow-input bg-white dark:bg-black flex flex-col'>
             <form className="bg-white" onSubmit={handleSubmit}>
                 <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
                     <LabelInputContainer>
-                        <Label htmlFor="firstname">First name</Label>
-                        <Input id="firstname" name='firstName' value={formData.firstName} onChange={handleChange} required placeholder="" type="text" />
+                        <Label htmlFor="firstname">Firstname</Label>
+                        <Input id="firstname" name='firstName' value={formData.firstName} onChange={handleChange} required placeholder={currentPatient?.firstName} type="text" />
                     </LabelInputContainer>
                     <LabelInputContainer>
-                        <Label htmlFor="lastname">Last name</Label>
-                        <Input id="lastname" name='lastName' value={formData.lastName} onChange={handleChange} required placeholder="" type="text" />
+                        <Label htmlFor="lastname">Lastname</Label>
+                        <Input id="lastname" name='lastName' value={formData.lastName} onChange={handleChange} required placeholder={currentPatient?.lastName} type="text" />
                     </LabelInputContainer>
                 </div>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="age">Age</Label>
-                    <Input id="age" name='age' value={formData.age} onChange={handleChange} required placeholder="" type="number" />
+                    <Input id="age" name='age' value={formData.age} onChange={handleChange} required placeholder={currentPatient?.age?.toString()} type="number" />
                 </LabelInputContainer>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="gender">Gender</Label>
-                    <Input id="gender" name='gender' value={formData.gender} onChange={handleChange} required placeholder="" type="text" />
+                    <Input id="gender" name='gender' value={formData.gender} onChange={handleChange} required placeholder={currentPatient?.gender} type="text" />
                 </LabelInputContainer>
+                <div className='flex justify-center'>
+                    <button
+                        className="bg-gradient-to-br relative group/btn from-black to-neutral-600 block w-[50%] text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+                        type="submit"
+                        disabled={loading ? true : false}
+                    >
+                        {loading ? <CircularProgress color="warning" size={"1.3rem"} /> : <p>Update Patient Data</p>}
+                    </button>
+                </div>
             </form>
         </div>
     )

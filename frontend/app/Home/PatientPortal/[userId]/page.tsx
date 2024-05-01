@@ -26,6 +26,7 @@ const patientPortal = () => {
   const [idShown, setIdShown] = useState<number | undefined>()
   const [openModal, setOpenModal] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [currentPatient, setCurrentPatient] = useState({} as Patient | undefined)
 
   const headers = {
     "Content-Type": "application/json",
@@ -58,7 +59,14 @@ const patientPortal = () => {
     <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent">Patient Medical History</div>
   );
   const Skeleton2 = () => (
-    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent "><ChangePatientInfo /></div>
+    <>
+      <div className='flex items-start font-bold border border-transparent'>
+        Change your patient's data
+      </div>
+      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <ChangePatientInfo currentPatient={currentPatient} />
+      </div>
+    </>
   );
   const Skeleton3 = () => (
     <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent">Patient Medical History</div>
@@ -73,15 +81,7 @@ const patientPortal = () => {
       className: "md:col-span-2 border border-neutral-200 h-full",
     },
     {
-      description: <div className='flex justify-center'>
-        <button
-          className="bg-gradient-to-br relative group/btn from-black to-neutral-600 block w-[50%] text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
-          type="submit"
-          disabled={loading ? true : false}
-        >
-          {loading ? <CircularProgress color="warning" size={"1.3rem"} /> : <p>Update Patient Data</p>}
-        </button>
-      </div>,
+      description: <></>,
       header: <Skeleton2 />,
       className: "md:col-span-1 border border-neutral-200 h-full",
     },
@@ -101,7 +101,7 @@ const patientPortal = () => {
     <>
       {hasAccess ?
         <div className="">
-          <Navbar patients={patients} setIdShown={setIdShown} setOpenModal={setOpenModal} idShown={idShown} />
+          <Navbar patients={patients} setIdShown={setIdShown} setOpenModal={setOpenModal} idShown={idShown} setCurrentPatient={setCurrentPatient} />
           {openModal && <AddPatient openModal={openModal} setOpenModal={setOpenModal} />}
           <div className="h-lvh">
             <BentoGrid className="w-screen mx-auto h-lvh md:auto-rows-[20rem]">

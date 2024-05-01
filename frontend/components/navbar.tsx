@@ -22,13 +22,15 @@ const Navbar = ({
   patients,
   setIdShown,
   idShown,
-  setOpenModal
+  setOpenModal,
+  setCurrentPatient
 }
   : {
     patients: Patient[],
     setIdShown: React.Dispatch<React.SetStateAction<number | undefined>>,
     idShown: number | undefined
     setOpenModal: React.Dispatch<React.SetStateAction<boolean>>,
+    setCurrentPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>
   }
 ) => {
   const [active, setActive] = useState<string | null>(null);
@@ -52,9 +54,9 @@ const Navbar = ({
   const handlePatientChange = (patientId: number, patientName: string) => {
     setButtonTitle(patientName)
     setIdShown(patientId)
-    // if (idShown !== undefined) {
-    //   setCurrentPatient(patients.find(patient => patient.id === patientId))
-    // }
+    if (idShown !== undefined) {
+      setCurrentPatient(patients.find(patient => patient.id === patientId))
+    }
   };
   const headers = {
     Authorization: `Bearer ${localStorage.getItem("accessToken")}`
