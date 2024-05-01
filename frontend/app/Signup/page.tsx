@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
 import { WavyBackground } from '@/components/ui/wavy-background'
 import Link from 'next/link';
-// import { CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 const BottomGradient = () => {
   return (
     <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
     </>
   );
 };
@@ -37,9 +37,12 @@ const signup = () => {
     phone:"",
     password:""
   })
+  const [loading, setLoading] = useState(false)
+
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true)
     const requestOptions = {
       method: "POST",
       headers: {
@@ -50,12 +53,19 @@ const signup = () => {
     try{
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/signup`,requestOptions);
       const data = await response.json();
-      localStorage.setItem("accessToken", data[0].accessToken)
-      localStorage.setItem("userId", data[2].userId)
-      if (response.status === 201){
+      // database connection
+      localStorage.setItem("accessToken", data.accessToken)
+      localStorage.setItem("userId", data.userId)
+
+      // // mockserver connection
+      // localStorage.setItem("accessToken", formData.userName)
+      // localStorage.setItem("userId", "1")
+      if (response.status === 201 || response.status === 200){
+        setLoading(false)
         router.push('/Home/PatientPortal')
-        console.log(`access token: ${localStorage.getItem("accessToken")}`)
-        console.log(`User Id: ${localStorage.getItem("userId")}`)
+      }
+      else{
+        setLoading(false)
       }
     }
     catch(error){
@@ -109,8 +119,9 @@ const signup = () => {
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
             type="submit"
+            disabled = {loading ? true : false}
           >
-            Sign up &rarr;
+            {loading ? <CircularProgress color = "warning" size={"1.3rem"} /> : <p>Sign up &rarr;</p>} 
             <BottomGradient />
           </button>
   

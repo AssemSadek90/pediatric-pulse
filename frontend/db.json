@@ -91,7 +91,57 @@
       "id": "43c7"
     }
   ],
-  "signup": [],
-  "login": [],
+  "signup": [
+    {
+      "id": "f52d",
+      "firstName": "Assem",
+      "lastName": "Sadek",
+      "userName": "AssemSadek",
+      "email": "abdelhamid.ssen@gmail.com",
+      "phone": "01064065523",
+      "password": "111"
+    },
+    {
+      "id": "0ff9",
+      "firstName": "Assem",
+      "lastName": "Sadek",
+      "userName": "AssemSadek",
+      "email": "abdelhamid.ssen@gmail.com",
+      "phone": "01064065523",
+      "password": "123"
+    },
+    {
+      "id": "4fa7",
+      "firstName": "Assem",
+      "lastName": "Sadek",
+      "userName": "AssemSadek",
+      "email": "abdelhamid.ssen@gmail.com",
+      "phone": "01064065523",
+      "password": "111"
+    },
+    {
+      "id": "735b",
+      "firstName": "Assem",
+      "lastName": "Sadek",
+      "userName": "AssemSadek",
+      "email": "abdelhamid.ssen@gmail.com",
+      "phone": "01064065523",
+      "password": "1234"
+    }
+  ],
+  "login": [
+    {
+      "id": "5929",
+      "username": "saied",
+      "password": "1234"
+    }
+  ],
+  "patients": [
+    {
+      "id": "5929",
+      "username": "saied",
+      "password": "1234"
+    }
+  ],
   "access_tokens": []
 }

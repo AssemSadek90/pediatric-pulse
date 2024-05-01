@@ -3,11 +3,11 @@ import NavbarLanding from '@/components/navbarLanding';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const doctorPortal = () => {
+const staffPortal = () => {
   const router = useRouter();
   const [hasAccess, setHasAccess] = useState(false)
   const handlePageLoad = () => {
-    if (localStorage.getItem("role") !== "doctor") {
+    if (localStorage.getItem("role") !== "staff") {
       router.push('/Forbidden')
     }
     else {
@@ -20,12 +20,14 @@ const doctorPortal = () => {
   return (
     <>
       {hasAccess ?
-        <div>
+        <div className="">
           <NavbarLanding />
+
+
         </div> :
         <div>Access Denied</div>}
     </>
   )
 }
 
-export default doctorPortal
+export default staffPortal
