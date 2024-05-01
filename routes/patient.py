@@ -47,8 +47,8 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     return new_patient
 
 
-@router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header")
-async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db), response_model=list[schemas.PatientResponse]):
+@router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header", response_model=list[schemas.PatientResponse])
+async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
         return {"message": "unauthorized1"}
@@ -79,3 +79,24 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
+
+
+@router.put("/update/patient/{patientId}/{parentId}", description="This route updates the patient's info", response_model=schemas.Patient)
+async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(parentId ,token)
+    if not token_data:
+        return {"message": "Invalid token"}
+
+    user_query = db.query(models.Patient).filter(models.Patient.id == patientId)
+    user_query.update({ 
+        "age": patient.age,
+        "firstName": patient.firstName, 
+        "lastName": patient.lastName,
+        "gender": patient.gender,
+        })
+    
+    db.commit()
+
+    patient= db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    
+    return patient

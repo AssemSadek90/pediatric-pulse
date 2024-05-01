@@ -81,8 +81,8 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
-@router.put("/update/user/{userId}", description="This route updates the user's info")
-async def update_doctor_pic(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+@router.put("/update/user/{userId}", description="This route updates the user's info", response_model=schemas.User)
+async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId ,token)
     if not token_data:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -119,7 +119,7 @@ async def update_doctor_pic(user: schemas.updateUser, userId: int, token: str, d
         "firstName": user.firstName,
         "lastName": user.lastName,
         "createdAt": str(user.createdAt),  # Convert datetime to string
-        "PhoneNumber": user.PhoneNumber,
+        "phone": user.PhoneNumber,  # Changed from PhoneNumber to phone
         "age": user.age,  # Will be None if age is None
         "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
         "role": user.role

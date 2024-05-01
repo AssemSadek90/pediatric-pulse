@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from DataBase import engine
 from models import base
-from routes import auth, user, doctor, patient, appointment
+from routes import auth, user, doctor, patient, appointment, MedicalRecord
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +15,8 @@ app.include_router(user.router)
 app.include_router(doctor.router)
 app.include_router(patient.router)
 app.include_router(appointment.router)
+app.include_router(MedicalRecord.router)
+
 
 app.add_middleware(
     CORSMiddleware,

@@ -23,11 +23,16 @@ class MedicalRecord(base):
     __tablename__ = 'medical_record'
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
-    notes = Column(String)
-    treatment = Column(String, nullable=False)
+    notes = Column(String, default='None')
+    treatment = Column(String, default='None')
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
-    healthCondition = Column(String, nullable=False)
-    vaccin = Column(String, nullable=False)
+    healthCondition = Column(String, default='None')
+    vaccin = Column(String, default='None')
+    allergies = Column(String, default='None')
+    pastConditions = Column(String, default='None')
+    chronicConditions = Column(String, default='None')
+    surgicalHistory = Column(String, default='None')
+    medications = Column(String, default='None')
 
 class Patient(base):
     __tablename__ = 'patient'
