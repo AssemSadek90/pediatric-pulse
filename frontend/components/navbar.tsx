@@ -21,16 +21,14 @@ interface Patient {
 const Navbar = ({
   patients,
   setIdShown,
-  idShown,
   setOpenModal,
-  setCurrentPatient
+  setCurrentPatient,
 }
   : {
     patients: Patient[],
     setIdShown: React.Dispatch<React.SetStateAction<number | undefined>>,
-    idShown: number | undefined
     setOpenModal: React.Dispatch<React.SetStateAction<boolean>>,
-    setCurrentPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>
+    setCurrentPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>,
   }
 ) => {
   const [active, setActive] = useState<string | null>(null);
@@ -54,7 +52,7 @@ const Navbar = ({
   const handlePatientChange = (patientId: number, patientName: string) => {
     setButtonTitle(patientName)
     setIdShown(patientId)
-    if (idShown !== undefined) {
+    if (patientId !== undefined) {
       setCurrentPatient(patients.find(patient => patient.id === patientId))
     }
   };

@@ -5,6 +5,9 @@ import Navbar from '@/components/navbar';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import MedicalRecord from "@/components/medicalRecord"
+import DoctorSelector from '@/components/DoctorSelector';
+import AppointmentTable from "@/components/appointmentTable"
 import { CircularProgress } from '@mui/material';
 
 interface Patient {
@@ -18,6 +21,13 @@ interface Patient {
   gender: string;
   parentId: number;
 }
+interface Doctor {
+  title: string;
+  link: string;
+  thumbnail: string;
+  numberOfReviews: number;
+  avarageRating: number;
+}
 
 const patientPortal = () => {
   const router = useRouter();
@@ -27,6 +37,7 @@ const patientPortal = () => {
   const [openModal, setOpenModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [currentPatient, setCurrentPatient] = useState({} as Patient | undefined)
+  const [doctorList, setDoctorList] = useState([] as Doctor[])
 
   const headers = {
     "Content-Type": "application/json",
@@ -42,7 +53,7 @@ const patientPortal = () => {
     }
     const data = await response.json();
     setPatients(data);
-  }
+  };
   const handlePageLoad = () => {
     if (localStorage.getItem("role") !== "customer") {
       router.push('/Forbidden')
@@ -50,13 +61,32 @@ const patientPortal = () => {
     else {
       setHasAccess(true)
     }
+  };
+  async function fetchDoctorList() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/doctorList`,
+      { headers }
+    );
+    if (!response.ok) {
+      console.log("Error: Request sent no data")
+    }
+    const data = await response.json();
+    setDoctorList(data);
   }
   useEffect(() => {
-    handlePageLoad()
+    handlePageLoad();
     fetchPatientList();
+    fetchDoctorList();
   }, []);
   const Skeleton1 = () => (
-    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent">Patient Medical History</div>
+    <>
+      <div className='flex items-start font-bold border border-transparent'>
+        Patient Medical Record
+      </div>
+      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <MedicalRecord currentPatient={currentPatient} />
+      </div>
+    </>
   );
   const Skeleton2 = () => (
     <>
@@ -72,11 +102,21 @@ const patientPortal = () => {
     <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent">Patient Medical History</div>
   )
     ; const Skeleton4 = () => (
-      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent">Book an Appointment</div>
+      <>
+        <div className='flex items-start font-bold border border-transparent'>
+          Book an Appointment
+        </div>
+        <div className="flex w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+          <div className='flex flex-col items-start h-full w-full'>
+            <DoctorSelector doctorList={doctorList} className="pl-4" />
+            <AppointmentTable doctorList={doctorList} />
+          </div>
+        </div>
+      </>
     );
   const items = [
     {
-      description: 'Hi',
+      description: 'Contact your doctor if something is wrong',
       header: <Skeleton1 />,
       className: "md:col-span-2 border border-neutral-200 h-full",
     },
@@ -101,7 +141,7 @@ const patientPortal = () => {
     <>
       {hasAccess ?
         <div className="">
-          <Navbar patients={patients} setIdShown={setIdShown} setOpenModal={setOpenModal} idShown={idShown} setCurrentPatient={setCurrentPatient} />
+          <Navbar patients={patients} setIdShown={setIdShown} setOpenModal={setOpenModal} setCurrentPatient={setCurrentPatient} />
           {openModal && <AddPatient openModal={openModal} setOpenModal={setOpenModal} />}
           <div className="h-lvh">
             <BentoGrid className="w-screen mx-auto h-lvh md:auto-rows-[20rem]">
