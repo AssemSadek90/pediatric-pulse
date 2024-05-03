@@ -156,11 +156,24 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
     for user in users:
         # Construct the user data dictionary using the schema structure
         title = "Dr. " + user.firstName + " " + user.lastName
+        numberOfReviews = 0
+        rate = 0
+        reviews = db.query(models.reviews).filter(models.reviews.doctorId == user.id).all()
+        for review in reviews:
+            numberOfReviews += 1
+            rate = review.rating + rate
+        
+        if (rate == 0 and numberOfReviews == 0):
+            rating = 0
+        else:
+            rating = rate / numberOfReviews
         user_data = {
             "title":title,
             "link": "/Signup",
             "thumbnail": user.profilePicture,
-            "id": user.id
+            "id": user.id,
+            "numberOfReviews": numberOfReviews,
+            "avarageRating": rating,
             }
         doctors_data.append(user_data)
 

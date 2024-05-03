@@ -34,6 +34,8 @@ class doctorList(BaseModel):
     link: Optional[str]
     thumbnail: Optional[str]
     id: Optional[int]
+    numberOfReviews: Optional[int]
+    avarageRating: Optional[float]
 
 class PatientResponse(BaseModel):
     id: Optional[int]
