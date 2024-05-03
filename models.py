@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text, FLOAT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from DataBase import base
@@ -33,6 +33,7 @@ class MedicalRecord(base):
     chronicConditions = Column(String, default='None')
     surgicalHistory = Column(String, default='None')
     medications = Column(String, default='None')
+    radiologyReport = Column(String, default='None')
 
 class Patient(base):
     __tablename__ = 'patient'
@@ -74,6 +75,14 @@ class Doctor(base):
     profilePicture = Column(String)
     role = Column(String, nullable=False)
     appointments = relationship('Appointment', back_populates='doctor')
+
+class reviews(base):
+    __tablename__ ='reviews'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
+    doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    review = Column(String, nullable=False)
+    rating = Column(FLOAT, nullable=False)
 
 # class history(base):
 #     __tablename__ = 'history'

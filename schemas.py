@@ -160,6 +160,7 @@ class medicalRecordResponse(BaseModel):
     chronicConditions: str
     surgicalHistory: str
     medications: str
+    radiologyReport: str
 
 
 class AppointmentResponse(BaseModel):
@@ -170,3 +171,17 @@ class AppointmentResponse(BaseModel):
     From: str
     To: str
     isTaken: bool
+
+
+class reviews(BaseModel):
+    parentId: int
+    doctorId: int
+    review: str
+    rating: float
+
+
+class reviewsResponse(BaseModel):
+    reviewerName: str
+    docotrName: str
+    review: str 
+    rating: float

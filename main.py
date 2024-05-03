@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from DataBase import engine
 from models import base
-from routes import auth, user, doctor, patient, appointment, MedicalRecord
+from routes import auth, user, doctor, patient, appointment, MedicalRecord, reviews
 from starlette.responses import RedirectResponse
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +17,7 @@ app.include_router(doctor.router)
 app.include_router(patient.router)
 app.include_router(appointment.router)
 app.include_router(MedicalRecord.router)
+app.include_router(reviews.router)
 
 
 app.add_middleware(
