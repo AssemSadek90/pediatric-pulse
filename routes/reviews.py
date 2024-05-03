@@ -13,7 +13,7 @@ import utils
 import schemas
 
 router = APIRouter(
-    tags=["reciews"]
+    tags=["reviews"]
 )
 
 @router.post("/add/review", status_code=status.HTTP_201_CREATED, description="This is a post request add a new review")

@@ -17,7 +17,7 @@ router = APIRouter(
 
 
 
-@router.get('/get/medicalRecord/{patienId}/{parentId}', description='this get request returns all the medical records for a certain patient', response_model=list[schemas.medicalRecordResponse])
+@router.get('/get/medicalRecord/{patientId}/{parentId}', description='this get request returns all the medical records for a certain patient', response_model=list[schemas.medicalRecordResponse])
 async def getMedicalRecord(patienId: int, parentId: int,token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
