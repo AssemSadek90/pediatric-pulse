@@ -14,7 +14,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function DoctorSelector({ className, doctorList }: { className: string, doctorList: Doctor[] | undefined }) {
+export default function DoctorSelector({ className, doctorList, message }: { className: string, doctorList: Doctor[] | undefined, message: string }) {
     const [selected, setSelected] = useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0 } as Doctor)
 
     return (
@@ -22,7 +22,7 @@ export default function DoctorSelector({ className, doctorList }: { className: s
             <Listbox value={selected} onChange={setSelected}>
                 {({ open }) => (
                     <>
-                        <Listbox.Label className="flex text-lg font-medium leading-6 text-black">Choose a doctor to visit</Listbox.Label>
+                        <Listbox.Label className="flex text-lg font-medium leading-6 text-black">{message}</Listbox.Label>
                         <div className="relative">
                             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <span className="flex items-center">

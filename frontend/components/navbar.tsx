@@ -18,17 +18,33 @@ interface Patient {
   gender: string;
   parentId: number;
 }
+interface User {
+  userId: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  userName: string,
+  createdAt: string,
+  phone: string,
+  age: number,
+  profilePicture: string,
+  role: string
+}
 const Navbar = ({
   patients,
   setIdShown,
   setOpenModal,
+  setOpenModalProfile,
   setCurrentPatient,
+  user,
 }
   : {
     patients: Patient[],
     setIdShown: React.Dispatch<React.SetStateAction<number | undefined>>,
     setOpenModal: React.Dispatch<React.SetStateAction<boolean>>,
+    setOpenModalProfile: React.Dispatch<React.SetStateAction<boolean>>,
     setCurrentPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>,
+    user: User | undefined,
   }
 ) => {
   const [active, setActive] = useState<string | null>(null);
@@ -73,6 +89,7 @@ const Navbar = ({
     setLoading(true)
     DeletePatient(patiendId)
   };
+
   return (
     <nav className="bg-black w-screen h-24 grid grid-cols-2 items-center px-6 md:px-12 lg:px-24 sticky top-0 z-50">
       <div className="">
@@ -88,7 +105,7 @@ const Navbar = ({
       </div>
       <div className="flex justify-end gap-2 h-full">
         <div
-          className={cn("flex justify-end")}
+          className={cn("flex justify-end items-center")}
         >
           <Menu setActive={setActive}>
             <MenuItem setActive={setActive} active={active} item={`${buttonTitle}`}>
@@ -103,6 +120,18 @@ const Navbar = ({
               </MenuItem>
             </Link>
           </Menu>
+          <Link className="h-full flex justify-end items-center hover:bg-gray-900 hover:transition duration-150 ease-linear" href='' onClick={() => setOpenModalProfile(true)}>
+            <div className="text-white mx-4">
+              {user?.firstName} {user?.lastName}
+            </div>
+            <Image
+              className="lg:w-20 lg:h-20 md:w-16 md:h-16 w-12 h-12 md:p-1 lg:p-2 rounded-full"
+              src={user?.profilePicture ? user.profilePicture : "/default.jpg"}
+              alt="Profile Pic"
+              width={1080}
+              height={1080}
+            />
+          </Link>
         </div>
 
       </div>

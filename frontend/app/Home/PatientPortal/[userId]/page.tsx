@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import MedicalRecord from "@/components/medicalRecord"
 import DoctorSelector from '@/components/DoctorSelector';
 import AppointmentTable from "@/components/appointmentTable"
+import ChangeProfileInfo from "@/components/changeProfileInfo"
 import { CircularProgress } from '@mui/material';
 
 interface Patient {
@@ -28,13 +29,26 @@ interface Doctor {
   numberOfReviews: number;
   avarageRating: number;
 }
-
+interface User {
+  userId: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  userName: string,
+  createdAt: string,
+  phone: string,
+  age: number,
+  profilePicture: string,
+  role: string
+}
 const patientPortal = () => {
   const router = useRouter();
+  const [user, setUser] = useState({} as User | undefined)
   const [patients, setPatients] = useState([] as Patient[]);
   const [hasAccess, setHasAccess] = useState(false)
   const [idShown, setIdShown] = useState<number | undefined>()
   const [openModal, setOpenModal] = useState(false)
+  const [openModalProfile, setOpenModalProfile] = useState(false)
   const [loading, setLoading] = useState(false)
   const [currentPatient, setCurrentPatient] = useState({} as Patient | undefined)
   const [doctorList, setDoctorList] = useState([] as Doctor[])
@@ -72,11 +86,23 @@ const patientPortal = () => {
     }
     const data = await response.json();
     setDoctorList(data);
-  }
+  };
+  async function fetchCurrrentUser() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/user/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+      { headers }
+    );
+    if (!response.ok) {
+      console.log("Error: Request sent no data")
+    }
+    const data = await response.json();
+    setUser(data);
+  };
   useEffect(() => {
     handlePageLoad();
     fetchPatientList();
     fetchDoctorList();
+    fetchCurrrentUser();
   }, []);
   const Skeleton1 = () => (
     <>
@@ -108,7 +134,7 @@ const patientPortal = () => {
         </div>
         <div className="flex w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
           <div className='flex flex-col items-start h-full w-full'>
-            <DoctorSelector doctorList={doctorList} className="pl-4" />
+            <DoctorSelector message='Choose a doctor to visit' doctorList={doctorList} className="pl-4" />
             <AppointmentTable doctorList={doctorList} />
           </div>
         </div>
@@ -141,8 +167,16 @@ const patientPortal = () => {
     <>
       {hasAccess ?
         <div className="">
-          <Navbar patients={patients} setIdShown={setIdShown} setOpenModal={setOpenModal} setCurrentPatient={setCurrentPatient} />
+          <Navbar
+            patients={patients}
+            setIdShown={setIdShown}
+            setOpenModal={setOpenModal}
+            setOpenModalProfile={setOpenModalProfile}
+            setCurrentPatient={setCurrentPatient}
+            user={user}
+          />
           {openModal && <AddPatient openModal={openModal} setOpenModal={setOpenModal} />}
+          {openModalProfile && <ChangeProfileInfo openModalProfile={openModalProfile} setOpenModalProfile={setOpenModalProfile} user={user} setUser={setUser} />}
           <div className="h-lvh">
             <BentoGrid className="w-screen mx-auto h-lvh md:auto-rows-[20rem]">
               {items.map((item, i) => (

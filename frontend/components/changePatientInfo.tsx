@@ -31,10 +31,10 @@ const LabelInputContainer = ({
 };
 const changePatientInfo = ({ currentPatient }: { currentPatient: Patient | undefined }) => {
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        age: 0,
-        gender: "",
+        firstName: currentPatient?.firstName,
+        lastName: currentPatient?.lastName,
+        age: currentPatient?.age,
+        gender: currentPatient?.gender,
         parentId: localStorage.getItem("userId")
     })
     const [loading, setLoading] = useState(false)
@@ -44,14 +44,16 @@ const changePatientInfo = ({ currentPatient }: { currentPatient: Patient | undef
         const requestOptions = {
             method: "PUT",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             },
             body: JSON.stringify(formData),
         };
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/update/patient/${currentPatient?.id}?token=${localStorage.getItem("accessToken")}`, requestOptions);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/update/patient/${currentPatient?.id}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`, requestOptions);
             if (response.status === 201 || response.status === 200) {
                 setLoading(false)
+                location.reload()
             }
             else {
                 setLoading(false)
