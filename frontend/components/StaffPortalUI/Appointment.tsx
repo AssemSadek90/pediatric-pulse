@@ -5,6 +5,7 @@ import { Label } from '../ui/label';
 import { cn } from '@/utils/cn';
 import AutocompleteIntroduction from '../ui/DoctorsDropDown';
 import AppointmentDate from '../ui/AppointmentDate';
+import DoctorSelector from '../ui/DoctorsDropDown';
 const Appointment = () => {
     const LabelInputContainer = ({
         children,
@@ -45,7 +46,7 @@ const Appointment = () => {
         </LabelInputContainer>
         <LabelInputContainer>
             
-            <div><AutocompleteIntroduction/></div>
+            <div><DoctorSelector/></div>
 
         </LabelInputContainer>
         <LabelInputContainer>
