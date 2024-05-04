@@ -11,6 +11,8 @@ interface Doctor {
   title: string;
   link: string;
   thumbnail: string;
+  numberOfReviews: number;
+  avarageRating: number;
 }
 
 export default function Home() {
@@ -29,7 +31,7 @@ export default function Home() {
       { headers }
     );
     if (!response.ok) {
-      console.log("ERRORRR")
+      console.log("Error: Request sent no data")
     }
     const data = await response.json();
     padArray(data, data[0]);
