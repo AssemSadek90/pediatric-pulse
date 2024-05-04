@@ -99,15 +99,15 @@ async def get_user_by_id(doctorId: int, token: str, db: session = Depends(DataBa
 
 
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
-async def update_doctor_pic(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:
         return {"message": "Invalid token"}
     # Hash the password before creating the user
-    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName).first()
+    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName or models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid userName"}
-    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email).first()
+    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email or models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid email"}
     
