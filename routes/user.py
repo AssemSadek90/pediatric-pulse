@@ -81,19 +81,18 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
-@router.put("/update/user/{userId}", description="This route updates the user's info", response_model=schemas.User)
+@router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
 async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId ,token)
     if not token_data:
         raise HTTPException(status_code=401, detail="Invalid token")
     
     # Hash the password before creating the user
-    X = db.query(models.User).filter(models.User.userName == user.userName and models.User.userId != userId).first()
-    
+    X = db.query(models.User).filter(models.User.userName == user.userName, models.User.userId != userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid userName")
     
-    X = db.query(models.User).filter(models.User.email == user.email and models.User.userId != userId).first()
+    X = db.query(models.User).filter(models.User.email == user.email, models.User.userId != userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid email")
     

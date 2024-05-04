@@ -104,10 +104,10 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
     if not token_data:
         return {"message": "Invalid token"}
     # Hash the password before creating the user
-    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName and models.Doctor.id != doctorId).first()
+    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName, models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid userName"}
-    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email and models.Doctor.id != doctorId).first()
+    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email, models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid email"}
     
