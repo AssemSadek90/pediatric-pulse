@@ -88,11 +88,12 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
         raise HTTPException(status_code=401, detail="Invalid token")
     
     # Hash the password before creating the user
-    X = db.query(models.User).filter(models.User.userName == user.userName or models.User.userId != userId).first()
+    X = db.query(models.User).filter(models.User.userName == user.userName and models.User.userId != userId).first()
+    
     if X:
         raise HTTPException(status_code=400, detail="Invalid userName")
     
-    X = db.query(models.User).filter(models.User.email == user.email or models.User.userId != userId).first()
+    X = db.query(models.User).filter(models.User.email == user.email and models.User.userId != userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid email")
     
