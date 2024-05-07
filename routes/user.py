@@ -128,8 +128,16 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
     return newUser
 
 
-@router.post("/add/user", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
-async def CreateUser(user: schemas.addUser, db: session = Depends(DataBase.get_db)):
+@router.post("/add/user/{userId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
+async def addUser(user: schemas.addUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        return {"message": "unauthorized"}
+    if token_data == False:
+        return {"message": "unauthorized"}
+    admin = db.query(models.User).filter(models.User.userId == userId).first()
+    if admin.role != 'admin':
+        return {"message": "unauthorized"}
     existing_user = db.query(models.User).filter(
         (models.User.userName == user.userName) | (models.User.email == user.email)
     ).first()
