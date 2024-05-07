@@ -23,6 +23,10 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
         return {"message": "unauthorized"}
     if token_data == False:
         return {"message": "unauthorized"}
+
+    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.From == appointment.From).filter(models.Appointment.To == appointment.To).first()
+    if Appointment:
+        return {"message": " Appointment already exists"}
     new_appointment = models.Appointment(
         parentId = appointment.patientId,
         doctorId = appointment.doctorId,
