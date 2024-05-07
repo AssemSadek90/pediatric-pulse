@@ -75,6 +75,14 @@ class userSginup(BaseModel):
     lastName: str
     phone: str
 
+class addUser(BaseModel):
+    userName: str
+    email: str
+    password: str
+    firstName: str
+    lastName: str
+    phone: str
+    role: str
 class addDoctor(BaseModel):
     email: str
     password: str
@@ -84,7 +92,7 @@ class addDoctor(BaseModel):
 
 
 class tokenData(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
 
 
 class LoginResponse(BaseModel):

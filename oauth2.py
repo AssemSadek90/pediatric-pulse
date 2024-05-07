@@ -49,5 +49,6 @@ def verify_access_token(id: int, token: str, credentials_exception=None):
             raise credentials_exception
         else:
             return False
+        
 
 
