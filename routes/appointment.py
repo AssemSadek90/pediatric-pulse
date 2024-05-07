@@ -47,12 +47,10 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
     return appointments
 
 
-@router.get("/get/doctor/appointments/tabel/{doctorId}/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
-async def get_appointment(doctorId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(parentId, token)
+@router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
+async def get_appointment(doctorId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
-    if token_data == False:
         return {"message": "unauthorized"}
     appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
     return appointments

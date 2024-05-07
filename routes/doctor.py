@@ -67,9 +67,9 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 
 
 
-@router.get("/get/doctor/{doctorId}", description="This route returns doctor data via doctorId and takes the token in the header")
-async def get_user_by_id(doctorId: int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
-    token_data = oauth2.verify_access_token(doctorId, token)
+@router.get("/get/doctor/{doctorId}/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
+async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         return {"message": "unauthorized"}
     if token_data == False:
