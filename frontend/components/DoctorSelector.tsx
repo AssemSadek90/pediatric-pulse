@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, SetStateAction, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { cn } from '@/utils/cn'
@@ -8,18 +8,58 @@ interface Doctor {
     thumbnail: string;
     numberOfReviews: number;
     avarageRating: number;
+    id: number;
 };
-
+interface Appointment {
+    id: number,
+    parentId: number,
+    doctorId: number,
+    appointmentDate: string,
+    From: string,
+    To: string,
+    isTaken: true
+}
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function DoctorSelector({ className, doctorList, message }: { className: string, doctorList: Doctor[] | undefined, message: string }) {
-    const [selected, setSelected] = useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0 } as Doctor)
-
+export default function DoctorSelector({
+    className,
+    doctorList,
+    message,
+    selected,
+    setSelected,
+    appointments,
+    setAppointments }: {
+        className: string,
+        doctorList: Doctor[] | undefined,
+        message: string, selected: Doctor,
+        setSelected: React.Dispatch<SetStateAction<Doctor>>,
+        appointments: Appointment[],
+        setAppointments: React.Dispatch<SetStateAction<Appointment[]>>
+    }) {
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    };
+    async function fetchAppointmentList(selectedDrId: number) {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/appointments/table/${selectedDrId}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+            { headers }
+        );
+        if (!response.ok) {
+            console.log("ERRORRR")
+        }
+        const data = await response.json();
+        setAppointments(data);
+    };
+    const handleChangeDoctor = (newDoc: Doctor) => {
+        setSelected(newDoc)
+        fetchAppointmentList(newDoc.id)
+    }
     return (
         <div className={cn("flex justify-start items-center h-8 space-x-4", className)}>
-            <Listbox value={selected} onChange={setSelected}>
+            <Listbox value={selected} onChange={handleChangeDoctor} >
                 {({ open }) => (
                     <>
                         <Listbox.Label className="flex text-lg font-medium leading-6 text-black">{message}</Listbox.Label>
