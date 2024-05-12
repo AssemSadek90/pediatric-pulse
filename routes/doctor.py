@@ -21,12 +21,12 @@ import random
 async def CreateUser(user: schemas.addDoctor,userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     admin = db.query(models.User).filter(models.User.userId == userId).first()
     if admin.role != 'admin':
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     existing_user = db.query(models.Doctor).filter(
         models.Doctor.email == user.email
     ).first()
@@ -79,9 +79,9 @@ async def CreateUser(user: schemas.addDoctor,userId: int, token: str, db: sessio
 async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     user = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
 
     if not user:
@@ -110,7 +110,7 @@ async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = De
 async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:
-        return {"message": "Invalid token"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     # Hash the password before creating the user
     X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName, models.Doctor.id != doctorId).first()
     if X:

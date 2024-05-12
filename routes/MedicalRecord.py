@@ -21,9 +21,9 @@ router = APIRouter(
 async def getMedicalRecord(patientId: int, parentId: int,token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     medicalRecords = db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == patientId).all()
     patients = []
     for patient in medicalRecords:

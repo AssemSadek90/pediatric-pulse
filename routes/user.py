@@ -55,9 +55,9 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     user = db.query(models.User).filter(models.User.userId == userId).first()
 
     if not user:
@@ -132,12 +132,12 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
 async def addUser(user: schemas.addUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     admin = db.query(models.User).filter(models.User.userId == userId).first()
     if admin.role != 'admin':
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     existing_user = db.query(models.User).filter(
         (models.User.userName == user.userName) | (models.User.email == user.email)
     ).first()

@@ -20,9 +20,9 @@ router = APIRouter(
 async def add_review(review: schemas.reviews, token:str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(review.parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     
     newReview = models.reviews(parentId=review.parentId, doctorId=review.doctorId, review=review.review, rating = review.rating)
     db.add(newReview)

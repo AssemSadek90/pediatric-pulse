@@ -51,9 +51,9 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
 async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized1"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized2"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     patients = db.query(models.Patient).filter(models.Patient.parentId == parentId).all()
 
     return patients
@@ -62,9 +62,9 @@ async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase
 async def get_patient(patientId: int, parentId:int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     return patient
 
@@ -73,9 +73,9 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     token_data = oauth2.verify_access_token(patient.parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
@@ -85,7 +85,7 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
 async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId ,token)
     if not token_data:
-        return {"message": "Invalid token"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
 
     user_query = db.query(models.Patient).filter(models.Patient.id == patientId)
     user_query.update({ 
