@@ -62,15 +62,13 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
 @router.delete("/delete/appointment/{appointmentId}/{parentId}", status_code=status.HTTP_200_OK, description="This is a delete request to delete an appointment")
 async def delete_appointment(appointmentId: int, parentId:int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
-    # if not token_data:
-    #     return {"message": "unauthorized"}
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
-    appointment = db.query(models.Appointment).filter((models.Appointment.id == appointmentId, models.Appointment.parentId == parentId)).first()
-   
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).filter(models.Appointment.parentId == parentId).first()
     if not appointment:
-        raise HTTPException(status_code=404, detail="Appointment not found")
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
     db.delete(appointment)
     db.commit()
-    return {"message": "Appointment deleted successfully"}
+    return {"message": "Patient deleted successfully"}

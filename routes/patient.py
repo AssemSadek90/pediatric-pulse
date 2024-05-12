@@ -76,6 +76,8 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
+    if not patient:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
