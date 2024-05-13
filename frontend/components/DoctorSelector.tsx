@@ -1,6 +1,7 @@
 import { Fragment, SetStateAction, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { formatFullName } from '@/utils/formatFuncs'
 import { cn } from '@/utils/cn'
 interface Doctor {
     title: string;
@@ -67,7 +68,7 @@ export default function DoctorSelector({
                             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <span className="flex items-center">
                                     <img src={selected.thumbnail} alt="/default.jpg" className="h-5 w-5 flex-shrink-0 rounded-full" />
-                                    <span className="ml-3">{selected.title}</span>
+                                    <span className="ml-3">{formatFullName(selected.title)}</span>
                                     <span className='ml-4 text-sm font-light'>{`${selected.avarageRating}`}</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#FFD700" className="w-4 h-4">
                                         <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clipRule="evenodd" />
@@ -105,7 +106,7 @@ export default function DoctorSelector({
                                                         <span
                                                             className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
                                                         >
-                                                            {person.title}
+                                                            {formatFullName(person.title)}
                                                         </span>
                                                     </div>
 

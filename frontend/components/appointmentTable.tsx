@@ -3,14 +3,6 @@ import React, { useState, Fragment } from 'react';
 import { formatTime, formatTimeNum } from '@/utils/formatFuncs';
 import { Transition } from '@headlessui/react';
 
-interface Doctor {
-  title: string;
-  link: string;
-  thumbnail: string;
-  numberOfReviews: number;
-  avarageRating: number;
-  id: number;
-};
 interface Appointment {
   id: number,
   parentId: number,
@@ -23,6 +15,7 @@ interface Appointment {
 const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: Appointment[], selectedDrId: number }) => {
   const userId = Number(localStorage.getItem("userId"))
   const [openModal, setOpenModal] = useState(false)
+  const [openModalInvalid, setOpenModalInvalid] = useState(false)
   const [appointmentData, setAppointmentData] = useState<any>({})
   async function addAppointment(data: any) {
     const requestOptions = {
@@ -81,6 +74,32 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
           </Transition.Child>
         </Transition>
       }
+      {openModalInvalid &&
+        <Transition appear show={openModalInvalid} as={Fragment}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className='fixed top-0 left-0 bg-gray-400 bg-opacity-70 flex justify-center items-center w-screen h-screen z-40'>
+              <div className='bg-neutral-100 min-w-[10rem] min-h-[10rem] flex flex-col justify-between rounded-xl p-4'>
+                <div className='flex justify-center text-xl font-bold'>
+                  Sorry, This appointment is already taken. Please choose another slot.
+                </div>
+                <div className='px-4 space-x-2 flex flex-row justify-evenly'>
+                  <button onClick={() => setOpenModalInvalid(!openModalInvalid)} className="max-w-fit px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-lime-100 hover:text-black hover:transition duration-150 ease-linear">
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Transition.Child>
+        </Transition>
+      }
       <div className='w-full h-full p-4'>
         <table className='w-full rounded-t-3xl rounded-t-3xl h-full p-2 bg-neutral-100'>
           <thead className='p-2'>
@@ -109,7 +128,7 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
                         }
                       }
                       className='border border-neutral-300 p-2 text-center text-md font-light hover:contrast-50 cursor-pointer'
-                      onClick={() => handleBookAppointment(selectedDrId, userId, day, hour, hour + 1, true)}
+                      onClick={appointment?.isTaken ? () => setOpenModalInvalid(true) : () => handleBookAppointment(selectedDrId, userId, day, hour, hour + 1, true)}
                     >
                       {appointment && appointment.isTaken ? 'Not Available' : 'Available'}
                     </td>

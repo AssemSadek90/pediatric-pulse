@@ -4,6 +4,16 @@ export function formatName(name: string){
     else
     return("")
 };
+export function formatFullName(name: string) {
+    if (name) {
+        const parts = name.split(" ");
+        const formattedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
+        const formatted = formattedParts.join(" ");
+        return formatted;
+    } else {
+        return "";
+    }
+}
 export function formatTime(time:string){
     if(time){
         if(Number(time) > 12)

@@ -212,9 +212,9 @@ const patientPortal = () => {
               ))}
             </BentoGrid>
           </section>
-          {/* <div className=''>
+          {/* <section className=''>
             <RatingCards />
-          </div> */}
+          </section> */}
         </div> :
         <div>Access Denied</div>}
     </>

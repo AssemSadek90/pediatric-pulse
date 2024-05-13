@@ -81,6 +81,7 @@ const login = () => {
     }
     catch (error) {
       console.error('Error loggin in:', error)
+      setLoading(false)
     }
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
