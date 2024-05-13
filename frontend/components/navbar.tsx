@@ -60,7 +60,7 @@ const Navbar = ({
         <HoveredLink onClick={() => handlePatientChange(patient.id, `${formatName(patient.firstName) + " " + formatName(patient.lastName)}`)} href="">
           {formatName(patient.firstName)} {formatName(patient.lastName)}
         </HoveredLink>
-        <button onClick={() => handlePatientDelete(patient.id)} className="px-2 rounded-full text-sm bg-gradient-to-br from-black to-neutral-600 text-white hover:shadow-xl transition duration-200">
+        <button disabled={loading ? true : false} onClick={() => handlePatientDelete(patient.id)} className="px-2 rounded-full text-sm bg-gradient-to-br from-black to-neutral-600 text-white hover:shadow-xl transition duration-200">
           {loading ? <CircularProgress size={"0.8rem"} color="warning" /> : <>X</>}
         </button>
       </div>)

@@ -24,7 +24,7 @@ const adminPanel = () => {
   return (
     <>
       {hasAccess ?
-        <div className="text-6xl flex justify-center">
+        <div className="">
           <NavbarLanding />
           <button onClick={() => handleToPatient()}>Go to Patient Portal</button>
 

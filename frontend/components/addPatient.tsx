@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react'
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Transition } from '@headlessui/react'
+import { Transition } from '@headlessui/react';
 import { cn } from "@/utils/cn";
 import { CircularProgress } from '@mui/material';
 

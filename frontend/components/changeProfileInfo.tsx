@@ -1,9 +1,11 @@
 import React, { useState, Fragment } from 'react'
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Transition } from '@headlessui/react'
+import { Transition } from '@headlessui/react';
 import { cn } from "@/utils/cn";
 import { CircularProgress } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import LogoutButton from './LogoutButton';
 interface User {
     userId: number,
     firstName: string,
@@ -40,6 +42,7 @@ const LabelInputContainer = ({
 };
 const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUser }: { openModalProfile: boolean, setOpenModalProfile: React.Dispatch<React.SetStateAction<boolean>>, user: User | undefined, setUser: React.Dispatch<React.SetStateAction<User | undefined>> }) => {
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
     const [formData, setFormData] = useState({
         userName: user?.userName,
         email: user?.email,
@@ -149,8 +152,11 @@ const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUse
                                 <BottomGradient />
                             </button>
 
-                            <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
                         </form>
+                        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+                        <div className='flex w-full justify-end'>
+                            <LogoutButton />
+                        </div>
                     </div>
                 </div>
             </Transition.Child>

@@ -200,7 +200,7 @@ const patientPortal = () => {
           />
           {openModal && <AddPatient openModal={openModal} setOpenModal={setOpenModal} />}
           {openModalProfile && <ChangeProfileInfo openModalProfile={openModalProfile} setOpenModalProfile={setOpenModalProfile} user={user} setUser={setUser} />}
-          <div className="h-lvh w-screen">
+          <section className="h-lvh w-screen">
             <BentoGrid className="w-[95%] mx-auto h-lvh md:auto-rows-[20rem]">
               {items.map((item, i) => (
                 <BentoGridItem
@@ -211,7 +211,7 @@ const patientPortal = () => {
                 />
               ))}
             </BentoGrid>
-          </div>
+          </section>
           {/* <div className=''>
             <RatingCards />
           </div> */}

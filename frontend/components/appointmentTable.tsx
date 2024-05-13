@@ -1,6 +1,8 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import { formatTime, formatTimeNum } from '@/utils/formatFuncs';
+import { Transition } from '@headlessui/react';
+
 interface Doctor {
   title: string;
   link: string;
@@ -51,21 +53,34 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
   return (
     <>
       {openModal &&
-        <div className='fixed top-0 left-0 bg-gray-400 bg-opacity-70 flex justify-center items-center w-screen h-screen z-40'>
-          <div className='bg-neutral-100 min-w-[10rem] min-h-[10rem] flex flex-col justify-between rounded-xl p-4'>
-            <div className='flex justify-center text-xl font-bold'>
-              Are you sure you want to book from {appointmentData.From} to {appointmentData.To}?
+        <Transition appear show={openModal} as={Fragment}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className='fixed top-0 left-0 bg-gray-400 bg-opacity-70 flex justify-center items-center w-screen h-screen z-40'>
+              <div className='bg-neutral-100 min-w-[10rem] min-h-[10rem] flex flex-col justify-between rounded-xl p-4'>
+                <div className='flex justify-center text-xl font-bold'>
+                  Are you sure you want to book from {appointmentData.From} to {appointmentData.To}?
+                </div>
+                <div className='px-4 space-x-2 flex flex-row justify-evenly'>
+                  <button onClick={() => setOpenModal(!openModal)} className="w-full px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-red-100 hover:text-black hover:transition duration-150 ease-linear">
+                    Cancel
+                  </button>
+                  <button onClick={() => handleConfirm(appointmentData)} className="w-full px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-lime-100 hover:text-black hover:transition duration-150 ease-linear">
+                    Confirm
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className='px-4 space-x-2 flex flex-row justify-evenly'>
-              <button onClick={() => setOpenModal(!openModal)} className="w-full px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-red-100 hover:text-black hover:transition duration-150 ease-linear">
-                Cancel
-              </button>
-              <button onClick={() => handleConfirm(appointmentData)} className="w-full px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-lime-100 hover:text-black hover:transition duration-150 ease-linear">
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>}
+          </Transition.Child>
+        </Transition>
+      }
       <div className='w-full h-full p-4'>
         <table className='w-full rounded-t-3xl rounded-t-3xl h-full p-2 bg-neutral-100'>
           <thead className='p-2'>
