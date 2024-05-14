@@ -23,7 +23,7 @@ interface DoctorObj {
     numberOfRating: number,
     price: number
 };
-const SideAppointments = () => {
+const SideAppointmentsDrPortal = () => {
     const [myAppointments, setMyAppointments] = useState([] as Appointment[])
     const [doctors, setDoctors] = useState({} as Record<number, DoctorObj>);
     const [loading, setLoading] = useState(false)
@@ -33,7 +33,7 @@ const SideAppointments = () => {
     };
     async function fetchMyAppointmentList() {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/appointment/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+            `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/appointments/table/${localStorage.getItem("userId")}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
             { headers }
         );
         if (!response.ok) {
@@ -45,7 +45,7 @@ const SideAppointments = () => {
     async function fetchDoctor(doctorId: number) {
         if (!doctors[doctorId]) {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/${doctorId}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+                `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/${localStorage.getItem("userId")}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
                 { headers }
             );
             const data = await response.json();
@@ -79,6 +79,9 @@ const SideAppointments = () => {
     ) : (
         myAppointments.map((appointment) => {
             if (appointment.doctorId !== null) {
+                console.log(appointment.doctorId);
+                console.log(localStorage.getItem("userId"));
+
                 fetchDoctor(Number(localStorage.getItem("userId")));
             }
             const doctor = doctors[appointment.doctorId];
@@ -113,4 +116,4 @@ const SideAppointments = () => {
     )
 }
 
-export default SideAppointments
+export default SideAppointmentsDrPortal
