@@ -181,7 +181,7 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
             "thumbnail": user.profilePicture,
             "id": user.id,
             "numberOfReviews": numberOfReviews,
-            "avarageRating": rating,
+            "avarageRating": round(rating, 2),
             }
         doctors_data.append(user_data)
 
