@@ -16,8 +16,13 @@ router = APIRouter(
 )
 
 
-@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request add new patient to this user.", response_model=schemas.PatientResponse)
-async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.get_db)):
+from sqlalchemy.exc import IntegrityError
+
+@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request to add a new patient.", response_model=schemas.PatientResponse)
+async def CreateUser(user: schemas.addPatient, token:str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(user.parentId, token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
     # Check if the parent user exists
     parent_user = db.query(models.User).filter(models.User.userId == user.parentId).first()
@@ -43,8 +48,21 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     # Refresh the new_patient instance to ensure it has the latest data from the database
     db.refresh(new_patient)
 
+    # Create a new medical record for the patient
+    new_medical_record = models.MedicalRecord(
+        patientId = new_patient.id,
+    )
+    try:
+        db.add(new_medical_record)
+        db.commit()
+        db.refresh(new_medical_record)
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error creating medical record: {e}")
+
     # Return the response with the newly created patient
     return new_patient
+
 
 
 @router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header", response_model=list[schemas.PatientResponse])
@@ -112,7 +130,7 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
     pic = parent.profilePicture if parent.profilePicture is not None else "None"
-    
+
     newPatient = {
         "firstName": patient.firstName,
         "lastName": patient.lastName,
