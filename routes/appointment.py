@@ -82,6 +82,8 @@ async def delete_appointment(appointmentId: int, parentId:int, token: str, db: s
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
     db.delete(appointment)
     db.commit()
-    db.delete(mra)
-    db.commit()
+    appointment = db.query(models.Appointment).filter(models.Appointment.patientId == appointment.patientId).filter(models.Appointment.doctorId == appointment.doctorId).first()
+    if not appointment:
+        db.delete(mra)
+        db.commit()
     return {"message": "Patient deleted successfully"}
