@@ -53,6 +53,7 @@ class Appointment(base):
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
     appointmentDate = Column(String, nullable=False)
     From = Column(String, nullable=False)
     To = Column(String, nullable=False)
