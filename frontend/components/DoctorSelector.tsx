@@ -15,6 +15,7 @@ interface Appointment {
     id: number,
     parentId: number,
     doctorId: number,
+    patientId: number,
     appointmentDate: string,
     From: string,
     To: string,
