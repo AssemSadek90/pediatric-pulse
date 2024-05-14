@@ -39,6 +39,15 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     db.add(new_appointment)
     db.commit()
     db.refresh(new_appointment)
+
+    mra = models.MRAccess(
+        patientId = appointment.patientId,
+        doctorId = appointment.doctorId
+    )
+    db.add(mra)
+    db.commit()
+    db.refresh(mra)
+    
     return{"message": "Appointment added successfully"}
 
 @router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
