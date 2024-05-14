@@ -39,14 +39,14 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     db.add(new_appointment)
     db.commit()
     db.refresh(new_appointment)
-
-    mra = models.MRAccess(
-        patientId = appointment.patientId,
-        doctorId = appointment.doctorId
-    )
-    db.add(mra)
-    db.commit()
-    db.refresh(mra)
+    if not db.query(models.MRAccess).filter(models.MRAccess.patientId == appointment.patientId).filter(models.MRAccess.doctorId == appointment.doctorId).first():
+        mra = models.MRAccess(
+            patientId = appointment.patientId,
+            doctorId = appointment.doctorId
+        )
+        db.add(mra)
+        db.commit()
+        db.refresh(mra)
     
     return{"message": "Appointment added successfully"}
 
@@ -77,8 +77,11 @@ async def delete_appointment(appointmentId: int, parentId:int, token: str, db: s
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
     appointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).filter(models.Appointment.parentId == parentId).first()
+    mra = db.query(models.MRAccess).filter(models.MRAccess.patientId == appointment.patientId).filter(models.MRAccess.doctorId == appointment.doctorId).first()
     if not appointment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
     db.delete(appointment)
+    db.commit()
+    db.delete(mra)
     db.commit()
     return {"message": "Patient deleted successfully"}
