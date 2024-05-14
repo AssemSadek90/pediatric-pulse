@@ -62,7 +62,7 @@ async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(
             "stars": i
         }
         reviewsData.append(reviewData)
-        i += 1
+        i -= 1
     return reviewsData
 
 
