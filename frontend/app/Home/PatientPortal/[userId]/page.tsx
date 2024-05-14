@@ -7,12 +7,13 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import MedicalRecord from "@/components/medicalRecord"
 import DoctorSelector from '@/components/DoctorSelector';
-import AppointmentTable from "@/components/appointmentTable";
+import DoctorAppointmentTable from "@/components/appointmentTable";
 import ChangeProfileInfo from "@/components/changeProfileInfo";
 import RatingCards from "@/components/ratingCards"
 import { CircularProgress } from '@mui/material';
 import SideAppointments from '@/components/sideAppointments';
 import { formatName } from '@/utils/formatFuncs';
+import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
 
 interface Patient {
   id: number;
@@ -160,7 +161,7 @@ const patientPortal = () => {
             setSelected={setSelectedDr} appointments={appointments}
             setAppointments={setAppointments} className="pl-4"
           />
-          <AppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
+          <DoctorAppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
         </div>
       </div>
     </>
