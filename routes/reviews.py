@@ -76,7 +76,7 @@ async def getAvgRating(doctorId: int, token: str, db: session = Depends(DataBase
     totalRating = 0.0
     for review in reviews:
         totalRating += review.rating
-    avgRating = float(totalRating/len(reviews))
+    avgRating = round(float(totalRating/len(reviews)),2)
     newData = {
         "avgRating": avgRating,
         "count": len(reviews),
