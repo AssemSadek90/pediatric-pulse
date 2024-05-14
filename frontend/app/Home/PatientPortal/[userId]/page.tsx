@@ -12,6 +12,7 @@ import ChangeProfileInfo from "@/components/changeProfileInfo";
 import RatingCards from "@/components/ratingCards"
 import { CircularProgress } from '@mui/material';
 import SideAppointments from '@/components/sideAppointments';
+import { formatName } from '@/utils/formatFuncs';
 
 interface Patient {
   id: number;
@@ -48,6 +49,7 @@ interface Appointment {
   id: number,
   parentId: number,
   doctorId: number,
+  patientId: number,
   appointmentDate: string,
   From: string,
   To: string,
@@ -158,7 +160,7 @@ const patientPortal = () => {
             setSelected={setSelectedDr} appointments={appointments}
             setAppointments={setAppointments} className="pl-4"
           />
-          <AppointmentTable selectedDrId={selectedDr.id} appointments={appointments} />
+          <AppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
         </div>
       </div>
     </>

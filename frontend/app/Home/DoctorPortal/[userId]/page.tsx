@@ -1,9 +1,20 @@
 "use client"
+import MedicalRecord from '@/components/medicalRecord';
 import NavbarLanding from '@/components/navbarLanding';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-
+interface Patient {
+  id: number;
+  age: number;
+  firstName: string;
+  lastName: string;
+  parentFirstName: string;
+  parentLastName: string;
+  parentPhoneNumber: string;
+  gender: string;
+  parentId: number;
+};
 const doctorPortal = () => {
   const router = useRouter();
   const [hasAccess, setHasAccess] = useState(false)
@@ -21,7 +32,7 @@ const doctorPortal = () => {
         Patient Medical Record
       </div>
       <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-
+        <MedicalRecord currentPatient={{} as Patient} />
       </div>
     </>
   );

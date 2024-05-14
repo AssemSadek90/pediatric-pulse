@@ -7,12 +7,13 @@ interface Appointment {
   id: number,
   parentId: number,
   doctorId: number,
+  patientId: number,
   appointmentDate: string,
   From: string,
   To: string,
   isTaken: true
 }
-const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: Appointment[], selectedDrId: number }) => {
+const DoctorAppointmentTable = ({ appointments, selectedDrId, currentPatientId }: { appointments: Appointment[], selectedDrId: number, currentPatientId: number | undefined }) => {
   const userId = Number(localStorage.getItem("userId"))
   const [openModal, setOpenModal] = useState(false)
   const [openModalInvalid, setOpenModalInvalid] = useState(false)
@@ -34,10 +35,10 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
   }
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
   const hours = Array.from({ length: 9 }, (_, index) => index + 9);
-  const handleBookAppointment = (doctorId: number, patientId: number, appointmentDate: string, From: number | undefined, To: number | undefined, isTaken: true) => {
+  const handleBookAppointment = (parentId: number, doctorId: number, patientId: number | undefined, appointmentDate: string, From: number | undefined, To: number | undefined, isTaken: true) => {
     // add confirmation of booking
     setOpenModal(true)
-    setAppointmentData({ doctorId: doctorId, patientId: patientId, appointmentDate: appointmentDate, From: String(From), To: String(To), isTaken: isTaken })
+    setAppointmentData({ parentId: parentId, doctorId: doctorId, patientId: patientId, appointmentDate: appointmentDate, From: String(From), To: String(To), isTaken: isTaken })
   }
   const handleConfirm = (data: any) => {
     addAppointment(data);
@@ -59,7 +60,7 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
             <div className='fixed top-0 left-0 bg-gray-400 bg-opacity-70 flex justify-center items-center w-screen h-screen z-40'>
               <div className='bg-neutral-100 min-w-[10rem] min-h-[10rem] flex flex-col justify-between rounded-xl p-4'>
                 <div className='flex justify-center text-xl font-bold'>
-                  Are you sure you want to book from {appointmentData.From} to {appointmentData.To}?
+                  Are you sure you want to book from {formatTime(appointmentData.From)} to {formatTime(appointmentData.To)}?
                 </div>
                 <div className='px-4 space-x-2 flex flex-row justify-evenly'>
                   <button onClick={() => setOpenModal(!openModal)} className="w-full px-4 py-2 opacity-80 text-black rounded-md h-full hover:bg-red-100 hover:text-black hover:transition duration-150 ease-linear">
@@ -128,7 +129,7 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId }: { appointments: 
                         }
                       }
                       className='border border-neutral-300 p-2 text-center text-md font-light hover:contrast-50 cursor-pointer'
-                      onClick={appointment?.isTaken ? () => setOpenModalInvalid(true) : () => handleBookAppointment(selectedDrId, userId, day, hour, hour + 1, true)}
+                      onClick={appointment?.isTaken ? () => setOpenModalInvalid(true) : () => handleBookAppointment(userId, selectedDrId, currentPatientId, day, hour, hour + 1, true)}
                     >
                       {appointment && appointment.isTaken ? 'Not Available' : 'Available'}
                     </td>
