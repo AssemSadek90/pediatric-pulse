@@ -112,12 +112,14 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
     pic = parent.profilePicture if parent.profilePicture is not None else "None"
+    
     newPatient = {
         "firstName": patient.firstName,
         "lastName": patient.lastName,
         "parentFirstName": parent.firstName,
         "parentLastName": parent.lastName,
         "parentPic": pic,
+        "age": patient.age,
         
     }
     return newPatient
