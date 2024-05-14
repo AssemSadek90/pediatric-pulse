@@ -28,8 +28,9 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     if Appointment:
         return {"message": " Appointment already exists"}
     new_appointment = models.Appointment(
-        parentId = appointment.patientId,
+        parentId = appointment.parentId,
         doctorId = appointment.doctorId,
+        patientId = appointment.patientId,
         appointmentDate = appointment.appointmentDate,
         From = appointment.From,
         To = appointment.To,
