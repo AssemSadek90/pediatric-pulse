@@ -102,3 +102,22 @@ async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, paren
     patient= db.query(models.Patient).filter(models.Patient.id == patientId).first()
     
     return patient
+
+
+@router.get('/patient/{patientId}/{doctorId}', description="This route returns the patient's info", response_model = schemas.returnPatient)
+async def get_patient_info(patientId: int, doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token = oauth2.verify_access_token(doctorId, token)
+    if not token:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+    pic = parent.profilePicture if parent.profilePicture is not None else "None"
+    newPatient = {
+        "firstName": patient.firstName,
+        "lastName": patient.lastName,
+        "parentFirstName": parent.firstName,
+        "parentLastName": parent.lastName,
+        "parentPic": pic,
+        
+    }
+    return newPatient
