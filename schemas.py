@@ -148,6 +148,7 @@ class addPatient(BaseModel):
 
 
 class addApointment(BaseModel):
+    parentId: int
     doctorId: int
     patientId: int
     appointmentDate: str
@@ -201,5 +202,4 @@ class returnPatient(BaseModel):
     lastName: str
     parentFirstName: str
     parentLastName: str
-    gender: str
     parentPic: str

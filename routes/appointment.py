@@ -18,7 +18,7 @@ router = APIRouter(
 
 @router.post("/add/appointment", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
 async def add_appointment(appointment: schemas.addApointment, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(appointment.patientId, token)
+    token_data = oauth2.verify_access_token(appointment.parentId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
@@ -28,8 +28,9 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     if Appointment:
         return {"message": " Appointment already exists"}
     new_appointment = models.Appointment(
-        parentId = appointment.patientId,
+        parentId = appointment.parentId,
         doctorId = appointment.doctorId,
+        patientId = appointment.patientId,
         appointmentDate = appointment.appointmentDate,
         From = appointment.From,
         To = appointment.To,
