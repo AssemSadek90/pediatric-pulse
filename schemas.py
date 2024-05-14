@@ -203,3 +203,4 @@ class returnPatient(BaseModel):
     parentFirstName: str
     parentLastName: str
     parentPic: str
+    age: int

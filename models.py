@@ -84,7 +84,7 @@ class reviews(base):
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     review = Column(String, nullable=False)
-    rating = Column(FLOAT, nullable=False)
+    rating = Column(Integer, nullable=False)
 
 # class history(base):
 #     __tablename__ = 'history'
