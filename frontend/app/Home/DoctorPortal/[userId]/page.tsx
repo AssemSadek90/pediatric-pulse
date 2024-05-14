@@ -3,6 +3,8 @@ import NavbarLanding from '@/components/navbarLanding';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
+
 
 const doctorPortal = () => {
   const router = useRouter();
@@ -39,7 +41,7 @@ const doctorPortal = () => {
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
       <div className='w-full h-full flex flex-col overflow-y-scroll'>
-        {/* Add the appointments here, take inspiration from "SideAppointments.tsx" Component */}
+      <SideAppointmentsDrPortal/>
       </div>
     </>
   );
