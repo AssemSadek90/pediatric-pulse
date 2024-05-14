@@ -11,6 +11,7 @@ class User(base):
     email = Column(String, nullable=False)
     userName = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    googleId = Column(String)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
     PhoneNumber = Column(String)
     age = Column(Integer)  # Change data type to integer for age

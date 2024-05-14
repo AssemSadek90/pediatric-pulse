@@ -195,3 +195,11 @@ class reviewsResponse(BaseModel):
     docotrName: str
     review: str 
     rating: float
+
+class returnPatient(BaseModel):
+    firstName: str
+    lastName: str
+    parentFirstName: str
+    parentLastName: str
+    gender: str
+    parentPic: str
