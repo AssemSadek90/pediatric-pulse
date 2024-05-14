@@ -67,18 +67,18 @@ async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(
 
 
 
-@router.get("/get/doctor/avgRating/{doctorId}", description="This route returns the average rating of a doctor", response_model=schemas.avgRating)
-async def getAvgRating(doctorId: int, token:str, db: session = Depends(DataBase.get_db)):
+@router.get('/get/doctor/avg/rating/{doctorId}', status_code=status.HTTP_200_OK, description="This route returns the average rating of a doctor", response_model = schemas.avgRating)
+async def getAvgRating(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
-    totalRating = 0
-    reviwes = db.query(models.reviews).filter(models.reviews.doctorId == doctorId).all()
-    for review in reviwes:
+    reviews = db.query(models.reviews).filter(models.reviews.doctorId == doctorId).all()
+    totalRating = 0.0
+    for review in reviews:
         totalRating += review.rating
-    avgRating = totalRating/len(reviwes)
-    returnedData = {
-        "avgRating": float(avgRating),
-        "count": len(reviwes),
+    avgRating = float(totalRating/len(reviews))
+    newData = {
+        "avgRating": avgRating,
+        "count": len(reviews),
     }
-    return returnedData
+    return newData
