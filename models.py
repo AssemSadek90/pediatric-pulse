@@ -86,6 +86,13 @@ class reviews(base):
     review = Column(String, nullable=False)
     rating = Column(Integer, nullable=False)
 
+class MRAccess(base):
+    __tablename__ ='mr_access'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
+    doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    access = Column(Boolean, default=True)
+
 # class history(base):
 #     __tablename__ = 'history'
 #     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
