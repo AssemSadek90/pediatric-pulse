@@ -209,3 +209,7 @@ class returnPatient(BaseModel):
 class barChart(BaseModel):
     number: int
     stars: int
+
+class avgRating(BaseModel):
+    avgRating: float
+    count: int
