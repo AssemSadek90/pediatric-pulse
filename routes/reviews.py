@@ -47,3 +47,20 @@ async def get_review(doctorId: int, db: session = Depends(DataBase.get_db)):
             rating = review.rating
         ))
     return reviews_response
+
+@router.get("/get/reviews/barchart/{doctorId}", status_code=status.HTTP_200_OK, description="This is a get request to get all reviews of a patient", response_model=List[schemas.barChart])
+async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token = oauth2.verify_access_token(doctorId, token)
+    if not token:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    reviewsData = []
+    i = 1
+    while i < 6:
+        reviews = db.query(models.reviews).filter(models.reviews.doctorId == doctorId, models.reviews.rating == i).all()
+        reviewData = {
+            "number": len(reviews),
+            "stars": i
+        }
+        reviewsData.append(reviewData)
+        i += 1
+    return reviewsData

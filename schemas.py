@@ -188,14 +188,14 @@ class reviews(BaseModel):
     parentId: int
     doctorId: int
     review: str
-    rating: float
+    rating: int
 
 
 class reviewsResponse(BaseModel):
     reviewerName: str
     docotrName: str
     review: str 
-    rating: float
+    rating: int
 
 class returnPatient(BaseModel):
     firstName: str
@@ -204,3 +204,8 @@ class returnPatient(BaseModel):
     parentLastName: str
     parentPic: str
     age: int
+
+
+class barChart(BaseModel):
+    number: int
+    stars: int
