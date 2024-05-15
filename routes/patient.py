@@ -65,6 +65,7 @@ async def CreateUser(user: schemas.addPatient, token:str, db: session = Depends(
 
 
 
+
 @router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header", response_model=list[schemas.PatientResponse])
 async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
@@ -76,6 +77,8 @@ async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase
 
     return patients
 
+
+
 @router.get("/get/patient/{patientId}/{parentId}", description="This route returns patient data via patientId and takes the token for parent in the header", response_model=schemas.PatientResponse)
 async def get_patient(patientId: int, parentId:int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
@@ -86,62 +89,10 @@ async def get_patient(patientId: int, parentId:int,  token: str, db: session = D
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     return patient
 
-@router.delete("/delete/patient/{patientId}/{userId}", description="This route deletes a patient via patientId and takes the token for parent in the header")
-async def delete_patient(patientId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(userId, token)
-    if not token_data:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-    if token_data == False:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-    if not patient:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
-    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
-    db.delete(patient)
-    db.commit()
-    return {"message": "Patient deleted successfully"}
 
 
-@router.put("/update/patient/{patientId}/{parentId}", description="This route updates the patient's info", response_model=schemas.Patient)
-async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(parentId ,token)
-    if not token_data:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-
-    user_query = db.query(models.Patient).filter(models.Patient.id == patientId)
-    user_query.update({ 
-        "age": patient.age,
-        "firstName": patient.firstName, 
-        "lastName": patient.lastName,
-        "gender": patient.gender,
-        })
-    
-    db.commit()
-
-    patient= db.query(models.Patient).filter(models.Patient.id == patientId).first()
-    
-    return patient
 
 
-@router.get('/patient/{patientId}/{doctorId}', description="This route returns the patient's info", response_model = schemas.returnPatient)
-async def get_patient_info(patientId: int, doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token = oauth2.verify_access_token(doctorId, token)
-    if not token:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
-    parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
-    pic = parent.profilePicture if parent.profilePicture is not None else "None"
-
-    newPatient = {
-        "firstName": patient.firstName,
-        "lastName": patient.lastName,
-        "parentFirstName": parent.firstName,
-        "parentLastName": parent.lastName,
-        "parentPic": pic,
-        "age": patient.age,
-        "id": patientId
-        
-    }
-    return newPatient
 
 @router.get('/patientList/{doctorId}', description="This route returns all the patients of a doctor", response_model = list[schemas.patientList])
 async def listPatients(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
@@ -165,3 +116,64 @@ async def listPatients(doctorId: int, token: str, db: session = Depends(DataBase
             }
             patients.append(new_patient)
     return patients
+
+
+
+@router.get('/patient/{patientId}/{doctorId}', description="This route returns the patient's info", response_model = schemas.returnPatient)
+async def get_patient_info(patientId: int, doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token = oauth2.verify_access_token(doctorId, token)
+    if not token:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+    pic = parent.profilePicture if parent.profilePicture is not None else "None"
+
+    newPatient = {
+        "firstName": patient.firstName,
+        "lastName": patient.lastName,
+        "parentFirstName": parent.firstName,
+        "parentLastName": parent.lastName,
+        "parentPic": pic,
+        "age": patient.age,
+        "id": patientId
+        
+    }
+    return newPatient
+
+
+
+@router.put("/update/patient/{patientId}/{parentId}", description="This route updates the patient's info", response_model=schemas.Patient)
+async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(parentId ,token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+
+    user_query = db.query(models.Patient).filter(models.Patient.id == patientId)
+    user_query.update({ 
+        "age": patient.age,
+        "firstName": patient.firstName, 
+        "lastName": patient.lastName,
+        "gender": patient.gender,
+        })
+    
+    db.commit()
+
+    patient= db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    
+    return patient
+
+
+
+@router.delete("/delete/patient/{patientId}/{userId}", description="This route deletes a patient via patientId and takes the token for parent in the header")
+async def delete_patient(patientId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if not patient:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    db.delete(patient)
+    db.commit()
+    return {"message": "Patient deleted successfully"}
