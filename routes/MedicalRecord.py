@@ -213,3 +213,15 @@ async def update_medicalRecord(note: schemas.NoteUpdate, userId: int, medicalRec
     })
     db.commit()
     return{"message": "Medical Record (note) updated successfully"}
+
+@router.delete('/delete/medicalRecord/{userId}/{medicalRecordId}', description='this delete request deletes the medical record for a certain patient')
+async def deleteMedicalRecord(userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId).first()
+    if not medicalRecord:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Medical Record not found.")
+    db.delete(medicalRecord)
+    db.commit()
+    return{"message": "Medical Record deleted successfully"}
