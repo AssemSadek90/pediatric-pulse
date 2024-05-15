@@ -213,3 +213,12 @@ class barChart(BaseModel):
 class avgRating(BaseModel):
     avgRating: float
     count: int
+
+
+class patientList(BaseModel):
+    parentPic: str
+    patientFirstName: str
+    patientLastName: str
+    parentFirstName: str
+    parentLastName: str
+    patientId: int
