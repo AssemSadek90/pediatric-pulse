@@ -180,13 +180,17 @@ async def delete_patient(patientId: int, userId: int, token: str, db: session = 
     
     medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == patientId).first()
 
-    mra = db.query(models.MRAccess).filter(models.MRAccess.patientId == patientId).all()
-
-    appointment = db.query(models.Appointment).filter(models.Appointment.patientId == patientId).all()
-
+    mras = db.query(models.MRAccess).filter(models.MRAccess.patientId == patientId).all()
+    for mra in mras:
+        db.delete(mra)
+        db.commit()
+    appointments = db.query(models.Appointment).filter(models.Appointment.patientId == patientId).all()
+    for appointment in appointments:
+        db.delete(appointment)
+        db.commit()
+    
     db.delete(medicalRecord)
-    db.delete(mra)
-    db.delete(appointment)
+    db.commit()
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
