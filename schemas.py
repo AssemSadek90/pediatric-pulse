@@ -250,3 +250,35 @@ class updateAppointment(BaseModel):
     From: Optional[str] = None
     To: Optional[str] = None
     isTaken: Optional[bool] = None
+
+
+class NoteUpdate(BaseModel):
+    note: str
+
+class treatmentUpdate(BaseModel):
+    treatment: str
+
+class healthConditionUpdate(BaseModel):
+    healthCondition: str
+
+
+class vaccinUpdate(BaseModel):
+    vaccin: str
+
+class allergiesUpdate(BaseModel):
+    allergies: str
+
+class pastConditionsUpdate(BaseModel):
+    pastConditions: str
+
+class chronicConditionsUpdate(BaseModel):
+    chronicConditions: str
+
+class surgicalHistoryUpdate(BaseModel):
+    surgicalHistory: str
+
+class medicationsUpdate(BaseModel):
+    medications: str
+
+class radiologyReportUpdate(BaseModel):
+    radiologyReport: str

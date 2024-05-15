@@ -72,3 +72,144 @@ async def updateMedicalRecord(record : schemas.updateMedicalRecord, patientId: i
     db.commit()
 
     return{"message": "Medical Record updated successfully"}
+
+
+@router.put('/update/medicalRecord/radiologyReport/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(radiologyReport: schemas.radiologyReportUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "radiologyReport": radiologyReport.radiologyReport
+    })
+    db.commit()
+    return{"message": "Medical Record (radiologyReport) updated successfully"}
+
+
+
+@router.put('/update/medicalRecord/medications/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(medications: schemas.medicationsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "medications": medications.medications
+    })
+    db.commit()
+    return{"message": "Medical Record (medications) updated successfully"}
+
+
+
+
+@router.put('/update/medicalRecord/surgicalHistory/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(surgicalHistory: schemas.surgicalHistoryUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "surgicalHistory": surgicalHistory.surgicalHistory
+    })
+    db.commit()
+    return{"message": "Medical Record (surgicalHistory) updated successfully"}
+
+
+
+@router.put('/update/medicalRecord/chronicConditions/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(chronicConditions: schemas.chronicConditionsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "chronicConditions": chronicConditions.chronicConditions
+    })
+    db.commit()
+    return{"message": "Medical Record (chronicConditions) updated successfully"}
+
+
+
+@router.put('/update/medicalRecord/pastConditions/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(pastConditions: schemas.pastConditionsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "pastConditions": pastConditions.pastConditions
+    })
+    db.commit()
+    return{"message": "Medical Record (pastConditions) updated successfully"}
+
+
+
+@router.put('/update/medicalRecord/allergies/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(allergies: schemas.allergiesUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "allergies": allergies.allergies
+    })
+    db.commit()
+    return{"message": "Medical Record (allergies) updated successfully"}
+
+
+
+@router.put('/update/medicalRecord/vaccin/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(vaccin: schemas.vaccinUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "vaccin": vaccin.vaccin
+    })
+    db.commit()
+    return{"message": "Medical Record (vaccin) updated successfully"}
+
+
+
+
+@router.put('/update/medicalRecord/healthCondition/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(healthCondition: schemas.healthConditionUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "healthCondition": healthCondition.healthCondition
+    })
+    db.commit()
+    return{"message": "Medical Record (healthCondition) updated successfully"}
+
+
+
+
+@router.put('/update/medicalRecord/treatment/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(treatment: schemas.treatmentUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "treatment": treatment.treatment
+    })
+    db.commit()
+    return{"message": "Medical Record (treatment) updated successfully"}
+
+
+@router.put('/update/medicalRecord/note/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
+async def update_medicalRecord(note: schemas.NoteUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == medicalRecordId)
+    medicalRecord.update({
+        "notes": note.notes
+    })
+    db.commit()
+    return{"message": "Medical Record (note) updated successfully"}
