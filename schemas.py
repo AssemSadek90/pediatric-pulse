@@ -224,13 +224,13 @@ class patientList(BaseModel):
     patientId: int
 
 class updateMedicalRecord(BaseModel):
-    notes: Optional[str] = "None"
-    treatment: Optional[str] = "None"
-    healthCondition: Optional[str] = "None"
-    vaccin: Optional[str] = "None"
-    allergies: Optional[str] = "None"
-    pastConditions: Optional[str] = "None"
-    chronicConditions: Optional[str] = "None"
-    surgicalHistory: Optional[str] = "None"
-    medications: Optional[str] = "None"
-    radiologyReport: Optional[str] = "None"
+    notes: Optional[str]
+    treatment: Optional[str]
+    healthCondition: Optional[str]
+    vaccin: Optional[str]
+    allergies: Optional[str]
+    pastConditions: Optional[str]
+    chronicConditions: Optional[str]
+    surgicalHistory: Optional[str]
+    medications: Optional[str]
+    radiologyReport: Optional[str]
