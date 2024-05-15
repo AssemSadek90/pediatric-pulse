@@ -222,3 +222,15 @@ class patientList(BaseModel):
     parentFirstName: str
     parentLastName: str
     patientId: int
+
+class updateMedicalRecord(BaseModel):
+    notes: Optional[str] = "None"
+    treatment: Optional[str] = "None"
+    healthCondition: Optional[str] = "None"
+    vaccin: Optional[str] = "None"
+    allergies: Optional[str] = "None"
+    pastConditions: Optional[str] = "None"
+    chronicConditions: Optional[str] = "None"
+    surgicalHistory: Optional[str] = "None"
+    medications: Optional[str] = "None"
+    radiologyReport: Optional[str] = "None"
