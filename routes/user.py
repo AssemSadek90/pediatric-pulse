@@ -175,6 +175,9 @@ async def delete_user(userId: int, adminId: int, token: str, db: session = Depen
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
     user = db.query(models.User).filter(models.User.userId == userId).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
