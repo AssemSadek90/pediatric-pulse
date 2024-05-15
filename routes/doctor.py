@@ -187,4 +187,19 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
 
     return doctors_data
 
+
+@router.delete("/delete/doctor/{doctorId}/{adminId}", description="This route deletes the doctor")
+async def delete_doctor(doctorId: int, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    doctor = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
+    if not doctor:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Doctor not found.")
+    db.delete(doctor)
+    db.commit()
+    return{"message": "Doctor deleted successfully"}
     
