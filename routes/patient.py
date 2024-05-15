@@ -141,6 +141,19 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
     return newPatient
 
 
+@router.get('/get/all/patients/{adminId}', description="This route returns all the patients", response_model = list[schemas.Patient])
+async def getAllPatients(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != "admin":
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    
+    patients = db.query(models.Patient).all()
+    return patients
+
+
 
 @router.put("/update/patient/{patientId}/{parentId}", description="This route updates the patient's info", response_model=schemas.Patient)
 async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
