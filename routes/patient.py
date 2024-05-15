@@ -138,6 +138,7 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
         "parentLastName": parent.lastName,
         "parentPic": pic,
         "age": patient.age,
+        "id": patientId
         
     }
     return newPatient
