@@ -171,9 +171,13 @@ async def delete_patient(patientId: int, userId: int, token: str, db: session = 
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
+    
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    
     if not patient:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
-    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    
+
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
