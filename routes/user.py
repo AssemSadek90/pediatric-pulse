@@ -128,14 +128,14 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
     return newUser
 
 
-@router.post("/add/user/{userId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
-async def addUser(user: schemas.addUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(userId, token)
+@router.post("/add/user/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
+async def addUser(user: schemas.addUser, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
-    admin = db.query(models.User).filter(models.User.userId == userId).first()
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
     if admin.role != 'admin':
         raise HTTPException( status_code=401, detail= "unauthorized")
     existing_user = db.query(models.User).filter(
@@ -168,3 +168,5 @@ async def addUser(user: schemas.addUser, userId: int, token: str, db: session = 
     
     # Return the response with the access token, role, and userId
     return {"accessToken": access_token, "role": new_user.role, "userId": new_user.userId}
+
+

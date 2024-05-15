@@ -75,6 +75,7 @@ class userSginup(BaseModel):
     lastName: str
     phone: str
 
+
 class addUser(BaseModel):
     userName: str
     email: str

@@ -17,14 +17,14 @@ router = APIRouter(
 
 import random
 
-@router.post("/add/doctor/{userId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
-async def CreateUser(user: schemas.addDoctor,userId: int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(userId, token)
+@router.post("/add/doctor/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
+async def CreateUser(user: schemas.addDoctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
-    admin = db.query(models.User).filter(models.User.userId == userId).first()
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
     if admin.role != 'admin':
         raise HTTPException( status_code=401, detail= "unauthorized")
     existing_user = db.query(models.Doctor).filter(
