@@ -138,7 +138,7 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
 
     return doctors_data
 
-@router.get('/get/doctors/{adminId}', description="This route returns all the doctors", response_model=list[schemas.Doctor])
+@router.get('/get/all/doctors/{adminId}', description="This route returns all the doctors", response_model=list[schemas.Doctor])
 async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
