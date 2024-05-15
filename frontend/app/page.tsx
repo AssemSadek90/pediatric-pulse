@@ -13,6 +13,7 @@ interface Doctor {
   thumbnail: string;
   numberOfReviews: number;
   avarageRating: number;
+  id: number;
 }
 
 export default function Home() {
@@ -44,10 +45,10 @@ export default function Home() {
   return (
     <>
       <NavbarLanding />
-      {doctors[0] ? <main className="w-screen h-dvh">
+      {doctors[0] ? <main className="w-screen h-lvh">
         <div className="mx-auto h-screen">
           <HeroParallax products={doctors} />
-          <div className="h-[40rem] relative w-screen bg-gray-100 flex flex-col items-center overflow-hidden">
+          <div className="h-[40rem] relative w-screen bg-gray-100 flex flex-col justify-center items-center overflow-hidden">
             <div className="w-screen absolute inset-0 h-screen">
               <SparklesCore
                 id="tsparticlesfullpage"
@@ -55,7 +56,7 @@ export default function Home() {
                 minSize={0.6}
                 maxSize={1.4}
                 particleDensity={20}
-                className="w-full h-full"
+                className="w-full"
                 particleColor="#fb923c"
               />
             </div>

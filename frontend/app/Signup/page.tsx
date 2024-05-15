@@ -32,10 +32,10 @@ const signup = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    userName:"",
-    email:"",
-    phone:"",
-    password:""
+    userName: "",
+    email: "",
+    phone: "",
+    password: ""
   })
   const [loading, setLoading] = useState(false)
 
@@ -46,12 +46,12 @@ const signup = () => {
     const requestOptions = {
       method: "POST",
       headers: {
-        "Content-type":"application/json"
+        "Content-type": "application/json"
       },
       body: JSON.stringify(formData),
     };
-    try{
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/signup`,requestOptions);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/signup`, requestOptions);
       const data = await response.json();
       // database connection
       localStorage.setItem("accessToken", data.accessToken)
@@ -60,15 +60,15 @@ const signup = () => {
       // // mockserver connection
       // localStorage.setItem("accessToken", formData.userName)
       // localStorage.setItem("userId", "1")
-      if (response.status === 201 || response.status === 200){
+      if (response.status === 201 || response.status === 200) {
         setLoading(false)
-        router.push('/Home/PatientPortal')
+        router.push(`/Home/DoctorPortal/${localStorage.getItem('userId')}`)
       }
-      else{
+      else {
         setLoading(false)
       }
     }
-    catch(error){
+    catch (error) {
       console.error('Error signing up:', error)
     }
   }
@@ -87,7 +87,7 @@ const signup = () => {
         <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
           Signup if you are a new user
         </p>
- 
+
         <form className="my-8" onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
@@ -115,29 +115,29 @@ const signup = () => {
             <Label htmlFor="password">Password</Label>
             <Input id="password" name="password" value={formData.password} onChange={handleChange} required placeholder="" type="password" />
           </LabelInputContainer>
-  
+
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
             type="submit"
-            disabled = {loading ? true : false}
+            disabled={loading ? true : false}
           >
-            {loading ? <CircularProgress color = "warning" size={"1.3rem"} /> : <p>Sign up &rarr;</p>} 
+            {loading ? <CircularProgress color="warning" size={"1.3rem"} /> : <p>Sign up &rarr;</p>}
             <BottomGradient />
           </button>
-  
+
           <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-  
+
           <div className="flex flex-col space-y-4">
             <Link href="/Login">
-            <button
-              className="justify-center relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-              type="submit"
-            >
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                Already a user
-              </span>
-              <BottomGradient />
-            </button>
+              <button
+                className="justify-center relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+                type="submit"
+              >
+                <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                  Already a user
+                </span>
+                <BottomGradient />
+              </button>
             </Link>
           </div>
         </form>

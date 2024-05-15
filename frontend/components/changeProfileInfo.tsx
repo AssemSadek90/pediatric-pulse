@@ -4,6 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Transition } from '@headlessui/react';
 import { cn } from "@/utils/cn";
 import { CircularProgress } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import LogoutButton from './LogoutButton';
+interface User {
+    userId: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    userName: string,
+    createdAt: string,
+    phone: string,
+    age: number,
+    profilePicture: string,
+    role: string
+};
 
 const BottomGradient = () => {
     return (
@@ -26,30 +40,35 @@ const LabelInputContainer = ({
         </div>
     );
 };
-const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUser }: { openModalProfile: boolean, setOpenModalProfile: React.Dispatch<React.SetStateAction<boolean>>, user: User | undefined, setUser: React.Dispatch<React.SetStateAction<User | undefined>> }) => {
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        age: 0,
-        gender: "",
-        parentId: localStorage.getItem("userId")
+        userName: user?.userName,
+        email: user?.email,
+        password: "",
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        phoneNumber: user?.phone,
+        age: user?.age,
+        profilePicture: user?.profilePicture,
     })
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
         const requestOptions = {
-            method: "POST",
+            method: "PUT",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             },
             body: JSON.stringify(formData),
         };
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/add/patient`, requestOptions);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/update/user/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`, requestOptions);
             if (response.status === 201 || response.status === 200) {
                 setLoading(false)
-                setOpenModal(!openModal)
+                setOpenModalProfile(!openModalProfile)
                 location.reload()
             }
             else {
@@ -57,7 +76,7 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
             }
         }
         catch (error) {
-            console.error('Error Adding Patient:', error)
+            console.error('Error Updating Info:', error)
         }
     }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +86,7 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
         });
     };
     return (
-        <Transition appear show={openModal} as={Fragment}>
+        <Transition appear show={openModalProfile} as={Fragment}>
             <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -81,9 +100,9 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
                     <div className='max-w-md w-full mx-auto my-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black flex flex-col'>
                         <div className='w-full flex justify-between'>
                             <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-                                Add a patient to your list of patients
+                                Update your profile information
                             </p>
-                            <button onClick={() => setOpenModal(!openModal)} className="px-2 rounded-full bg-gradient-to-br from-black to-neutral-600 text-white hover:shadow-xl transition duration-200">
+                            <button onClick={() => setOpenModalProfile(!openModalProfile)} className="px-2 rounded-full bg-gradient-to-br from-black to-neutral-600 text-white hover:shadow-xl transition duration-200">
                                 X
                             </button>
                         </div>
@@ -99,24 +118,45 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
                                 </LabelInputContainer>
                             </div>
                             <LabelInputContainer className="mb-4">
-                                <Label htmlFor="age">Age</Label>
-                                <Input id="age" name='age' value={formData.age} onChange={handleChange} required placeholder="" type="number" />
+                                <Label htmlFor="userName">User Name</Label>
+                                <Input id="userName" name='userName' value={formData.userName} onChange={handleChange} required placeholder="" type="username" />
                             </LabelInputContainer>
                             <LabelInputContainer className="mb-4">
-                                <Label htmlFor="gender">Gender</Label>
-                                <Input id="gender" name='gender' value={formData.gender} onChange={handleChange} required placeholder="" type="text" />
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" name='email' value={formData.email} onChange={handleChange} required placeholder="" type="email" />
                             </LabelInputContainer>
+                            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+                                <LabelInputContainer className="mb-4">
+                                    <Label htmlFor="age">Age</Label>
+                                    <Input id="age" name='age' value={formData.age} onChange={handleChange} required placeholder="" type="number" />
+                                </LabelInputContainer>
+                                <LabelInputContainer className="mb-4">
+                                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                                    <Input id="phoneNumber" name='phoneNumber' value={formData.phoneNumber} onChange={handleChange} required placeholder="" type="phone" />
+                                </LabelInputContainer>
+                            </div>
+                            <LabelInputContainer className="mb-4">
+                                <Label htmlFor="password">Password</Label>
+                                <Input id="password" name="password" value={formData.password} onChange={handleChange} required placeholder="" type="password" />
+                            </LabelInputContainer>
+                            {/* <LabelInputContainer className="mb-4">
+                                <Label htmlFor="profilePicture">Profile Picture</Label>
+                                <Input id="profilePicture" name="profilePicture" value={formData.profilePicture} onChange={handleChange} required placeholder="" type="text" />
+                            </LabelInputContainer> */}
                             <button
                                 className="bg-gradient-to-br relative group/btn from-black to-neutral-600 block w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
                                 type="submit"
                                 disabled={loading ? true : false}
                             >
-                                {loading ? <CircularProgress color="warning" size={"1.3rem"} /> : <p>Add patient &rarr;</p>}
+                                {loading ? <CircularProgress color="warning" size={"1.3rem"} /> : <p>Update Profile Info</p>}
                                 <BottomGradient />
                             </button>
 
-                            <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
                         </form>
+                        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+                        <div className='flex w-full justify-end'>
+                            <LogoutButton />
+                        </div>
                     </div>
                 </div>
             </Transition.Child>
@@ -124,4 +164,4 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
     )
 }
 
-export default AddPatient
+export default ChangeProfileInfo

@@ -47,15 +47,14 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/medicalRecord/${localStorage.getItem("userId")}/${currentPatient?.id}?token=${localStorage.getItem("accessToken")}`,
             { headers }
         );
-        if (!response.ok) {
-            console.log("ERRORRR")
-        }
         const data = await response.json();
         setMedicalRecord(data[0]);
     }
     useEffect(() => {
-        fetchMedicalRecord();
-    }, [currentPatient, setMedicalRecord]);
+        if (currentPatient !== undefined) {
+            fetchMedicalRecord();
+        }
+    }, [currentPatient]);
     const tabs = [
         {
             title: "Treatment",

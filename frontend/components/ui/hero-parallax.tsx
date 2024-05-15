@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { formatFullName } from "@/utils/formatFuncs";
 
 export const HeroParallax = ({
   products,
@@ -57,7 +58,7 @@ export const HeroParallax = ({
   return (
     <div
       ref={ref}
-      className="bg-gray-100 h-[300vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
+      className="bg-gray-100 h-[160rem] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
       <Header />
       <motion.div
@@ -108,7 +109,7 @@ export const Header = () => {
         Your child <br /> Deserves the best
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-       Our team of highly professional pediatricians will look after you child. so you can be sure your child is in good hands.
+        Our team of highly professional pediatricians will look after you child. so you can be sure your child is in good hands.
       </p>
     </div>
   );
@@ -150,7 +151,7 @@ export const ProductCard = ({
       </Link>
       <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
       <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white">
-        {product.title}
+        {formatFullName(product.title)}
       </h2>
     </motion.div>
   );
