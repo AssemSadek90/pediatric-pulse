@@ -31,3 +31,26 @@ async def getMedicalRecord(patientId: int, parentId: int,token: str, db: session
         patients.append(patient)
     
     return patients
+
+
+@router.get('/getMedicalRecord/{doctorId}/{patientId}', description='this get request returns all the medical records for a certain patient', response_model=list[schemas.medicalRecordResponse])
+async def getMedicalRecord(doctorId: int, patientId: int,token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(doctorId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    medicalRecords = db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == patientId).all()
+    patients = []
+    for patient in medicalRecords:
+        patient.createdAt = patient.createdAt.isoformat()  # Convert datetime to string
+        patients.append(patient)
+    
+    return patients
+
+
+
+
+@router.put('/update/medicalRecord/{patientId}/{docotrId}', description='this update request updates the medical record for a certain patient', response_model=schemas.medicalRecordResponse)
+async def updateMedicalRecord():
+    return
