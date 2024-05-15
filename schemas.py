@@ -121,6 +121,9 @@ class updateUser(BaseModel):
     age: Optional[int]
     profilePicture: str
 
+class udate_user(updateUser):
+    userId: int
+
 class updatePatient(BaseModel):
     age: int
     firstName: str
