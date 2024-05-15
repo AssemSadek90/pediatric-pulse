@@ -69,28 +69,38 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
     return appointments
 
-@router.put('update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info", response_model=schemas.AppointmentResponse)
-async def update_appointments(appointment: schemas.updateAppointment, adminId: int, appointmentId: int, token: str, db: session = Depends(DataBase.get_db)):
+@router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info", response_model=schemas.AppointmentResponse)
+async def update_appointments(
+    adminId: int,
+    appointmentId: int,
+    token: str,
+    appointment: schemas.updateAppointment,
+    db: session = Depends(DataBase.get_db)
+):
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-    # admin = db.query(models.User).filter(models.User.userId == adminId).first()
-    # if admin.role != 'admin':
-    #     raise HTTPException( status_code=401, detail= "unauthorized")
+        raise HTTPException(status_code=401, detail="unauthorized")
+    
     appointment_query = db.query(models.Appointment).filter(models.Appointment.id == appointmentId)
-    appointment_query.update({
-        "parentId": appointment.parentId,
-        "doctorId": appointment.doctorId,
-        "patientId": appointment.patientId,
-        "appointmentDate": appointment.appointmentDate,
-        "From": appointment.From,
-        "To": appointment.To,
-        "isTaken": appointment.isTaken
-    })
-    db.commit()
-    newAppointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).first()
+    existing_appointment = appointment_query.first()
+    
+    if not existing_appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
 
-    return newAppointment
+    update_data = {
+        "appointmentDate": appointment.appointmentDate if appointment.appointmentDate is not None else existing_appointment.appointmentDate,
+        "From": appointment.From if appointment.From is not None else existing_appointment.From,
+        "To": appointment.To if appointment.To is not None else existing_appointment.To,
+        "isTaken": appointment.isTaken if appointment.isTaken is not None else existing_appointment.isTaken
+    }
+
+    appointment_query.update(update_data)
+    db.commit()
+
+    new_appointment = appointment_query.first()
+
+    return new_appointment
+
 
 @router.delete("/delete/appointment/{appointmentId}/{adminId}", status_code=status.HTTP_200_OK, description="This is a delete request to delete an appointment")
 async def delete_appointment(appointmentId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):

@@ -246,10 +246,7 @@ class updateMedicalRecord(BaseModel):
 
 
 class updateAppointment(BaseModel):
-    parentId: Optional[int]
-    doctorId:Optional[int]
-    patientId: Optional[int]
-    appointmentDate: Optional[str]
-    From: Optional[str]
-    To: Optional[str]
-    isTaken: Optional[bool]
+    appointmentDate: Optional[str] = None
+    From: Optional[str] = None
+    To: Optional[str] = None
+    isTaken: Optional[bool] = None
