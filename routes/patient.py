@@ -176,8 +176,17 @@ async def delete_patient(patientId: int, userId: int, token: str, db: session = 
     
     if not patient:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
-    
 
+    
+    medicalRecord = db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == patientId).first()
+
+    mra = db.query(models.MRAccess).filter(models.MRAccess.patientId == patientId).all()
+
+    appointment = db.query(models.Appointment).filter(models.Appointment.patientId == patientId).all()
+
+    db.delete(medicalRecord)
+    db.delete(mra)
+    db.delete(appointment)
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
