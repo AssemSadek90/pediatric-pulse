@@ -17,4 +17,3 @@ PyJWT
 oauthlib
 requests_oauthlib
 asyncpg
-fastapi.staticfiles

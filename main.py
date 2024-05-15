@@ -4,14 +4,12 @@ from models import base
 from routes import auth, user, doctor, patient, appointment, MedicalRecord, reviews
 from starlette.responses import RedirectResponse
 from fastapi.openapi.utils import get_openapi
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 base.metadata.create_all(bind=engine)
 
 # Define other components of your application
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
 #app.include_router(auth.router)
 app.include_router(auth.router)
 app.include_router(user.router)
@@ -40,7 +38,7 @@ def custom_openapi():
         routes=app.routes,
     )
     openapi_schema["info"]["x-logo"] = {
-        "url": "/static/1.png"  # Update this URL to point to your image
+        "url": "https://i.imgur.com/jFo7NCX.png"  # Update this URL to point to your image
     }
     openapi_schema["info"]["title"] = "Pediatric-Pulse"
     app.openapi_schema = openapi_schema
