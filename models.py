@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text, FLOAT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from DataBase import base
@@ -11,6 +11,7 @@ class User(base):
     email = Column(String, nullable=False)
     userName = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    googleId = Column(String)
     createdAt = Column(DateTime, nullable=False, server_default=text('now()'))
     PhoneNumber = Column(String)
     age = Column(Integer)  # Change data type to integer for age
@@ -33,6 +34,7 @@ class MedicalRecord(base):
     chronicConditions = Column(String, default='None')
     surgicalHistory = Column(String, default='None')
     medications = Column(String, default='None')
+    radiologyReport = Column(String, default='None')
 
 class Patient(base):
     __tablename__ = 'patient'
@@ -52,6 +54,7 @@ class Appointment(base):
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
     appointmentDate = Column(String, nullable=False)
     From = Column(String, nullable=False)
     To = Column(String, nullable=False)
@@ -74,6 +77,21 @@ class Doctor(base):
     profilePicture = Column(String)
     role = Column(String, nullable=False)
     appointments = relationship('Appointment', back_populates='doctor')
+
+class reviews(base):
+    __tablename__ ='reviews'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
+    doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    review = Column(String, nullable=False)
+    rating = Column(Integer, nullable=False)
+
+class MRAccess(base):
+    __tablename__ ='mr_access'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
+    doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
+    access = Column(Boolean, default=True)
 
 # class history(base):
 #     __tablename__ = 'history'

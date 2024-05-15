@@ -34,6 +34,8 @@ class doctorList(BaseModel):
     link: Optional[str]
     thumbnail: Optional[str]
     id: Optional[int]
+    numberOfReviews: Optional[int]
+    avarageRating: Optional[float]
 
 class PatientResponse(BaseModel):
     id: Optional[int]
@@ -73,6 +75,14 @@ class userSginup(BaseModel):
     lastName: str
     phone: str
 
+class addUser(BaseModel):
+    userName: str
+    email: str
+    password: str
+    firstName: str
+    lastName: str
+    phone: str
+    role: str
 class addDoctor(BaseModel):
     email: str
     password: str
@@ -82,7 +92,7 @@ class addDoctor(BaseModel):
 
 
 class tokenData(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
 
 
 class LoginResponse(BaseModel):
@@ -138,6 +148,7 @@ class addPatient(BaseModel):
 
 
 class addApointment(BaseModel):
+    parentId: int
     doctorId: int
     patientId: int
     appointmentDate: str
@@ -160,6 +171,7 @@ class medicalRecordResponse(BaseModel):
     chronicConditions: str
     surgicalHistory: str
     medications: str
+    radiologyReport: str
 
 
 class AppointmentResponse(BaseModel):
@@ -170,3 +182,55 @@ class AppointmentResponse(BaseModel):
     From: str
     To: str
     isTaken: bool
+
+
+class reviews(BaseModel):
+    parentId: int
+    doctorId: int
+    review: str
+    rating: int
+
+
+class reviewsResponse(BaseModel):
+    reviewerName: str
+    docotrName: str
+    review: str 
+    rating: int
+
+class returnPatient(BaseModel):
+    firstName: str
+    lastName: str
+    parentFirstName: str
+    parentLastName: str
+    parentPic: str
+    age: int
+
+
+class barChart(BaseModel):
+    number: int
+    stars: int
+
+class avgRating(BaseModel):
+    avgRating: float
+    count: int
+
+
+class patientList(BaseModel):
+    parentPic: str
+    patientFirstName: str
+    patientLastName: str
+    parentFirstName: str
+    parentLastName: str
+    patientId: int
+
+class updateMedicalRecord(BaseModel):
+    notes: Optional[str]
+    treatment: Optional[str]
+    healthCondition: Optional[str]
+    vaccin: Optional[str]
+    allergies: Optional[str]
+    pastConditions: Optional[str]
+    chronicConditions: Optional[str]
+    surgicalHistory: Optional[str]
+    medications: Optional[str]
+    radiologyReport: Optional[str]

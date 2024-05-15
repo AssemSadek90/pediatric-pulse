@@ -55,9 +55,9 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
 async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     user = db.query(models.User).filter(models.User.userId == userId).first()
 
     if not user:
@@ -81,18 +81,18 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
-@router.put("/update/user/{userId}", description="This route updates the user's info", response_model=schemas.User)
+@router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
 async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId ,token)
     if not token_data:
         raise HTTPException(status_code=401, detail="Invalid token")
     
     # Hash the password before creating the user
-    X = db.query(models.User).filter(models.User.userName == user.userName).first()
+    X = db.query(models.User).filter(models.User.userName == user.userName, models.User.userId != userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid userName")
     
-    X = db.query(models.User).filter(models.User.email == user.email).first()
+    X = db.query(models.User).filter(models.User.email == user.email, models.User.userId != userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid email")
     
@@ -126,3 +126,45 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
     }
     
     return newUser
+
+
+@router.post("/add/user/{userId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create a regular user (customer).", response_model=schemas.LoginResponse)
+async def addUser(user: schemas.addUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == userId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    existing_user = db.query(models.User).filter(
+        (models.User.userName == user.userName) | (models.User.email == user.email)
+    ).first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with the same username or email already exists"
+        )
+
+    # Hash the password before creating the user
+    hashed_password = utils.hash(user.password)
+    
+    # Create a new instance of the User model with the hashed password
+    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = user.role)
+    
+    # Add the new_user instance to the session
+    db.add(new_user)
+    
+    # Commit the session to persist the changes
+    db.commit()
+    
+    # Refresh the new_user instance to ensure it has the latest data from the database
+    db.refresh(new_user)
+    
+    # Generate an access token for the new user
+    access_token = oauth2.create_access_token(data={"user_id": new_user.userId, "type": "user"})
+    
+    # Return the response with the access token, role, and userId
+    return {"accessToken": access_token, "role": new_user.role, "userId": new_user.userId}

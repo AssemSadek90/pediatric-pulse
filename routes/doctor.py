@@ -17,8 +17,16 @@ router = APIRouter(
 
 import random
 
-@router.post("/add/doctor", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
-async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get_db)):
+@router.post("/add/doctor/{userId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
+async def CreateUser(user: schemas.addDoctor,userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == userId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
     existing_user = db.query(models.Doctor).filter(
         models.Doctor.email == user.email
     ).first()
@@ -67,13 +75,13 @@ async def CreateUser(user: schemas.addDoctor, db: session = Depends(DataBase.get
 
 
 
-@router.get("/get/doctor/{doctorId}", description="This route returns doctor data via doctorId and takes the token in the header")
-async def get_user_by_id(doctorId: int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
-    token_data = oauth2.verify_access_token(doctorId, token)
+@router.get("/get/doctor/{doctorId}/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
+async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     user = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
 
     if not user:
@@ -99,15 +107,15 @@ async def get_user_by_id(doctorId: int, token: str, db: session = Depends(DataBa
 
 
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
-async def update_doctor_pic(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:
-        return {"message": "Invalid token"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     # Hash the password before creating the user
-    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName).first()
+    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName, models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid userName"}
-    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email).first()
+    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email, models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid email"}
     
@@ -156,11 +164,24 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
     for user in users:
         # Construct the user data dictionary using the schema structure
         title = "Dr. " + user.firstName + " " + user.lastName
+        numberOfReviews = 0
+        rate = 0
+        reviews = db.query(models.reviews).filter(models.reviews.doctorId == user.id).all()
+        for review in reviews:
+            numberOfReviews += 1
+            rate = review.rating + rate
+        
+        if (rate == 0 and numberOfReviews == 0):
+            rating = 0
+        else:
+            rating = rate / numberOfReviews
         user_data = {
             "title":title,
             "link": "/Signup",
             "thumbnail": user.profilePicture,
-            "id": user.id
+            "id": user.id,
+            "numberOfReviews": numberOfReviews,
+            "avarageRating": round(rating, 2),
             }
         doctors_data.append(user_data)
 

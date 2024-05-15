@@ -16,8 +16,13 @@ router = APIRouter(
 )
 
 
-@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request add new patient to this user.", response_model=schemas.PatientResponse)
-async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.get_db)):
+from sqlalchemy.exc import IntegrityError
+
+@router.post("/add/patient", status_code=status.HTTP_201_CREATED, description="This is a post request to add a new patient.", response_model=schemas.PatientResponse)
+async def CreateUser(user: schemas.addPatient, token:str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(user.parentId, token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
     # Check if the parent user exists
     parent_user = db.query(models.User).filter(models.User.userId == user.parentId).first()
@@ -43,17 +48,30 @@ async def CreateUser(user: schemas.addPatient, db: session = Depends(DataBase.ge
     # Refresh the new_patient instance to ensure it has the latest data from the database
     db.refresh(new_patient)
 
+    # Create a new medical record for the patient
+    new_medical_record = models.MedicalRecord(
+        patientId = new_patient.id,
+    )
+    try:
+        db.add(new_medical_record)
+        db.commit()
+        db.refresh(new_medical_record)
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error creating medical record: {e}")
+
     # Return the response with the newly created patient
     return new_patient
+
 
 
 @router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header", response_model=list[schemas.PatientResponse])
 async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized1"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized2"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     patients = db.query(models.Patient).filter(models.Patient.parentId == parentId).all()
 
     return patients
@@ -62,9 +80,9 @@ async def get_patient(parentId: int,  token: str, db: session = Depends(DataBase
 async def get_patient(patientId: int, parentId:int,  token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     return patient
 
@@ -73,9 +91,11 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     token_data = oauth2.verify_access_token(patient.parentId, token)
     if not token_data:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
-        return {"message": "unauthorized"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if not patient:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
@@ -85,7 +105,7 @@ async def delete_patient(patientId: int, token: str, db: session = Depends(DataB
 async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId ,token)
     if not token_data:
-        return {"message": "Invalid token"}
+        raise HTTPException( status_code=401, detail= "unauthorized")
 
     user_query = db.query(models.Patient).filter(models.Patient.id == patientId)
     user_query.update({ 
@@ -100,3 +120,47 @@ async def update_doctor_pic(patient: schemas.updatePatient,patientId: int, paren
     patient= db.query(models.Patient).filter(models.Patient.id == patientId).first()
     
     return patient
+
+
+@router.get('/patient/{patientId}/{doctorId}', description="This route returns the patient's info", response_model = schemas.returnPatient)
+async def get_patient_info(patientId: int, doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token = oauth2.verify_access_token(doctorId, token)
+    if not token:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
+    parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+    pic = parent.profilePicture if parent.profilePicture is not None else "None"
+
+    newPatient = {
+        "firstName": patient.firstName,
+        "lastName": patient.lastName,
+        "parentFirstName": parent.firstName,
+        "parentLastName": parent.lastName,
+        "parentPic": pic,
+        "age": patient.age,
+        
+    }
+    return newPatient
+
+@router.get('/patientList/{doctorId}', description="This route returns all the patients of a doctor", response_model = list[schemas.patientList])
+async def listPatients(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(doctorId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    patientsId = db.query(models.MRAccess).filter(models.MRAccess.doctorId == doctorId).all()
+    patients = []
+    for id in patientsId:
+        patientS = db.query(models.Patient).filter(models.Patient.id == id.patientId).all()
+        for patient in patientS:
+            parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+            pic = parent.profilePicture if parent.profilePicture is not None else "None"
+            new_patient = {
+                "parentPic": pic,
+                "patientFirstName": patient.firstName,
+                "patientLastName": patient.lastName,
+                "parentFirstName": parent.firstName,
+                "parentLastName": parent.lastName,
+                "patientId": patient.id,   
+            }
+            patients.append(new_patient)
+    return patients
