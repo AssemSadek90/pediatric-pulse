@@ -125,6 +125,33 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
+@router.get('/get/all/users/{adminId}', description="This route returns all users", response_model=list[schemas.User])
+async def get_all_users(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if not admin:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    users = db.query(models.User).all()
+    newUsers =[]
+    for user in users:
+        newUser ={
+        "userId": user.userId,
+        "userName": user.userName,
+        "email": user.email,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "createdAt": str(user.createdAt),  # Convert datetime to string
+        "phone": user.PhoneNumber,  # Changed from PhoneNumber to phone
+        "age": user.age,  # Will be None if age is None
+        "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
+        "role": user.role
+        }
+        newUsers.append(newUser)
+
+    return newUsers
+
 @router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
 async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId ,token)
@@ -167,6 +194,57 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
         "age": user.age,  # Will be None if age is None
         "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
         "role": user.role
+    }
+    
+    return newUser
+
+
+
+@router.put("/update/user/admin/{adminId}", description="This route updates the user's info by admin", response_model = schemas.User)
+async def update_user(user: schemas.udate_user, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId ,token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
+
+    # Hash the password before creating the user
+    X = db.query(models.User).filter(models.User.userName == user.userName, models.User.userId != user.userId).first()
+    if X:
+        raise HTTPException(status_code=400, detail="Invalid userName")
+    
+    X = db.query(models.User).filter(models.User.email == user.email, models.User.userId != user.userId).first()
+    if X:
+        raise HTTPException(status_code=400, detail="Invalid email")
+    
+    hashed_password = utils.hash(user.password)
+    user_query = db.query(models.User).filter(models.User.userId == user.userId)
+    user_query.update({
+        "userName": user.userName, 
+        "email": user.email, 
+        "password": hashed_password, 
+        "firstName": user.firstName, 
+        "lastName": user.lastName,
+        "profilePicture":user.profilePicture, 
+        "PhoneNumber": user.phoneNumber,
+        "age": user.age
+        })
+    
+    db.commit()
+
+    User= db.query(models.User).filter(models.User.userId == user.userId).first()
+    newUser ={
+        "userId": User.userId,
+        "userName": User.userName,
+        "email": User.email,
+        "firstName": User.firstName,
+        "lastName": User.lastName,
+        "createdAt": str(User.createdAt),  # Convert datetime to string
+        "phone": User.PhoneNumber,  # Changed from PhoneNumber to phone
+        "age": User.age,  # Will be None if age is None
+        "profilePicture": User.profilePicture,  # Will be None if profilePicture is None
+        "role": User.role
     }
     
     return newUser
