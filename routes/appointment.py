@@ -50,7 +50,7 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     
     return{"message": "Appointment added successfully"}
 
-@router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
+@router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient", response_model=schemas.AppointmentResponse)
 async def get_appointment(parentId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
@@ -61,7 +61,7 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
     return appointments
 
 
-@router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
+@router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient", response_model=schemas.AppointmentResponse)
 async def get_appointment(doctorId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
@@ -69,14 +69,37 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
     return appointments
 
-@router.delete("/delete/appointment/{appointmentId}/{parentId}", status_code=status.HTTP_200_OK, description="This is a delete request to delete an appointment")
-async def delete_appointment(appointmentId: int, parentId:int, token: str, db: session = Depends(DataBase.get_db)):
-    token_data = oauth2.verify_access_token(parentId, token)
+@router.put('update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info", response_model=schemas.AppointmentResponse)
+async def update_appointments(appointment: schemas.updateAppointment, adminId: int, appointmentId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    # admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    # if admin.role != 'admin':
+    #     raise HTTPException( status_code=401, detail= "unauthorized")
+    appointment_query = db.query(models.Appointment).filter(models.Appointment.id == appointmentId)
+    appointment_query.update({
+        "parentId": appointment.parentId,
+        "doctorId": appointment.doctorId,
+        "patientId": appointment.patientId,
+        "appointmentDate": appointment.appointmentDate,
+        "From": appointment.From,
+        "To": appointment.To,
+        "isTaken": appointment.isTaken
+    })
+    db.commit()
+    newAppointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).first()
+
+    return newAppointment
+
+@router.delete("/delete/appointment/{appointmentId}/{adminId}", status_code=status.HTTP_200_OK, description="This is a delete request to delete an appointment")
+async def delete_appointment(appointmentId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
-    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).filter(models.Appointment.parentId == parentId).first()
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).first()
     mra = db.query(models.MRAccess).filter(models.MRAccess.patientId == appointment.patientId).filter(models.MRAccess.doctorId == appointment.doctorId).first()
     if not appointment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
