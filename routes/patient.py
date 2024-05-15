@@ -86,16 +86,16 @@ async def get_patient(patientId: int, parentId:int,  token: str, db: session = D
     patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     return patient
 
-@router.delete("/delete/patient/{patientId}", description="This route deletes a patient via patientId and takes the token for parent in the header")
-async def delete_patient(patientId: int, token: str, db: session = Depends(DataBase.get_db)):
-    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
-    token_data = oauth2.verify_access_token(patient.parentId, token)
+@router.delete("/delete/patient/{patientId}/{userId}", description="This route deletes a patient via patientId and takes the token for parent in the header")
+async def delete_patient(patientId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
     if not patient:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found.")
+    patient = db.query(models.Patient).filter(models.Patient.id == patientId).first()
     db.delete(patient)
     db.commit()
     return {"message": "Patient deleted successfully"}
