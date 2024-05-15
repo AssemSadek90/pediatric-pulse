@@ -111,6 +111,10 @@ class updateDoctor(BaseModel):
     profilePic: str
     price: int
 
+
+class update_doctor(updateDoctor):
+    doctorId: int
+
 class updateUser(BaseModel):
     userName: str
     email: str

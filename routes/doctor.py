@@ -138,6 +138,37 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
 
     return doctors_data
 
+@router.get('/get/doctors/{adminId}', description="This route returns all the doctors", response_model=list[schemas.Doctor])
+async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    users = db.query(models.Doctor).all()
+    new_doctors = []
+    for user in users:
+        newDoctor ={
+        "doctorId": user.id,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "email": user.email,
+        "userName": user.userName,
+        "createdAt": str(user.createdAt),
+        "profilePicture": user.profilePicture,
+        "role": user.role,
+        "rating": user.rating,
+        "numberOfRating": user.numberOfRating,
+        "price": user.price
+    }
+        new_doctors.append(newDoctor)
+    
+    return new_doctors
+
+
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
 async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
@@ -180,7 +211,54 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
         "price": user.price
     }
     
+
+@router.put("/update/doctor/admin/{adminId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
+async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId ,token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
     
+    admin = db.query(models.User).filter(models.User.id == adminId).first()
+    if admin.role != "admin":
+        raise HTTPException( status_code=401, detail= "unauthorized")
+
+    # Hash the password before creating the user
+    X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName, models.Doctor.id != doctor.doctorId).first()
+    if X:
+        return {"message": "invalid userName"}
+    X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email, models.Doctor.id != doctor.doctorId).first()
+    if X:
+        return {"message": "invalid email"}
+    
+    hashed_password = utils.hash(doctor.password)
+    user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.doctorId)
+    user_query.update({
+        "userName": doctor.userName, 
+        "email": doctor.email, 
+        "password": hashed_password, 
+        "firstName": doctor.firstName, 
+        "lastName": doctor.lastName,
+        "profilePicture":doctor.profilePic, 
+        "price": doctor.price
+        })
+    
+    db.commit()
+
+    user= db.query(models.Doctor).filter(models.Doctor.id == doctor.doctorId).first()
+    newDoctor ={
+        "doctorId": user.id,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "email": user.email,
+        "userName": user.userName,
+        "createdAt": str(user.createdAt),
+        "profilePicture": user.profilePicture,
+        "role": user.role,
+        "rating": user.rating,
+        "numberOfRating": user.numberOfRating,
+        "price": user.price
+    }
+
     return newDoctor
 
 
