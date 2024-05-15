@@ -2,8 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
+import os
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://root:f6fNhkowhipAa5lamaVwQQ6XhwBU9cBO@dpg-cojekhn109ks73f8qs60-a.oregon-postgres.render.com/hcis_b8rf'
+load_dotenv()
+
+SQLALCHEMY_DATABASE_URL = os.getenv('DB_URL')
 
 try:
     engine = create_engine(SQLALCHEMY_DATABASE_URL)

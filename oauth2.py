@@ -3,6 +3,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import session
+from dotenv import load_dotenv
+import os
 
 import sys
 sys.path.append('BackEnd')
@@ -13,9 +15,9 @@ import oauth2
 import utils
 import schemas
 from routes import user
-
+load_dotenv()
 # Define your SECRET_KEY and ALGORITHM
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 50000
 
