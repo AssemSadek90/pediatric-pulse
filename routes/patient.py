@@ -141,3 +141,25 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
         
     }
     return newPatient
+
+@router.get('/patientList/{doctorId}', description="This route returns all the patients of a doctor", response_model = list[schemas.patientList])
+async def listPatients(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(doctorId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    patientsId = db.query(models.MRAccess).filter(models.MRAccess.doctorId == doctorId).all()
+    patients = []
+    for id in patientsId:
+        patient = db.query(models.Patient).filter(models.Patient.id == id.patientId).all()
+        parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+        pic = parent.profilePicture if parent.profilePicture is not None else "None"
+        new_patient = {
+            "parentPic": pic,
+            "patientFirstName": patient.firstName,
+            "patientLastName": patient.lastName,
+            "parentFirstName": parent.firstName,
+            "parentLastName": parent.lastName,
+            "patientId": patient.id,   
+        }
+        patients.append(new_patient)
+    return patients
