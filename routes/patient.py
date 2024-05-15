@@ -150,16 +150,17 @@ async def listPatients(doctorId: int, token: str, db: session = Depends(DataBase
     patientsId = db.query(models.MRAccess).filter(models.MRAccess.doctorId == doctorId).all()
     patients = []
     for id in patientsId:
-        patient = db.query(models.Patient).filter(models.Patient.id == id.patientId).all()
-        parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
-        pic = parent.profilePicture if parent.profilePicture is not None else "None"
-        new_patient = {
-            "parentPic": pic,
-            "patientFirstName": patient.firstName,
-            "patientLastName": patient.lastName,
-            "parentFirstName": parent.firstName,
-            "parentLastName": parent.lastName,
-            "patientId": patient.id,   
-        }
-        patients.append(new_patient)
+        patientS = db.query(models.Patient).filter(models.Patient.id == id.patientId).all()
+        for patient in patientS:
+            parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+            pic = parent.profilePicture if parent.profilePicture is not None else "None"
+            new_patient = {
+                "parentPic": pic,
+                "patientFirstName": patient.firstName,
+                "patientLastName": patient.lastName,
+                "parentFirstName": parent.firstName,
+                "parentLastName": parent.lastName,
+                "patientId": patient.id,   
+            }
+            patients.append(new_patient)
     return patients
