@@ -105,6 +105,38 @@ async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = De
     return {"doctor": user_data}
 
 
+@router.get("/doctorList", description="This is a GET request to fetch all doctors.", response_model=list[schemas.doctorList])
+async def doctorList(db: session = Depends(DataBase.get_db)):
+    users = db.query(models.Doctor).all()
+
+    if not users:
+        raise HTTPException(status_code=404, detail="No doctors found")
+    doctors_data = []
+    for user in users:
+        # Construct the user data dictionary using the schema structure
+        title = "Dr. " + user.firstName + " " + user.lastName
+        numberOfReviews = 0
+        rate = 0
+        reviews = db.query(models.reviews).filter(models.reviews.doctorId == user.id).all()
+        for review in reviews:
+            numberOfReviews += 1
+            rate = review.rating + rate
+        
+        if (rate == 0 and numberOfReviews == 0):
+            rating = 0
+        else:
+            rating = rate / numberOfReviews
+        user_data = {
+            "title":title,
+            "link": "/Signup",
+            "thumbnail": user.profilePicture,
+            "id": user.id,
+            "numberOfReviews": numberOfReviews,
+            "avarageRating": round(rating, 2),
+            }
+        doctors_data.append(user_data)
+
+    return doctors_data
 
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
 async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
@@ -151,41 +183,6 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
     
     return newDoctor
 
-
-
-
-@router.get("/doctorList", description="This is a GET request to fetch all doctors.", response_model=list[schemas.doctorList])
-async def doctorList(db: session = Depends(DataBase.get_db)):
-    users = db.query(models.Doctor).all()
-
-    if not users:
-        raise HTTPException(status_code=404, detail="No doctors found")
-    doctors_data = []
-    for user in users:
-        # Construct the user data dictionary using the schema structure
-        title = "Dr. " + user.firstName + " " + user.lastName
-        numberOfReviews = 0
-        rate = 0
-        reviews = db.query(models.reviews).filter(models.reviews.doctorId == user.id).all()
-        for review in reviews:
-            numberOfReviews += 1
-            rate = review.rating + rate
-        
-        if (rate == 0 and numberOfReviews == 0):
-            rating = 0
-        else:
-            rating = rate / numberOfReviews
-        user_data = {
-            "title":title,
-            "link": "/Signup",
-            "thumbnail": user.profilePicture,
-            "id": user.id,
-            "numberOfReviews": numberOfReviews,
-            "avarageRating": round(rating, 2),
-            }
-        doctors_data.append(user_data)
-
-    return doctors_data
 
 
 @router.delete("/delete/doctor/{doctorId}/{adminId}", description="This route deletes the doctor")
