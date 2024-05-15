@@ -170,3 +170,14 @@ async def addUser(user: schemas.addUser, adminId: int, token: str, db: session =
     return {"accessToken": access_token, "role": new_user.role, "userId": new_user.userId}
 
 
+@router.delete("/delete/user/{userId}/{adminId}", description="This route deletes the user")
+async def delete_user(userId: int, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    user = db.query(models.User).filter(models.User.userId == userId).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return{"message": "User deleted successfully"}
