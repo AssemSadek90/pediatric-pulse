@@ -204,6 +204,7 @@ class returnPatient(BaseModel):
     parentLastName: str
     parentPic: str
     age: int
+    id: int
 
 
 class barChart(BaseModel):
