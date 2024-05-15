@@ -1,115 +1,74 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BarChart } from '@mui/x-charts/BarChart';
 
 const chartSetting = {
     xAxis: [
         {
-            label: 'rainfall (mm)',
+            label: 'Ratings',
         },
     ],
     width: 500,
     height: 400,
 };
 
-const dataset = [
-    {
-        london: 59,
-        paris: 57,
-        newYork: 86,
-        seoul: 21,
-        month: 'Jan',
-    },
-    {
-        london: 50,
-        paris: 52,
-        newYork: 78,
-        seoul: 28,
-        month: 'Fev',
-    },
-    {
-        london: 47,
-        paris: 53,
-        newYork: 106,
-        seoul: 41,
-        month: 'Mar',
-    },
-    {
-        london: 54,
-        paris: 56,
-        newYork: 92,
-        seoul: 73,
-        month: 'Apr',
-    },
-    {
-        london: 57,
-        paris: 69,
-        newYork: 92,
-        seoul: 99,
-        month: 'May',
-    },
-    {
-        london: 60,
-        paris: 63,
-        newYork: 103,
-        seoul: 144,
-        month: 'June',
-    },
-    {
-        london: 59,
-        paris: 60,
-        newYork: 105,
-        seoul: 319,
-        month: 'July',
-    },
-    {
-        london: 65,
-        paris: 60,
-        newYork: 106,
-        seoul: 249,
-        month: 'Aug',
-    },
-    {
-        london: 51,
-        paris: 51,
-        newYork: 95,
-        seoul: 131,
-        month: 'Sept',
-    },
-    {
-        london: 60,
-        paris: 65,
-        newYork: 97,
-        seoul: 55,
-        month: 'Oct',
-    },
-    {
-        london: 67,
-        paris: 64,
-        newYork: 76,
-        seoul: 48,
-        month: 'Nov',
-    },
-    {
-        london: 61,
-        paris: 70,
-        newYork: 103,
-        seoul: 25,
-        month: 'Dec',
-    },
-];
 
-const valueFormatter = (value: number | null) => `${value}mm`;
+const valueFormatter = (value: number | null) => `${value} people`;
 
 const DoctorReviews = () => {
+    const [dataset, setDataSet] = useState();
+    const [avgReviews, setAvgReviews] = useState<any>();
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    };
+    async function fetchBarChart() {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/reviews/barchart/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+            { headers }
+        );
+        if (!response.ok) {
+            console.log("ERRORRR")
+        }
+        const data = await response.json();
+        setDataSet(data);
+    };
+    async function fetchAvgReviews() {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/avg/rating/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+            { headers }
+        );
+        if (!response.ok) {
+            console.log("ERRORRR")
+        }
+        const data = await response.json();
+        setAvgReviews(data);
+    };
+    useEffect(() => {
+        fetchBarChart()
+        fetchAvgReviews()
+    }, []);
     return (
-        <div>
-            <BarChart
+        <div className='flex flex-col justify-start items-center'>
+            <div>
+                {avgReviews && <span className='flex justify-center text-sm lg:text-2xl space-x-2'>
+                    <span>{avgReviews.avgRating}</span>
+                    <span className='flex items-center'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#FFD700" className="w-4 h-4 lg:w-8 lg:h-8">
+                            <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clipRule="evenodd" />
+                        </svg>
+                    </span>
+                    <span> {`(${avgReviews.count} users)`}</span>
+                </span>}
+
+            </div>
+            {dataset && <BarChart
                 dataset={dataset}
-                yAxis={[{ scaleType: 'band', dataKey: 'month' }]}
-                series={[{ dataKey: 'seoul', label: 'Seoul rainfall', valueFormatter }]}
+                yAxis={[{ scaleType: 'band', dataKey: 'stars' }]}
+                series={[{ dataKey: 'number', label: 'Number of Reviews', valueFormatter }]}
                 layout="horizontal"
+                colors={['#0891b2']}
                 {...chartSetting}
-            />
+            />}
         </div>
     )
 }
