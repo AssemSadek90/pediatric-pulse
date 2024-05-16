@@ -169,6 +169,30 @@ async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.g
     return new_doctors
 
 
+@router.get('/get/doctor/{doctorId}', description="This route returns the doctor's info")
+async def getDoctor(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(doctorId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    
+    doctor = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
+    if not doctor:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Doctor not found.")
+    new_doctor = {
+        "doctorId": doctor.id,
+        "firstName": doctor.firstName,
+        "lastName": doctor.lastName,
+        "email": doctor.email,
+        "userName": doctor.userName,
+        "createdAt": str(doctor.createdAt),
+        "profilePicture": doctor.profilePicture,
+        "role": doctor.role,
+        "rating": doctor.rating,
+        "numberOfRating": doctor.numberOfRating,
+        "price": doctor.price
+    }
+    return new_doctor
+
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
 async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId ,token)
