@@ -138,4 +138,4 @@ const Navbar = ({
     </nav>
   );
 };
-export default Navbar;
+export default React.memo(Navbar);

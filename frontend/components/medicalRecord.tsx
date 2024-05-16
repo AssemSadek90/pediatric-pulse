@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import React from 'react'
 import { Tabs } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 interface Patient {
@@ -37,6 +38,16 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
         }
         return formattedString;
     }
+    const handleCondition = () => {
+        if (medicalRecord) {
+            if (medicalRecord.healthCondition === "Stable")
+                return "#bef264"
+            else if (medicalRecord.healthCondition === "Improving")
+                return "#fde047"
+            else if (medicalRecord.healthCondition === "Unwell")
+                return "#fca5a5"
+        }
+    }
     const [medicalRecord, setMedicalRecord] = useState({} as Record | undefined);
     const headers = {
         "Content-Type": "application/json",
@@ -61,7 +72,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Treatment",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Treatment tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Treatment tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.treatment)}</pre>
                 </div>
             ),
@@ -71,7 +85,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Vaccines",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Vaccines Tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Vaccines Tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.vaccin)}</pre>
                 </div>
             ),
@@ -81,7 +98,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Medications",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Medications tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Medications tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.medications)}</pre>
                 </div>
             ),
@@ -91,7 +111,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Radiology Report",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Radiology Report tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Radiology Report tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.radiologyReport)}</pre>
                 </div>
             ),
@@ -101,7 +124,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Allergies",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Allergies tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Allergies tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.allergies)}</pre>
                 </div>
             ),
@@ -111,7 +137,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Past Conditions",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Past Conditions tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Past Conditions tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.pastConditions)}</pre>
                 </div>
             ),
@@ -121,7 +150,10 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             value: "Surgical History",
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
-                    <p className="text-xl border-b-2 border-neutral-200">Surgical History tab</p>
+                    <p className="text-xl border-b-2 border-neutral-200 flex justify-between items-center">
+                        <span>Surgical History tab</span>
+                        {medicalRecord?.healthCondition && <span className="w-fit p-2 rounded-3xl text-sm mb-1" style={{ backgroundColor: handleCondition() }} >Patient's condition is {medicalRecord?.healthCondition}</span>}
+                    </p>
                     <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.surgicalHistory)}</pre>
                 </div>
             ),
@@ -135,4 +167,4 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
     )
 }
 
-export default medicalRecord
+export default React.memo(medicalRecord)

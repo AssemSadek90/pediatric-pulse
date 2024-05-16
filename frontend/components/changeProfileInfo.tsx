@@ -164,4 +164,4 @@ const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUse
     )
 }
 
-export default ChangeProfileInfo
+export default React.memo(ChangeProfileInfo)

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Tabs } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import EditModal from "./editModal";
 interface Patient {
@@ -72,7 +72,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">
                         Treatment tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeTreatment(!editModeTreatment)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -89,7 +89,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">
                         Vaccines Tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeVaccin(!editModeVaccin)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -106,7 +106,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">
                         Medications tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeMedications(!editModeMedications)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -122,7 +122,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">Radiology Report tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeRadiology(!editModeRadiology)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -137,7 +137,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">Allergies tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeAllergies(!editModeAllergies)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -152,7 +152,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">Past Conditions tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModePast(!editModePast)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -167,7 +167,7 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200 flex justify-between">Surgical History tab
-                        <span>
+                        <span className="mb-1">
                             <button onClick={() => setEditModeSurgical(!editModeSurgical)} className="px-4 py-2 rounded-3xl text-sm font-bold hover:bg-neutral-200 hover:transition duration-150 ease-linear flex items-center">
                                 <FaPencilAlt /> <span className="ml-2">Edit</span>
                             </button>
@@ -257,4 +257,4 @@ const medicalRecordEdit = ({ currentPatient }: { currentPatient: Patient | undef
     )
 }
 
-export default medicalRecordEdit
+export default React.memo(medicalRecordEdit)

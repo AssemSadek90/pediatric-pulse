@@ -58,7 +58,7 @@ const doctorPortal = () => {
     fetchPatientList();
   }, []);
 
-  const Skeleton1 = () => (
+  const Skeleton1 = React.memo(() => (
     <>
       <div className='flex items-center justify-between font-bold border border-transparent'>
         <span>Patient Medical Record</span>
@@ -68,8 +68,8 @@ const doctorPortal = () => {
         <MedicalRecordEdit currentPatient={currentPatient} />
       </div>
     </>
-  );
-  const Skeleton2 = () => (
+  ));
+  const Skeleton2 = React.memo(() => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
         About your profile
@@ -78,7 +78,7 @@ const doctorPortal = () => {
         <DoctorReviews />
       </div>
     </>
-  );
+  ));
   const Skeleton3 = () => (
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
@@ -146,4 +146,4 @@ const doctorPortal = () => {
   )
 }
 
-export default doctorPortal
+export default React.memo(doctorPortal)

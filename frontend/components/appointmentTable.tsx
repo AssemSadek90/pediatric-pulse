@@ -144,4 +144,4 @@ const DoctorAppointmentTable = ({ appointments, selectedDrId, currentPatientId }
   );
 };
 
-export default DoctorAppointmentTable;
+export default React.memo(DoctorAppointmentTable);

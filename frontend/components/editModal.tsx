@@ -274,4 +274,4 @@ const EditModal = (
     )
 }
 
-export default EditModal
+export default React.memo(EditModal)

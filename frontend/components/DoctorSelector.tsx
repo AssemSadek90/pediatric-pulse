@@ -1,4 +1,4 @@
-import { Fragment, SetStateAction, useState } from 'react'
+import React, { Fragment, SetStateAction, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { formatFullName } from '@/utils/formatFuncs'
@@ -25,7 +25,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function DoctorSelector({
+const DoctorSelector = ({
     className,
     doctorList,
     message,
@@ -39,7 +39,7 @@ export default function DoctorSelector({
         setSelected: React.Dispatch<SetStateAction<Doctor>>,
         appointments: Appointment[],
         setAppointments: React.Dispatch<SetStateAction<Appointment[]>>
-    }) {
+    }) => {
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`
@@ -136,3 +136,5 @@ export default function DoctorSelector({
         </div>
     )
 }
+
+export default React.memo(DoctorSelector)

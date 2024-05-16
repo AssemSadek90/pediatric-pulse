@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Image from "next/image";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { formatName } from '@/utils/formatFuncs';
@@ -34,46 +34,59 @@ const DoctorReviews = () => {
     const [dataset, setDataSet] = useState();
     const [doctor, setDoctor] = useState({} as DoctorObj);
     const [avgReviews, setAvgReviews] = useState<any>();
-    const headers = {
+
+    const headers = useMemo(() => ({
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    };
-    async function fetchBarChart() {
+    }), []);
+
+    const fetchBarChart = useCallback(async () => {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/reviews/barchart/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
             { headers }
         );
         if (!response.ok) {
             console.log("ERRORRR")
+            return;
         }
         const data = await response.json();
         setDataSet(data);
-    };
-    async function fetchAvgReviews() {
+    }, [headers]);
+
+    const fetchAvgReviews = useCallback(async () => {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/avg/rating/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
             { headers }
         );
         if (!response.ok) {
-            console.log("ERRORRR")
+            console.log("ERRORRR");
+            // Handle error appropriately, perhaps setting an error state
+            return;
         }
         const data = await response.json();
         setAvgReviews(data);
-    };
-    async function fetchDoctor() {
+    }, [headers]);  // Include all variables from the enclosing scope that are used in the function
+
+    const fetchDoctor = useCallback(async () => {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/${localStorage.getItem("userId")}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
             { headers }
         );
+        if (!response.ok) {
+            console.log("ERRORRR");
+            // Handle error appropriately, perhaps setting an error state
+            return;
+        }
         const data = await response.json();
-        setDoctor(data.doctor)
-    };
+        setDoctor(data.doctor);
+    }, [headers]);  // Include all variables from the enclosing scope that are used in the function
+
     useEffect(() => {
-        fetchDoctor()
-        fetchBarChart()
-        fetchAvgReviews()
-        console.log("hi")
-    }, []);
+        fetchDoctor();
+        fetchBarChart();  // Assuming this is also wrapped in useCallback and called here
+        fetchAvgReviews();
+        console.log("Component mounted or updated");
+    }, [fetchDoctor, fetchBarChart, fetchAvgReviews]);
     return (
         <>
             {avgReviews ? <div className='flex flex-col justify-start items-center'>
@@ -107,4 +120,4 @@ const DoctorReviews = () => {
     )
 }
 
-export default DoctorReviews
+export default React.memo(DoctorReviews)

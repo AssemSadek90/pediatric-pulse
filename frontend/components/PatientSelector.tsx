@@ -1,4 +1,4 @@
-import { Fragment, SetStateAction, useState } from 'react'
+import React, { Fragment, SetStateAction, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { formatFullName, formatName } from '@/utils/formatFuncs'
@@ -26,7 +26,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function PatientSelector({
+const PatientSelector = ({
     className,
     patientList,
     message,
@@ -38,7 +38,7 @@ export default function PatientSelector({
         message: string, selected: PatientObj,
         setCurrentPatient: React.Dispatch<SetStateAction<Patient | undefined>>
         setSelected: React.Dispatch<SetStateAction<PatientObj>>,
-    }) {
+    }) => {
 
     const headers = {
         "Content-Type": "application/json",
@@ -133,3 +133,5 @@ export default function PatientSelector({
         </div>
     )
 }
+
+export default React.memo(PatientSelector)

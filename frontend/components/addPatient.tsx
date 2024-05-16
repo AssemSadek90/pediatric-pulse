@@ -125,4 +125,4 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
     )
 }
 
-export default AddPatient
+export default React.memo(AddPatient)
