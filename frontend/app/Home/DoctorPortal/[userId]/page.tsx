@@ -6,6 +6,9 @@ import NavbarLanding from '@/components/navbarLanding';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
+import DoctorAppointmentTableDrPortal from '@/components/appointmentTableDrPortal';
+
 interface Patient {
   id: number;
   age: number;
@@ -83,7 +86,7 @@ const doctorPortal = () => {
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
       <div className='w-full h-full flex flex-col overflow-y-scroll'>
-        {/* Add the appointments here, take inspiration from "SideAppointments.tsx" Component */}
+      <SideAppointmentsDrPortal/>
       </div>
     </>
   );
@@ -93,8 +96,7 @@ const doctorPortal = () => {
         Your Appointment Table
       </div>
       <div className="flex w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-        {/* Add the table here without the interactivity, take inspiration from "appointmentTable.tsx" Component */}
-      </div>
+      <DoctorAppointmentTableDrPortal/>   </div>
     </>
   );
   const items = [
