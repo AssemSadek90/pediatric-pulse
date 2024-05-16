@@ -116,10 +116,13 @@ Future<void> signUp() async {
               controller: _emailController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Email',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
             ),
             SizedBox(height: 10.0),
@@ -127,10 +130,13 @@ Future<void> signUp() async {
               controller: _userNameController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'User Name',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
             ),
             SizedBox(height: 10.0),
@@ -138,10 +144,13 @@ Future<void> signUp() async {
               controller: _passwordController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Password',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
               obscureText: true,
             ),
@@ -150,10 +159,13 @@ Future<void> signUp() async {
               controller: _firstNameController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'First Name',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
             ),
             SizedBox(height: 10.0),
@@ -161,10 +173,13 @@ Future<void> signUp() async {
               controller: _lastNameController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Last Name',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
             ),
             SizedBox(height: 10.0),
@@ -172,10 +187,13 @@ Future<void> signUp() async {
               controller: _phoneController,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Phone Number',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
             ),
             SizedBox(height: 20.0),

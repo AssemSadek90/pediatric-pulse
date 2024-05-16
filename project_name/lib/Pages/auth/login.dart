@@ -104,21 +104,27 @@ class _LoginPageState extends State<LoginPage> {
               controller: _usernameController,
               style: TextStyle(color: Colors.black), // Connect the controller to the TextFormField
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Username',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
+              )
+              ),
             SizedBox(height: 20.0),
             TextFormField(
               controller: _passwordController,
               style: TextStyle(color: Colors.black), // Connect the controller to the TextFormField
               decoration: InputDecoration(
-                fillColor: Colors.white,
-                labelStyle: TextStyle(color: Color.fromARGB(255, 255, 181, 97)),
                 labelText: 'Password',
-                filled: true,
+                hintStyle: TextStyle(color: Color(0xFF787878)),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
               obscureText: true,
             ),

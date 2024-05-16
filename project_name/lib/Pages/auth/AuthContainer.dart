@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'package:project_name/Pages/auth/StartingScreen.dart';
@@ -26,6 +27,7 @@ class _AuthContainerState extends State<AuthContainer> {
   @override
   void initState() {
     super.initState();
+    var status =  Permission.storage.request();
     // Retrieve token from shared preferences when the widget initializes
     SharedPreferences.getInstance().then((sharedPrefValue) {
       setState(() {

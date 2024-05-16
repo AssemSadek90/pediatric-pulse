@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
-    String formatHour(String hour) {
-      int h = int.parse(hour);
-      String period = h >= 12 ? 'PM' : 'AM';
-      h = h > 12 ? h - 12 : h;
-      return '$h $period';
-    }
-
-
+String formatHour(String hour) {
+  int h = int.parse(hour);
+  String period = h >= 12 ? 'PM' : 'AM';
+  h = h > 12 ? h - 12 : h;
+  return '$h $period';
+}
 
 class AppointmentView extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -22,7 +19,6 @@ class AppointmentView extends StatefulWidget {
 class _AppointmentViewState extends State<AppointmentView> {
   @override
   Widget build(BuildContext context) {
-  
     var name = "${widget.data['parentFirstName']} ${widget.data['parentLastName']}";
     var from = formatHour(widget.data['From']); // Format 'From' time to AM/PM
     var to = formatHour(widget.data['To']); // Format 'To' time to AM/PM
@@ -96,6 +92,10 @@ class _AppointmentViewState extends State<AppointmentView> {
                   ),
                 ],
               ),
+            ),
+            const Divider(
+              color: Color.fromARGB(255, 0, 0, 0),
+              thickness: 10,
             ),
           ],
         ),

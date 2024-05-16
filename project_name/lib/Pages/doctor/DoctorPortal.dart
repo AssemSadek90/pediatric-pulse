@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/auth/StartingScreen.dart';
+import 'package:project_name/Pages/doctor/EditDoctor.dart';
 import 'package:project_name/Pages/features/AppointmentView.dart';
 import 'package:project_name/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,7 +110,7 @@ class _DoctorPortalState extends State<DoctorPortal> {
         children: [
           FloatingActionButton(
             onPressed: () async{
-              //Get.to(() => const AppointmentView());
+              Get.to(() => EditProfilePage());
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(
