@@ -78,7 +78,7 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
-            "parewntPic": user.profilePicture,
+            "parentPic": user.profilePicture,
             "appointmentDate": apointment.appointmentDate,
             "From": apointment.From,
             "To": apointment.To,
