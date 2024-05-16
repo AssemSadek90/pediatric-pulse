@@ -67,7 +67,24 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
-    return appointments
+    Data = []
+    for apointment in appointments:
+        user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
+        Data.append({
+            "appointmentId": apointment.id,
+            "parentId": user.userId,
+            "patientId": patient.id,
+            "patientFirstName": patient.firstName,
+            "parentFirstName": user.firstName,
+            "parentLastName": user.lastName,
+            "parewntPic": user.profilePicture,
+            "appointmentDate": apointment.appointmentDate,
+            "From": apointment.From,
+            "To": apointment.To,
+            "isTaken": apointment.isTaken,
+        })
+    return Data
 
 @router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info")
 async def update_appointments(
