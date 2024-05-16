@@ -1,8 +1,7 @@
 "use client"
 import DoctorReviews from '@/components/DoctorReviews';
-import DoctorSelector from '@/components/DoctorSelector';
 import PatientSelector from '@/components/PatientSelector';
-import MedicalRecord from '@/components/medicalRecord';
+import MedicalRecordEdit from '@/components/medicalRecordEdit';
 import NavbarLanding from '@/components/navbarLanding';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
@@ -31,7 +30,6 @@ const doctorPortal = () => {
   const [hasAccess, setHasAccess] = useState(false)
   const [currentPatient, setCurrentPatient] = useState({} as Patient | undefined) // medical record
   const [selectedPat, setSelectedPat] = useState({ parentPic: "/default.jpg", patientFirstName: "", patientLastName: "", parentFirstName: '', parentLastName: '', patientId: 0, } as PatientObj)
-  // get selected patient inside patientSelector
   const [patientList, setPatientList] = useState([] as PatientObj[])
   const handlePageLoad = () => {
     if (localStorage.getItem("role") !== "doctor") {
@@ -64,10 +62,10 @@ const doctorPortal = () => {
     <>
       <div className='flex items-center justify-between font-bold border border-transparent'>
         <span>Patient Medical Record</span>
-        <span><PatientSelector className='' message='Please select a Patient' selected={selectedPat} setSelected={setSelectedPat} patientList={patientList} /></span>
+        <span><PatientSelector className='' message='Please select a Patient' selected={selectedPat} setSelected={setSelectedPat} setCurrentPatient={setCurrentPatient} patientList={patientList} /></span>
       </div>
       <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-        <MedicalRecord currentPatient={{} as Patient} />
+        <MedicalRecordEdit currentPatient={currentPatient} />
       </div>
     </>
   );

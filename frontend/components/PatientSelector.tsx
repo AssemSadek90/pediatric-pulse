@@ -11,6 +11,17 @@ interface PatientObj {
     parentLastName: string,
     patientId: number
 };
+interface Patient {
+    id: number;
+    age: number;
+    firstName: string;
+    lastName: string;
+    parentFirstName: string;
+    parentLastName: string;
+    parentPhoneNumber: string;
+    gender: string;
+    parentId: number;
+};
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
@@ -20,16 +31,35 @@ export default function PatientSelector({
     patientList,
     message,
     selected,
+    setCurrentPatient,
     setSelected }: {
         className: string,
         patientList: PatientObj[] | undefined,
         message: string, selected: PatientObj,
+        setCurrentPatient: React.Dispatch<SetStateAction<Patient | undefined>>
         setSelected: React.Dispatch<SetStateAction<PatientObj>>,
     }) {
 
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    };
+    async function fetchCurrentPatient(patientId: number) {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_NAME}/patient/${patientId}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+            { headers }
+        );
+        if (!response.ok) {
+            console.log("Error: Request sent no data")
+        }
+        const data = await response.json();
+        setCurrentPatient(data);
+    };
     const handleChangeDoctor = (newPatient: PatientObj) => {
         setSelected(newPatient)
+        fetchCurrentPatient(newPatient.patientId)
     }
+
     return (
         <div className={cn("flex justify-start items-center h-8 space-x-4", className)}>
             <Listbox value={selected} onChange={handleChangeDoctor} >
