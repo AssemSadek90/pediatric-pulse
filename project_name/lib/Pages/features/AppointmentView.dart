@@ -23,14 +23,14 @@ class _AppointmentViewState extends State<AppointmentView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                if (widget.data['parewntPic'] != null)
+                if (widget.data['parentPic'] != null)
                   Container(
                     width: 64,
                     height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(widget.data['parewntPic']),
+                        image: NetworkImage(widget.data['parentPic']),
                         fit: BoxFit.cover,
                       ),
                     ),

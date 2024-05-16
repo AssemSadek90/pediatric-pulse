@@ -19,6 +19,7 @@ class DoctorPortal extends StatefulWidget {
 class _DoctorPortalState extends State<DoctorPortal> {
   List<dynamic> Datas = [];
   late String? doctorName = '';
+  late String? doctorPic = '';
 
   @override
   void initState() {
@@ -37,9 +38,10 @@ class _DoctorPortalState extends State<DoctorPortal> {
         return text.split(" ").map((str) => str[0].toUpperCase() + str.substring(1)).join(" ");
       }
       doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
-      print(doctorName);
+      doctorPic = data['profilePicture'];
       setState(() {
         doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
+        doctorPic = data['profilePicture'];
       });
 
     }
@@ -67,9 +69,23 @@ class _DoctorPortalState extends State<DoctorPortal> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
-          doctorName!,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0)
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 16,
+              backgroundImage: 
+              doctorPic != null ? NetworkImage(doctorPic!) : null,
+              child: doctorPic == null ? Image.asset('assets/icon/profile.png'): null,
+              backgroundColor: Colors.transparent,              
+            ),
+            SizedBox(width: 10,),
+            Text(
+              doctorName!,
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0)
+            ),
+          ],
         ),
         centerTitle: true,
         actions: [
