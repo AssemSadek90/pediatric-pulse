@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
-import 'package:project_name/Pages/routes.dart';
+import 'package:project_name/routes.dart';
 
 
 
@@ -19,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
   late TextEditingController _userNameController;
   late TextEditingController _phoneController;
   late Map<String,dynamic> Data = {};
+  late String? token;
+  late int userId;
 
   @override
   void initState() {
@@ -65,9 +67,12 @@ Future<void> signUp() async {
       // Successful signup, handle response here
       print('Sign Up successful');
       Data = jsonDecode(response.body);
-      print(Data['role']);
-      print(Data['userId']);
-      print(Data['accessToken']);
+      token = Data['accessToken'];
+      userId = Data['userId'];
+      
+      // print(Data['role']);
+      // print(Data['userId']);
+      // print(Data['accessToken']);
       // SharedPreferences prefs = await SharedPreferences.getInstance();
       // prefs.setString('token', data[0]['accessToken']);
       // // prefs.setString('role', data[0]['role']);
@@ -186,7 +191,10 @@ Future<void> signUp() async {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PatientPortal(),
+                    builder: (context) => PatientPortal(
+                      token: token,
+                      userId: userId,
+                    ),
                   ),
                 );
               },

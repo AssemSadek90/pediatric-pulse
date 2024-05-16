@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
-import 'package:project_name/Pages/routes.dart';
+import 'package:project_name/routes.dart';
 import 'package:project_name/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(LoginPage());
-}
 
 class LoginPage extends StatefulWidget {
   @override
@@ -139,7 +134,10 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PatientPortal(),
+                        builder: (context) => PatientPortal(
+                          token: token,
+                          userId: userId,
+                        ),
                       ),
                     );
                   } else if (Data[0]['role'] == 'doctor') {
@@ -147,7 +145,10 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AdminPanal(),
+                        builder: (context) => DoctorPortal(
+                          token: token,
+                          doctorId: userId
+                        ),
                       ),
                     );
                   }
