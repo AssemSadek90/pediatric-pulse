@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+
+    String formatHour(String hour) {
+      int h = int.parse(hour);
+      String period = h >= 12 ? 'PM' : 'AM';
+      h = h > 12 ? h - 12 : h;
+      return '$h $period';
+    }
+
+
 
 class AppointmentView extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -11,9 +22,12 @@ class AppointmentView extends StatefulWidget {
 class _AppointmentViewState extends State<AppointmentView> {
   @override
   Widget build(BuildContext context) {
-    var name = "${widget.data['patientFirstName']} ${widget.data['parentFirstName']} ${widget.data['parentLastName']}";
-    var from = widget.data['From'];
-    var date = '${widget.data['appointmentDate']} From: $from To: ${widget.data['To']}';
+  
+    var name = "${widget.data['parentFirstName']} ${widget.data['parentLastName']}";
+    var from = formatHour(widget.data['From']); // Format 'From' time to AM/PM
+    var to = formatHour(widget.data['To']); // Format 'To' time to AM/PM
+    var date = '${widget.data['appointmentDate']} From: $from To: $to';
+
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -55,12 +69,23 @@ class _AppointmentViewState extends State<AppointmentView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        widget.data['patientFirstName'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        ' ($name)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
                   Text(
                     date,
