@@ -167,7 +167,12 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
     if X:
         raise HTTPException(status_code=400, detail="Invalid email")
     
-    hashed_password = utils.hash(user.password)
+    User = db.query(models.User).filter(models.User.userId == userId).first()
+    if( user.password == "" ):
+        hashed_password = User.password
+    else:
+        hashed_password = utils.hash(user.password)
+    
     user_query = db.query(models.User).filter(models.User.userId == userId)
     user_query.update({
         "userName": user.userName, 
@@ -217,8 +222,12 @@ async def update_user(user: schemas.udate_user, adminId: int, token: str, db: se
     X = db.query(models.User).filter(models.User.email == user.email, models.User.userId != user.userId).first()
     if X:
         raise HTTPException(status_code=400, detail="Invalid email")
-    
-    hashed_password = utils.hash(user.password)
+    User = db.query(models.User).filter(models.User.userId == user.userId).first()
+    if( user.password == "" ):
+        hashed_password = User.password
+    else:
+        hashed_password = utils.hash(user.password)
+
     user_query = db.query(models.User).filter(models.User.userId == user.userId)
     user_query.update({
         "userName": user.userName, 
