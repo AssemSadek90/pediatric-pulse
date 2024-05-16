@@ -2,27 +2,31 @@ import React, { useEffect, useState } from 'react'
 import { formatName, formatTime } from '@/utils/formatFuncs'
 import { CircularProgress } from "@mui/material";
 interface Appointment {
-    id: number,
-    parentId: number,
-    doctorId: number,
-    patientId: number,
-    appointmentDate: string,
-    From: string,
-    To: string,
-    isTaken: true
+    appointmentId: number;
+    parentId: number;
+    patientId: number;
+    patientFirstName: string;
+    parentFirstName: string;
+    parentLastName: string;
+    parentPic: string;
+    appointmentDate: string;
+    From: string;
+    To: string;
+    isTaken: boolean;
   }
 interface Patient {
-    id: number,
-    age: number,
+
     firstName: string,
     lastName: string,
     parentFirstName: string,
     parentLastName: string,
     parentPic: string,
+    age: number,
+    id: number,
+
     
 };
 const SideAppointmentsDrPortal = () => {
-    const [patients, setPatients] = useState({} as Record<number, Patient>);
 
     const [myAppointments, setMyAppointments] = useState([] as Appointment[])
     const headers = {
@@ -48,20 +52,17 @@ useEffect(() => {
     
   }, []);
 
-  async function fetchMyPatient(patientId: number) {
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_NAME}/patient/${patientId}/${localStorage.getItem("userId")}/?token=${localStorage.getItem("accessToken")}`,
-        { headers }
-    );
-    if (!response.ok) {
-        console.log("ERRORRR")
-    }
-    const data = await response.json();
-            setPatients((prevPatients) => ({
-                ...prevPatients,
-                [patientId]: data.patient,
-            }));
-};
+//   async function fetchMyPatient(patientId: number) {
+//     const response = await fetch(
+//         `${process.env.NEXT_PUBLIC_SERVER_NAME}/patient/${patientId}/${localStorage.getItem("userId")}/?token=${localStorage.getItem("accessToken")}`,
+//         { headers }
+//     );
+//     if (!response.ok) {
+//         console.log("ERRORRR")
+//     }
+//     const data = await response.json();
+        
+// };
 
     let myAppointmentList = myAppointments.length === 0 ? (
         <div>No appointments yet</div>
@@ -70,22 +71,19 @@ useEffect(() => {
             if (appointment.patientId !== null) {
                 console.log(appointment.patientId);
                 console.log(localStorage.getItem("userId"));
-fetchMyPatient(appointment.patientId);
+
             }
-            const patient = patients[appointment.patientId];
+            
 
             return (
                 <div className='w-[95%] h-20 text-black bg-neutral-50 border rounded-xl p-4 flex justify-between items-center'>
                 <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
                   <span>
-                    <img className='h-12 w-12 rounded-full min-w-12' src={patient?.parentPic} alt='PatPic' />
+                    <img className='h-12 w-12 rounded-full min-w-12' src={appointment?.parentPic} alt='PatPic' />
                   </span>
-                  <span className='text-neutral-700 font-semibold hover:text-black'>{formatName(patient?.firstName ?? 'N/A')} {formatName(patient?.lastName ?? 'N/A')}
+                  <span className='text-neutral-700 font-semibold hover:text-black'>{formatName(appointment?.patientFirstName ?? 'N/A')} {formatName(appointment?.parentFirstName ?? 'N/A')}
                   </span>
-                  <span className='text-neutral-700 font-light'>
-                  {`${patient?.age ?? 'N/A'} years old`}
-                 
-                  </span>    </div>
+                </div>
                 <div className='text-sm space-x-2 font-light'>
                   
                         <span>
