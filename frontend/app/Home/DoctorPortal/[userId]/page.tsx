@@ -72,7 +72,7 @@ const doctorPortal = () => {
   const Skeleton2 = () => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
-        Reviews
+        About your profile
       </div>
       <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
         <DoctorReviews />
