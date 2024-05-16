@@ -18,11 +18,35 @@ class DoctorPortal extends StatefulWidget {
 
 class _DoctorPortalState extends State<DoctorPortal> {
   List<dynamic> Datas = [];
+  late String? doctorName = '';
 
   @override
   void initState() {
     super.initState();
+    getDoctorInfo();
     getAppointment();
+  }
+
+
+  Future<void> getDoctorInfo() async{
+    final url = Uri.parse(routes.doctorInfo(widget.doctorId!, widget.token!));
+    final response = await http.get(url);
+    if (response.statusCode == 200){
+      final data = json.decode(response.body);
+      String capitalize(String text) {
+        return text.split(" ").map((str) => str[0].toUpperCase() + str.substring(1)).join(" ");
+      }
+      doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
+      print(doctorName);
+      setState(() {
+        doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
+      });
+
+    }
+    else{
+      print(response.statusCode);
+      print('Error: Failed to get data from the server.');
+    }
   }
 
   Future<void> getAppointment() async {
@@ -44,8 +68,8 @@ class _DoctorPortalState extends State<DoctorPortal> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          'Doctor Portal',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32.0)
+          doctorName!,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0)
         ),
         centerTitle: true,
         actions: [
@@ -63,25 +87,47 @@ class _DoctorPortalState extends State<DoctorPortal> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-          SharedPreferences prefs =await SharedPreferences.getInstance();
-          await prefs.remove('accessToken');
-          await prefs.remove('role');
-          await prefs.remove('userId');
-          Get.off(() => const StartingScreen());
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Container(
-          width: 30,
-          height: 30,
-          child: Image(
-            image: AssetImage('assets/icon/out.png',
-            
-          )),
-        ),
-        backgroundColor: Color.fromARGB(255, 255, 181, 97),
-      ),
+      floatingActionButton: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () async{
+              //Get.to(() => const AppointmentView());
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              width: 30,
+              height: 30,
+              child: Image(
+                image: AssetImage('assets/icon/editProfile.png',
+                
+              )),
+            ),
+            backgroundColor: Color.fromARGB(255, 255, 181, 97),
+          ),
+          SizedBox(height: 10,),
+          FloatingActionButton(
+            onPressed: () async{
+              final SharedPreferences prefs =await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              await prefs.remove('role');
+              await prefs.remove('userId');
+              Get.off(() => const StartingScreen());
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              width: 30,
+              height: 30,
+              child: Image(
+                image: AssetImage('assets/icon/out.png',
+                
+              )),
+            ),
+            backgroundColor: Color.fromARGB(255, 255, 181, 97),
+          ),
+        ],
+      ),            
       body:Container(
         child:  FutureBuilder<void>(
           future: getAppointment(),
@@ -93,15 +139,32 @@ class _DoctorPortalState extends State<DoctorPortal> {
             } else if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
-              );
+               );
             }
             else{
-              return ListView.builder(
-                itemCount: Datas.length,
-                itemBuilder: (context, index) {
-                  var Data = Datas[index];
-                  return  AppointmentView(data:Data);
-                },
+              return Column(
+                children: [
+                  SizedBox(height: 10,),
+                  Text(
+                    'Your Appointments',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22.0,
+                    ),
+                    ),
+                    SizedBox(height: 10,), // Add your text here
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: Datas.length,
+                      itemBuilder: (context, index) {
+                        var Data = Datas[index];
+                        print("Data: $Data");
+                        return  AppointmentView(data:Data);
+                      },
+                    ),
+                  ),
+                ],
               );
             }
           }

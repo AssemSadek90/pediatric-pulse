@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
+import 'package:project_name/Pages/auth/AuthContainer.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'package:project_name/routes.dart';
 import 'package:project_name/utils.dart';
@@ -129,22 +130,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               onPressed: () async {
                 await login();
-                if (Data.isNotEmpty) {
-                  if (Data[0]['role'] == 'customer') {
-                    Get.off(() =>  PatientPortal(
-                      token: token,
-                      userId: userId,
-                      )
-                    );
-                  }
-                }
-                  else if (Data[0]['role'] == 'doctor') {
-                    Get.off(() => DoctorPortal(
-                      token: token,
-                      doctorId: userId
-                      ),
-                    );
-                  }
+                    Get.off(() =>  AuthContainer());
                 },
               child: Text(
                 'Login',
