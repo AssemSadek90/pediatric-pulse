@@ -7,5 +7,6 @@ class routes {
   static String doctorInfo(int doctorId, String token) => '$baseUrl/get/doctor/$doctorId?token=$token';
   static String deleteAppointment(int doctorId, String token, int appointmentId) => '$baseUrl/delete/appointment/$appointmentId/$doctorId?token=$token';
   static String updateDoctor(int doctorId, String token) => '$baseUrl/update/doctor/$doctorId?token=$token';
+  static String updateUser(int userId, String token) => '$baseUrl/update/user/$userId?token=$token';
 
 }
