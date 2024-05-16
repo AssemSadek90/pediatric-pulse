@@ -50,7 +50,7 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     
     return{"message": "Appointment added successfully"}
 
-@router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient", response_model=schemas.AppointmentResponse)
+@router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
 async def get_appointment(parentId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
@@ -61,7 +61,7 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
     return appointments
 
 
-@router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient", response_model=schemas.AppointmentResponse)
+@router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
 async def get_appointment(doctorId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
@@ -69,7 +69,7 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
     return appointments
 
-@router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info", response_model=schemas.AppointmentResponse)
+@router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info")
 async def update_appointments(
     adminId: int,
     appointmentId: int,
