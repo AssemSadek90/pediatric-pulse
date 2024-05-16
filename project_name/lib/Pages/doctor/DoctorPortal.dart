@@ -21,6 +21,11 @@ class _DoctorPortalState extends State<DoctorPortal> {
   List<dynamic> Datas = [];
   late String? doctorName = '';
   late String? doctorPic = '';
+  late String? doctorEmail = '';
+  late String? doctorUserName = '';
+  late int? doctorPrice = 0;
+  late String? doctorFirstName = '';
+  late String? doctorLastName = '';
 
   @override
   void initState() {
@@ -40,6 +45,11 @@ class _DoctorPortalState extends State<DoctorPortal> {
       }
       doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
       doctorPic = data['profilePicture'];
+      doctorEmail = data['email'];
+      doctorUserName = data['userName'];
+      doctorPrice = data['price'];
+      doctorFirstName = data['firstName'];
+      doctorLastName = data['lastName'];
       setState(() {
         doctorName = 'DR. ${capitalize(data['firstName'])} ${capitalize(data['lastName'])}';
         doctorPic = data['profilePicture'];
@@ -69,6 +79,7 @@ class _DoctorPortalState extends State<DoctorPortal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,7 +121,16 @@ class _DoctorPortalState extends State<DoctorPortal> {
         children: [
           FloatingActionButton(
             onPressed: () async{
-              Get.to(() => EditProfilePage());
+              Get.to(() => EditProfilePage(
+                token: widget.token!,
+                doctorId: widget.doctorId!,
+                pic: doctorPic!,
+                email: doctorEmail!,
+                userName: doctorUserName!,
+                price: doctorPrice!,
+                firstName: doctorFirstName!,
+                lastName: doctorLastName!,
+              ));
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(

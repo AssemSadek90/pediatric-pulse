@@ -2,10 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'dart:convert';
 
+import 'package:project_name/routes.dart';
+
 class EditProfilePage extends StatefulWidget {
-  @override
+  final int doctorId;
+  final String? token;
+  final String? userName;
+  final String? email;
+  final String? pic;
+  final int? price;
+  final String? firstName;
+  final String? lastName;
+  const EditProfilePage ({Key? key, required this.doctorId, required this.token, this.userName, this.email, this.pic, this.price, this.firstName, this.lastName,}) : super(key: key);
+  
+  @override   
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
@@ -16,11 +29,96 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final double profileHight = 104;
   bool isVisible = false;
   bool isActive = false;
-  late var piclink;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   late TextEditingController _emailController;
   late TextEditingController _priceController;
+  late var pic = widget.pic;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
+    _emailController = TextEditingController();
+    _priceController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+
+  Future <void> updateDoctor() async{
+    final url = Uri.parse(routes.updateDoctor(widget.doctorId, widget.token!));
+    final headers = {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    var  username;
+    var  password;
+    var  email;
+    var  price;
+    var  profilePic;
+    if (_usernameController.text.isEmpty) {
+      username = widget.userName;
+    }
+    else {
+      username = _usernameController.text;
+    }
+    if(_emailController.text.isEmpty) {
+      email = widget.email;
+    }
+    else {
+      email = _emailController.text;
+    }
+    if(_passwordController.text.isEmpty) {
+      password = "";
+    }
+    else {
+      password = _passwordController.text;
+    }
+    if(_priceController.text.isEmpty) {
+      price = widget.price;
+    }
+    else {
+          price = int.parse(_priceController.text);
+    }
+    if(pic == null) {
+      profilePic = widget.pic;
+    }
+    else {
+      profilePic = pic;
+    }
+    print(username + " " + profilePic + " " + email + " " + password + " " + price.toString() + " " + widget.firstName + " " + widget.lastName);
+    final body = jsonEncode({
+      'userName': username,
+      'email': email,
+      'password': password,
+      'firstName': widget.firstName,
+      'lastName': widget.lastName,
+      'price': price,
+      'profilePic': profilePic,
+    });
+    try {
+      final response = await http.put(url, headers: headers, body: body);
+      print("update doctor response stutus code: ${response.statusCode}");
+      print("response body : ${response.body}");
+      if (response.statusCode == 200) {
+        // Successful login, handle response here
+        print('Update successful');
+      } else {
+        print('Failed to update');
+      }
+    } catch (e) {
+      print('Failed to update');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +148,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Text("Save", style: TextStyle(
               color: Colors.white,
             ),),
-            onPressed: () {
+            onPressed: () async{
               // Save button action
+              await updateDoctor();
+              Navigator.pushReplacement(
+                context,
+                new MaterialPageRoute(
+                  builder: (BuildContext context) => new DoctorPortal(token: widget.token, doctorId: widget.doctorId),
+                ),
+              );
+
             },
           ),
         ],
@@ -188,7 +294,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHight / 2,
         backgroundColor: Colors.black,
-        backgroundImage: AssetImage('assets/icon/profile.png'),
+        backgroundImage: NetworkImage(pic!),
       );
 
   void pickImageFromPhone(ImageSource source) async {
@@ -208,8 +314,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(responseString);
-        piclink = data['data']['link'];
-        print(piclink);
+        pic = data['data']['link'];
+        setState(() {
+          pic = pic;
+        });
+        print(pic);
       } else {
         print('Failed to upload image: ${response.statusCode}');
         print('Error: $responseString');
