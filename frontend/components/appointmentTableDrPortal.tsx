@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, Fragment, useEffect } from 'react';
-import { formatTime, formatTimeNum } from '@/utils/formatFuncs';
+import { formatName, formatTime, formatTimeNum } from '@/utils/formatFuncs';
 import { Transition } from '@headlessui/react';
 
 interface Appointment {
@@ -15,15 +15,14 @@ interface Appointment {
 }
 
 interface Patient {
-    id: number,
-    age: number,
-    firstName: string,
-    lastName: string,
-    parentFirstName: string,
-    parentLastName: string,
-    parentPhoneNumber: string,
-    gender: string,
-    parentId: number
+  id: number,
+  age: number,
+  firstName: string,
+  lastName: string,
+  parentFirstName: string,
+  parentLastName: string,
+  parentPic: string,
+  
 };
 
 const DoctorAppointmentTableDrPortal = () => {
@@ -37,7 +36,7 @@ const DoctorAppointmentTableDrPortal = () => {
     const hours = Array.from({ length: 9 }, (_, index) => index + 9);
   
     const [appointments, setMyAppointments] = useState([] as Appointment[])
-    const [patient, setPatient] = useState<Patient | null>(null);
+    const [patients, setPatients] = useState({} as Record<number, Patient>);
 
 
     const headers = {
@@ -47,19 +46,22 @@ const DoctorAppointmentTableDrPortal = () => {
 
 useEffect(() => {
     fetchMyAppointmentList();
-  fetchMyPatient(appointmentData.patientId, appointmentData.parentId);
+ 
   }, []);
 
-  async function fetchMyPatient(patientId: number, parentId: number) {
+  async function fetchMyPatient(patientId: number) {
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/patient/${patientId}/${parentId}?token=${localStorage.getItem("accessToken")}`,
+        `${process.env.NEXT_PUBLIC_SERVER_NAME}/patient/${patientId}/${localStorage.getItem("userId")}/?token=${localStorage.getItem("accessToken")}`,
         { headers }
     );
     if (!response.ok) {
         console.log("ERRORRR")
     }
     const data = await response.json();
-    setPatient(data);
+            setPatients((prevPatients) => ({
+                ...prevPatients,
+                [patientId]: data.patient,
+            }));
 };
 async function fetchMyAppointmentList() {
     const response = await fetch(
@@ -77,6 +79,18 @@ const handleBookAppointment = (parentId: number, doctorId: number, patientId: nu
     setAppointmentData({ parentId: parentId, doctorId: doctorId, patientId: patientId, appointmentDate: appointmentDate, From: String(From), To: String(To), isTaken: isTaken })
   }
 
+  let myAppointmentList = appointments.length === 0 ? (
+    <div>No appointments yet</div>
+) : (
+    appointments.map((appointment) => {
+        if (appointment.patientId !== null) {
+            console.log(appointment.patientId);
+            console.log(localStorage.getItem("userId"));
+fetchMyPatient(appointment.patientId);
+        }
+        const patient = patients[appointment.patientId];
+
+        
 
   return (
     <>
@@ -112,8 +126,23 @@ const handleBookAppointment = (parentId: number, doctorId: number, patientId: nu
                       className='border border-neutral-300 p-2 text-center text-md font-light hover:contrast-50 cursor-pointer'
                       onClick={appointment?.isTaken ? () => {} : () => handleBookAppointment(userId, selectedDrId, appointment?.patientId, day, hour, hour + 1, true)}
                     >
-    `         {//appointment && appointment.isTaken ? (patient ? `${patient.firstName} ${patient.lastName}, ${patient.age}` : 'Not Available') : 'Available'}
-    appointment && appointment.isTaken ? 'Booked' : 'Available'}                </td>
+    `        {appointment && appointment.isTaken ? (
+  <div className='w-[95%] h-20 text-black bg-neutral-50 border rounded-xl p-4 flex justify-between items-center'>
+    <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
+      <span>
+        <img className='h-12 w-12 rounded-full min-w-12' src={patient?.parentPic} alt='PatPic' />
+      </span>
+      <span className='text-neutral-700 font-semibold hover:text-black'>Dr.{formatName(patient?.firstName ?? 'N/A')} {formatName(patient?.lastName ?? 'N/A')}
+      </span>    </div>
+    <div className='text-sm space-x-2 font-light'>
+      <span>
+      {`${patient?.age ?? 'N/A'} years old`}
+      </span>
+      
+    </div>
+  </div>
+) : 'Available'}  
+                  </td>
                 
                 );
                 })}
@@ -124,6 +153,12 @@ const handleBookAppointment = (parentId: number, doctorId: number, patientId: nu
       </div>
     </>
   );
-};
+}
+    )
+);
+return (
+  <div className='space-y-2'>{myAppointmentList}</div>
+)
+}
 
-export default DoctorAppointmentTableDrPortal;
+export default DoctorAppointmentTableDrPortal
