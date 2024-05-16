@@ -41,12 +41,13 @@ const AddPatient = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
         const requestOptions = {
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             },
             body: JSON.stringify(formData),
         };
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/add/patient`, requestOptions);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_NAME}/add/patient?token=${localStorage.getItem("accessToken")}`, requestOptions);
             if (response.status === 201 || response.status === 200) {
                 setLoading(false)
                 setOpenModal(!openModal)

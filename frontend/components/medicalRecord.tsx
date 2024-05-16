@@ -62,7 +62,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Treatment tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord && medicalRecord?.treatment}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.treatment)}</pre>
                 </div>
             ),
         },
@@ -82,7 +82,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Medications tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord?.medications}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.medications)}</pre>
                 </div>
             ),
         },
@@ -92,7 +92,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Radiology Report tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord?.radiologyReport}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.radiologyReport)}</pre>
                 </div>
             ),
         },
@@ -102,7 +102,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Allergies tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord?.allergies}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.allergies)}</pre>
                 </div>
             ),
         },
@@ -112,7 +112,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Past Conditions tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord?.pastConditions}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.pastConditions)}</pre>
                 </div>
             ),
         },
@@ -122,7 +122,7 @@ const medicalRecord = ({ currentPatient }: { currentPatient: Patient | undefined
             content: (
                 <div className="w-full overflow-hidden relative h-5/6 rounded-2xl p-4 text-black bg-neutral-50">
                     <p className="text-xl border-b-2 border-neutral-200">Surgical History tab</p>
-                    <pre className="pt-4 text-md">{medicalRecord?.surgicalHistory}</pre>
+                    <pre className="pt-4 text-md">{formatStringWithCommas(medicalRecord?.surgicalHistory)}</pre>
                 </div>
             ),
         },
