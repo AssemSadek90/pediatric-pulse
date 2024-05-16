@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
@@ -54,13 +55,13 @@ class _LoginPageState extends State<LoginPage> {
       Data = jsonDecode(response.body) as List<dynamic>;
       token = Data[0]['accessToken'];
       userId = Data[0]['userId'];
-      // print(Data[0]['role']);
-      // print(Data[0]['userId']);
-      // print(Data[0]['accessToken']);
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setString('token', Data[0]['accessToken']);
-      // prefs.setString('role', Data[0]['role']);
-      // prefs.setInt('userId', Data[0]['userId']);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', Data[0]['accessToken']);
+      await prefs.setString('role', Data[0]['role']);
+      await prefs.setInt('userId', Data[0]['userId']);
+      print(Data[0]['role']);
+      print(Data[0]['userId']);
+      print(Data[0]['accessToken']);
       
     } else {
       // Error in login, handle error response here
@@ -130,30 +131,21 @@ class _LoginPageState extends State<LoginPage> {
                 await login();
                 if (Data.isNotEmpty) {
                   if (Data[0]['role'] == 'customer') {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PatientPortal(
-                          token: token,
-                          userId: userId,
-                        ),
-                      ),
-                    );
-                  } else if (Data[0]['role'] == 'doctor') {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DoctorPortal(
-                          token: token,
-                          doctorId: userId
-                        ),
-                      ),
+                    Get.off(() =>  PatientPortal(
+                      token: token,
+                      userId: userId,
+                      )
                     );
                   }
                 }
-              },
+                  else if (Data[0]['role'] == 'doctor') {
+                    Get.off(() => DoctorPortal(
+                      token: token,
+                      doctorId: userId
+                      ),
+                    );
+                  }
+                },
               child: Text(
                 'Login',
                 style: TextStyle(color: Colors.white),

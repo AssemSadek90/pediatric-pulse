@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:project_name/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientPortal extends StatefulWidget {
   final String? token;
-  final int userId;
+  final int? userId;
   const PatientPortal({super.key, required this.token, required this.userId});
 
   @override
@@ -16,7 +17,7 @@ class _PatientPortalState extends State<PatientPortal> {
 
 
   Future<void> getUserData() async {
-    final url = Uri.parse(routes.getUser(widget.userId, widget.token!));
+    final url = Uri.parse(routes.getUser(widget.userId!, widget.token!));
     final headers = {
       'accept': 'application/json',
     };
@@ -50,6 +51,15 @@ class _PatientPortalState extends State<PatientPortal> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32.0)
         ),
         centerTitle: true,
+        actions: [
+          ElevatedButton(onPressed: () async { 
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('accessToken');
+              await prefs.remove('role');
+              await prefs.remove('userId');
+           }, 
+          child: Text('LogOut'),)
+        ],
       ),
     );
   }

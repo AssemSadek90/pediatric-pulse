@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -70,13 +72,10 @@ Future<void> signUp() async {
       token = Data['accessToken'];
       userId = Data['userId'];
       
-      // print(Data['role']);
-      // print(Data['userId']);
-      // print(Data['accessToken']);
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setString('token', data[0]['accessToken']);
-      // // prefs.setString('role', data[0]['role']);
-      // // prefs.setInt('userId', data[0]['userId']);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', Data['accessToken']);
+      await prefs.setString('role', Data['role']);
+      await prefs.setInt('userId', Data['userId']);
     } else {
       // Error in signup, handle error response here
       print('Sign Up failed');
@@ -187,16 +186,12 @@ Future<void> signUp() async {
               ),
               onPressed: () async {
                 await signUp();
-                Navigator.pop(context);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PatientPortal(
-                      token: token,
-                      userId: userId,
-                    ),
-                  ),
+                Get.off(() =>  PatientPortal(
+                  token: token,
+                  userId: userId,
+                  )
                 );
+                
               },
               child: Text(
                 'Sign Up',
