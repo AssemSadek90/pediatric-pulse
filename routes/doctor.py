@@ -237,7 +237,7 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
         "numberOfRating": user.numberOfRating,
         "price": user.price
     }
-    
+    return newDoctor
 
 @router.put("/update/doctor/admin/{adminId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
 async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
