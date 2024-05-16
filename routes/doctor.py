@@ -205,8 +205,11 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
     X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email, models.Doctor.id != doctorId).first()
     if X:
         return {"message": "invalid email"}
-    
-    hashed_password = utils.hash(doctor.password)
+    Doctor = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
+    if( doctor.password == "" ):
+        hashed_password = Doctor.password
+    else:
+        hashed_password = utils.hash(doctor.password)
     user_query = db.query(models.Doctor).filter(models.Doctor.id == doctorId)
     user_query.update({
         "userName": doctor.userName, 
@@ -253,7 +256,6 @@ async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, 
     X = db.query(models.Doctor).filter(models.Doctor.email == doctor.email, models.Doctor.id != doctor.doctorId).first()
     if X:
         return {"message": "invalid email"}
-    
     hashed_password = utils.hash(doctor.password)
     user_query = db.query(models.Doctor).filter(models.Doctor.id == doctor.doctorId)
     user_query.update({
