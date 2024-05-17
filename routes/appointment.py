@@ -86,6 +86,36 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
         })
     return Data
 
+
+@router.get('/get/all/appointments/{staffId}', description="This route returns all appointments")
+async def get_all_appointments(staffId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(staffId, token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="unauthorized")
+    appointments = db.query(models.Appointment).all()
+    Data = []
+    for apointment in appointments:
+        user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
+        Data.append({
+            "appointmentId": apointment.id,
+            "parentId": user.userId,
+            "patientId": patient.id,
+            "patientFirstName": patient.firstName,
+            "parentFirstName": user.firstName,
+            "parentLastName": user.lastName,
+            "dctorId": doctor.id,
+            "doctorFirstName": doctor.firstName,
+            "doctorLastName": doctor.lastName,
+            "parentPic": user.profilePicture,
+            "appointmentDate": apointment.appointmentDate,
+            "From": apointment.From,
+            "To": apointment.To,
+            "isTaken": apointment.isTaken,
+        })
+    return Data
+
 @router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info")
 async def update_appointments(
     adminId: int,
