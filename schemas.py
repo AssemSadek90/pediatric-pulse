@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class User(BaseModel):
-    userId: int
+    id: int
     firstName: str
     lastName: str
     email: str

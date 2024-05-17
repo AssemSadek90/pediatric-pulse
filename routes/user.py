@@ -110,7 +110,7 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     # Construct the user data dictionary using the schema structure
    # Construct the user data dictionary using the schema structure
     user_data = {
-        "userId": user.userId,
+        "id": user.userId,
         "firstName": user.firstName,
         "lastName": user.lastName,
         "email": user.email,
@@ -137,7 +137,7 @@ async def get_all_users(adminId: int, token: str, db: session = Depends(DataBase
     newUsers =[]
     for user in users:
         newUser ={
-        "userId": user.userId,
+        "id": user.userId,
         "userName": user.userName,
         "email": user.email,
         "firstName": user.firstName,
@@ -189,7 +189,7 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
 
     user= db.query(models.User).filter(models.User.userId == userId).first()
     newUser ={
-        "userId": user.userId,
+        "id": user.userId,
         "userName": user.userName,
         "email": user.email,
         "firstName": user.firstName,
@@ -244,7 +244,7 @@ async def update_user(user: schemas.udate_user, adminId: int, token: str, db: se
 
     User= db.query(models.User).filter(models.User.userId == user.userId).first()
     newUser ={
-        "userId": User.userId,
+        "id": User.userId,
         "userName": User.userName,
         "email": User.email,
         "firstName": User.firstName,
