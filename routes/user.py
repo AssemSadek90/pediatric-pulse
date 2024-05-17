@@ -32,7 +32,7 @@ async def CreateUser(user: schemas.userSginup, db: session = Depends(DataBase.ge
     hashed_password = utils.hash(user.password)
     
     # Create a new instance of the User model with the hashed password
-    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = "customer")
+    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = "customer", profilePicture = 'https://i.imgur.com/9g7aq8u.png')
     
     # Add the new_user instance to the session
     db.add(new_user)
@@ -76,7 +76,7 @@ async def addUser(user: schemas.addUser, adminId: int, token: str, db: session =
     hashed_password = utils.hash(user.password)
     
     # Create a new instance of the User model with the hashed password
-    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = user.role)
+    new_user = models.User(userName=user.userName, email=user.email, password=hashed_password, firstName = user.firstName, lastName = user.lastName, PhoneNumber = user.phone, role = user.role, profilePicture = 'https://i.imgur.com/9g7aq8u.png')
     
     # Add the new_user instance to the session
     db.add(new_user)
