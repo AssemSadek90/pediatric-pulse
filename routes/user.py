@@ -125,6 +125,40 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
+@router.get("/get/user/{userId}/{adminId}", description="This route returns user data via userId and takes the token in the header", response_model=schemas.User)
+async def get_user_by_id(userId: int, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if not admin: 
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    
+    user = db.query(models.User).filter(models.User.userId == userId).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Construct the user data dictionary using the schema structure
+   # Construct the user data dictionary using the schema structure
+    user_data = {
+        "userId": user.userId,
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "email": user.email,
+        "userName": user.userName,
+        "createdAt": str(user.createdAt),  # Convert datetime to string
+        "phone": user.PhoneNumber,
+        "age": user.age,  # Will be None if age is None
+        "profilePicture": user.profilePicture,  # Will be None if profilePicture is None
+        "role": user.role
+    }
+
+    return user_data
+
+
 @router.get('/get/all/users/{adminId}', description="This route returns all users", response_model=list[schemas._User])
 async def get_all_users(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId, token)
