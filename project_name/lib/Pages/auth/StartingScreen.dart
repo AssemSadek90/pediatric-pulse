@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_name/Pages/auth/login.dart';
-import 'package:project_name/Pages/auth/signup.dart';
+import 'package:project_name/Pages/auth/signupPage.dart';
 
 class StartingScreen extends StatefulWidget {
   const StartingScreen({super.key});

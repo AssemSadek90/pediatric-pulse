@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';

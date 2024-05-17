@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(color: Colors.black), // Connect the controller to the TextFormField
               decoration: InputDecoration(
                 labelText: 'Username',
-                hintStyle: TextStyle(color: Color(0xFF787878)),
+                hintStyle: TextStyle(color: Color.fromARGB(255, 124, 123, 123)),
                 border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
               ),

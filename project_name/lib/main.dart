@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:project_name/Pages/auth/AuthContainer.dart';
 
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());

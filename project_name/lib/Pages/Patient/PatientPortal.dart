@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:project_name/Pages/auth/StartingScreen.dart';
+import 'package:project_name/Pages/features/NaveBar.dart';
 import 'package:project_name/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,22 +48,29 @@ class _PatientPortalState extends State<PatientPortal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(
-          'Patient Portal',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32.0)
-        ),
-        centerTitle: true,
-        actions: [
-          ElevatedButton(onPressed: () async { 
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('accessToken');
-              await prefs.remove('role');
-              await prefs.remove('userId');
-           }, 
-          child: Text('LogOut'),)
-        ],
+        title: const Text('Patient Portal'),
+        automaticallyImplyLeading: false,
       ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                getUserData();
+              },
+              child: const Text('Get User Data'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.to(StartingScreen());
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+    bottomNavigationBar: NavBar()
     );
   }
 }

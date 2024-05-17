@@ -158,12 +158,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
             onPressed: () async{
               // Save button action
               await updateuser();
-              Navigator.pushReplacement(
-                context,
-                new MaterialPageRoute(
-                  builder: (BuildContext context) => new PatientPortal(token: widget.token, userId: widget.userId),
-                ),
-              );
+              // Navigator.pushReplacement(
+              //   context,
+              //   new MaterialPageRoute(
+              //     builder: (BuildContext context) => new PatientPortal(token: widget.token, userId: widget.userId),
+              //   ),
+              // );
 
             },
           ),
