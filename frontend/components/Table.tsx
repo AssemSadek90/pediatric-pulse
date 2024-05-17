@@ -32,7 +32,7 @@ const Table = (
     const Row = ({ index, style }: ListChildComponentProps) => {
         const row = data[index];
         return (
-            <div style={style} className="flex border border-b w-full">
+            <div style={style} className="flex py-1 divide-x divide-neutral-200 border border-b w-full">
                 {columns.map((column, colIndex) => (
                     <div key={column} style={{ width: headers[colIndex]?.size }} className="flex p-2 font-medium items-center justify-center">{row[column]}</div>
                 ))}
@@ -52,7 +52,7 @@ const Table = (
     })
     return (
         <div style={{ width, height }}>
-            <div className="flex bg-neutral-200 rounded-t-xl py-1 divide-x divide-neutral-400 font-bold sticky top-0 z-10 w-full">
+            <div className="flex bg-neutral-200 rounded-t-xl py-1 divide-x divide-neutral-300 font-bold sticky top-0 z-10 w-full">
                 {tableHeaders}
                 <div className='w-[200px] flex justify-center'>
                     <button onClick={() => setAddModal(true)} className='px-4 py-2 rounded-3xl text-sm font-bold hover:bg-green-100 hover:transition duration-150 ease-linear flex items-center'>
