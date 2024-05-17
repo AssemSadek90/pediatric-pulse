@@ -10,17 +10,18 @@ const staffPortal = () => {
   const router = useRouter();
   const [hasAccess, setHasAccess] = useState(true)
   const [section, setSection] = useState(1)
-  // const handlePageLoad = () => {
-  //   if (localStorage.getItem("role") !== "staff") {
-  //     router.push('/Forbidden')
-  //   }
-  //   else {
-  //     setHasAccess(true)
-  //   }
-  // }
-  // useEffect(() => {
-  //   handlePageLoad()
-  // }, [hasAccess]);
+  const handlePageLoad = () => {
+    if (localStorage.getItem("role") !== "staff") {
+      router.push('/Forbidden')
+    }
+    else {
+      setHasAccess(true)
+    }
+  }
+  useEffect(() => {
+    handlePageLoad()
+  }, [hasAccess]);
+  
   return (
     <>
       {hasAccess ?
