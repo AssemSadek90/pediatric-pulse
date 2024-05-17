@@ -135,6 +135,7 @@ class updateUser(BaseModel):
     phoneNumber: Optional[str]
     age: Optional[int]
     profilePicture: str
+    role: str
 
 class udate_user(updateUser):
     userId: int

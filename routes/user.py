@@ -216,7 +216,8 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
         "lastName": user.lastName,
         "profilePicture":user.profilePicture, 
         "PhoneNumber": user.phoneNumber,
-        "age": user.age
+        "age": user.age,
+        "role": user.role
         })
     
     db.commit()
