@@ -126,6 +126,7 @@ class updateDoctor(BaseModel):
 class update_doctor(updateDoctor):
     doctorId: int
 
+
 class updateUser(BaseModel):
     userName: str
     email: str
@@ -135,10 +136,11 @@ class updateUser(BaseModel):
     phoneNumber: Optional[str]
     age: Optional[int]
     profilePicture: str
-    role: str
+
 
 class udate_user(updateUser):
     userId: int
+    role: str
 
 class updatePatient(BaseModel):
     age: int
