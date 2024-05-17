@@ -20,49 +20,49 @@ interface Appointment {
 
 const DoctorAppointmentTableDrPortal = () => {
 
-    
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
-    const hours = Array.from({ length: 9 }, (_, index) => index + 9);
-  
-    const [appointments, setMyAppointments] = useState([] as Appointment[])
 
-    //create list called patients
-    const headers = {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+  const hours = Array.from({ length: 9 }, (_, index) => index + 9);
+
+  const [appointments, setMyAppointments] = useState([] as Appointment[])
+
+  //create list called patients
+  const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-};
+  };
 
-useEffect(() => {
- 
-     fetchMyAppointmentList();
-    
-});
+  useEffect(() => {
+
+    fetchMyAppointmentList();
+
+  });
 
 
-async function fetchMyAppointmentList() {
+  async function fetchMyAppointmentList() {
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/appointments/table/${localStorage.getItem("userId")}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
-        { headers }
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/doctor/appointments/table/${localStorage.getItem("userId")}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+      { headers }
     );
     if (!response.ok) {
-        console.log("ERRORRR")
+      console.log("ERRORRR")
     }
     const data = await response.json();
     setMyAppointments(data);
     // for (let i = 0; i < data.length; i++) {
     //     await fetchMyPatient(data[i].patientId);
     // }
-    
-};
+
+  };
 
 
 
-      
+
 
   return (
     <>
-      
-      
+
+
       <div className='w-full h-full p-4'>
         <table className='w-full rounded-t-3xl rounded-t-3xl h-full p-2 bg-neutral-100'>
           <thead className='p-2'>
@@ -87,30 +87,29 @@ async function fetchMyAppointmentList() {
                       style={
                         {
                           backgroundColor: appointment && appointment.isTaken ? '#ffffff' : '#ecfccb',
-                          cursor: 'not-allowed' ,
                         }
                       }
-                      className='border border-neutral-300 p-2 text-center text-md font-light hover:contrast-50 cursor-pointer'
+                      className='border border-neutral-300 px-2 text-center text-md font-light'
                     >
-            {
-  appointment && appointment.isTaken ? (
-    <div className='w-[100%] h-10 text-black bg-neutral-50 border rounded-xl p-4 flex justify-between items-center'>
-      <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
-        <span>
-          <img className='h-9 w-9 rounded-full min-w-9' src={appointment?.parentPic} alt='PatPic' />
-        </span>
-        <span className='text-neutral-700 font-semibold hover:text-black'>{formatName(appointment?.patientFirstName ?? 'N/A')} {formatName(appointment?.parentFirstName ?? 'N/A')}
-        </span>    
-      </div>
-      
-       
-    </div>
-  ) : 'Available'
-                } 
-            
-                  </td>
-                
-                );
+                      {
+                        appointment && appointment.isTaken ? (
+                          <div className='w-[100%] h-10 text-black bg-neutral-50 rounded-xl flex justify-center items-center'>
+                            <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
+                              <span>
+                                <img className='h-9 w-9 rounded-full min-w-9' src={appointment?.parentPic} alt='PatPic' />
+                              </span>
+                              <span className='text-neutral-700 font-semibold hover:text-black'>{formatName(appointment?.patientFirstName ?? 'N/A')} {formatName(appointment?.parentFirstName ?? 'N/A')}
+                              </span>
+                            </div>
+
+
+                          </div>
+                        ) : 'Available'
+                      }
+
+                    </td>
+
+                  );
                 })}
               </tr>
             ))}
@@ -120,6 +119,6 @@ async function fetchMyAppointmentList() {
     </>
   );
 }
-    
+
 
 export default DoctorAppointmentTableDrPortal

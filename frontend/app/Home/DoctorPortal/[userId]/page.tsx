@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
 import DoctorAppointmentTableDrPortal from '@/components/appointmentTableDrPortal';
+import LogoutButton from '@/components/LogoutButton';
 
 interface Patient {
   id: number;
@@ -74,31 +75,34 @@ const doctorPortal = () => {
   ));
   const Skeleton2 = React.memo(() => (
     <>
-      <div className='flex items-start font-bold border border-transparent'>
+      <div className='flex justify-between items-center font-bold border border-transparent'>
         About your profile
+        <span>
+          <LogoutButton />
+        </span>
       </div>
       <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
         <DoctorReviews />
       </div>
     </>
   ));
-  const Skeleton3 = () => (
+  const Skeleton3 = React.memo(() => (
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
       <div className='w-full h-full flex flex-col overflow-y-scroll'>
-      <SideAppointmentsDrPortal/>
+        <SideAppointmentsDrPortal />
       </div>
     </>
-  );
-  const Skeleton4 = () => (
+  ));
+  const Skeleton4 = React.memo(() => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
         Your Appointment Table
       </div>
       <div className="flex w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-      <DoctorAppointmentTableDrPortal/>   </div>
+        <DoctorAppointmentTableDrPortal />   </div>
     </>
-  );
+  ));
   const items = [
     {
       description: 'You can edit the patients medical record.',
