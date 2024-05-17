@@ -137,7 +137,21 @@ class updateUser(BaseModel):
     age: Optional[int]
     profilePicture: str
 
-
+class allAppointment(BaseModel):
+    appointmentId: int
+    parentId: int
+    patientId: int
+    patientFirstName: str
+    parentFirstName: str
+    parentLastName: str
+    dctorId: int
+    doctorFirstName: str
+    doctorLastName: str
+    parentPic: str
+    appointmentDate: str
+    From: int
+    To: int
+    isTaken: bool
 class udate_user(updateUser):
     userId: int
     role: str

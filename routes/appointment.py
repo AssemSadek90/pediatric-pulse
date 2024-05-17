@@ -87,7 +87,7 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     return Data
 
 
-@router.get('/get/all/appointments/{staffId}', description="This route returns all appointments")
+@router.get('/get/all/appointments/{staffId}', description="This route returns all appointments", response_model=list[schemas.allAppointment])
 async def get_all_appointments(staffId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(staffId, token)
     if not token_data:
