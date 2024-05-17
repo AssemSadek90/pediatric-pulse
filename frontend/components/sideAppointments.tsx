@@ -27,11 +27,14 @@ const SideAppointments = () => {
     const [myAppointments, setMyAppointments] = useState([] as Appointment[])
     const [doctors, setDoctors] = useState({} as Record<number, DoctorObj>);
     const [loading, setLoading] = useState(false)
+    const [loadingList, setLoadingList] = useState(false)
+
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`
     };
     async function fetchMyAppointmentList() {
+        setLoadingList(true)
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_NAME}/get/appointment/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
             { headers }
@@ -39,8 +42,12 @@ const SideAppointments = () => {
         if (!response.ok) {
             console.log("ERRORRR")
         }
+        if (response.ok) {
+            setLoadingList(false)
+        }
         const data = await response.json();
         setMyAppointments(data);
+        setLoadingList(false)
     };
     async function fetchDoctor(doctorId: number) {
         if (!doctors[doctorId]) {
@@ -109,8 +116,8 @@ const SideAppointments = () => {
         })
     );
     return (
-        <div className='space-y-2'>{myAppointmentList}</div>
+        <>{!loadingList ? <div className='space-y-2'>{myAppointmentList}</div> : <div className="w-full h-full flex justify-center items-center"><CircularProgress color="primary" size={'10rem'} /></div>}</>
     )
 }
 
-export default SideAppointments
+export default React.memo(SideAppointments)

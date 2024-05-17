@@ -77,7 +77,7 @@ const Navbar = ({
   };
   async function DeletePatient(patiendId: number) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_NAME}/delete/patient/${patiendId}?token=${localStorage.getItem("accessToken")}`,
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/delete/patient/${patiendId}/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
       { method: 'DELETE', headers }
     );
     if (response.ok) {
@@ -138,4 +138,4 @@ const Navbar = ({
     </nav>
   );
 };
-export default Navbar;
+export default React.memo(Navbar);

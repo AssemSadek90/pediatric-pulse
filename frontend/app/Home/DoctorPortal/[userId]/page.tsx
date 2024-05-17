@@ -1,9 +1,14 @@
 "use client"
-import MedicalRecord from '@/components/medicalRecord';
+import DoctorReviews from '@/components/DoctorReviews';
+import PatientSelector from '@/components/PatientSelector';
+import MedicalRecordEdit from '@/components/medicalRecordEdit';
 import NavbarLanding from '@/components/navbarLanding';
 import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
+import DoctorAppointmentTableDrPortal from '@/components/appointmentTableDrPortal';
+
 interface Patient {
   id: number;
   age: number;
@@ -15,9 +20,20 @@ interface Patient {
   gender: string;
   parentId: number;
 };
+interface PatientObj {
+  parentPic: string,
+  patientFirstName: string,
+  patientLastName: string,
+  parentFirstName: string,
+  parentLastName: string,
+  patientId: number
+};
 const doctorPortal = () => {
   const router = useRouter();
   const [hasAccess, setHasAccess] = useState(false)
+  const [currentPatient, setCurrentPatient] = useState({} as Patient | undefined) // medical record
+  const [selectedPat, setSelectedPat] = useState({ parentPic: "/default.jpg", patientFirstName: "", patientLastName: "", parentFirstName: '', parentLastName: '', patientId: 0, } as PatientObj)
+  const [patientList, setPatientList] = useState([] as PatientObj[])
   const handlePageLoad = () => {
     if (localStorage.getItem("role") !== "doctor") {
       router.push('/Forbidden')
@@ -25,32 +41,52 @@ const doctorPortal = () => {
     else {
       setHasAccess(true)
     }
-  }
-  const Skeleton1 = () => (
-    <>
-      <div className='flex items-start font-bold border border-transparent'>
-        Patient Medical Record
-      </div>
-      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-        <MedicalRecord currentPatient={{} as Patient} />
-      </div>
-    </>
-  );
-  const Skeleton2 = () => (
-    <>
-      <div className='flex items-start font-bold border border-transparent'>
-        Reviews
-      </div>
-      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+  };
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+  };
+  async function fetchPatientList() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/patientList/${localStorage.getItem("userId")}?token=${localStorage.getItem("accessToken")}`,
+      { headers }
+    );
+    if (!response.ok) {
+      console.log("Error: Request sent no data")
+    }
+    const data = await response.json();
+    setPatientList(data);
+  };
+  useEffect(() => {
+    fetchPatientList();
+  }, []);
 
+  const Skeleton1 = React.memo(() => (
+    <>
+      <div className='flex items-center justify-between font-bold border border-transparent'>
+        <span>Patient Medical Record</span>
+        <span><PatientSelector className='' message='Please select a Patient' selected={selectedPat} setSelected={setSelectedPat} setCurrentPatient={setCurrentPatient} patientList={patientList} /></span>
+      </div>
+      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <MedicalRecordEdit currentPatient={currentPatient} />
       </div>
     </>
-  );
+  ));
+  const Skeleton2 = React.memo(() => (
+    <>
+      <div className='flex items-start font-bold border border-transparent'>
+        About your profile
+      </div>
+      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <DoctorReviews />
+      </div>
+    </>
+  ));
   const Skeleton3 = () => (
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
       <div className='w-full h-full flex flex-col overflow-y-scroll'>
-        {/* Add the appointments here, take inspiration from "SideAppointments.tsx" Component */}
+      <SideAppointmentsDrPortal/>
       </div>
     </>
   );
@@ -60,8 +96,7 @@ const doctorPortal = () => {
         Your Appointment Table
       </div>
       <div className="flex w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-        {/* Add the table here without the interactivity, take inspiration from "appointmentTable.tsx" Component */}
-      </div>
+      <DoctorAppointmentTableDrPortal/>   </div>
     </>
   );
   const items = [
@@ -113,4 +148,4 @@ const doctorPortal = () => {
   )
 }
 
-export default doctorPortal
+export default React.memo(doctorPortal)

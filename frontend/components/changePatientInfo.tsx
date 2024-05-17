@@ -104,4 +104,4 @@ const changePatientInfo = ({ currentPatient }: { currentPatient: Patient | undef
     )
 }
 
-export default changePatientInfo
+export default React.memo(changePatientInfo)

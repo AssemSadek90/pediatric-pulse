@@ -7,12 +7,13 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import MedicalRecord from "@/components/medicalRecord"
 import DoctorSelector from '@/components/DoctorSelector';
-import AppointmentTable from "@/components/appointmentTable";
+import DoctorAppointmentTable from "@/components/appointmentTable";
 import ChangeProfileInfo from "@/components/changeProfileInfo";
 import RatingCards from "@/components/ratingCards"
 import { CircularProgress } from '@mui/material';
 import SideAppointments from '@/components/sideAppointments';
 import { formatName } from '@/utils/formatFuncs';
+import SideAppointmentsDrPortal from '@/components/sideAppointmentsDrPortal';
 
 interface Patient {
   id: number;
@@ -121,7 +122,7 @@ const patientPortal = () => {
     fetchDoctorList();
     fetchCurrrentUser();
   }, []);
-  const Skeleton1 = () => (
+  const Skeleton1 = React.memo(() => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
         Patient Medical Record
@@ -130,8 +131,8 @@ const patientPortal = () => {
         <MedicalRecord currentPatient={currentPatient} />
       </div>
     </>
-  );
-  const Skeleton2 = () => (
+  ));
+  const Skeleton2 = React.memo(() => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
         Change your patient's data
@@ -140,14 +141,14 @@ const patientPortal = () => {
         <ChangePatientInfo currentPatient={currentPatient} />
       </div>
     </>
-  );
-  const Skeleton3 = () => (
+  ));
+  const Skeleton3 = React.memo(() => (
     <>
       <div className="flex flex-1 w-full h-fit rounded-xl font-bold ">Your Appointments</div>
       <div className='w-full h-full flex flex-col overflow-y-scroll'><SideAppointments /></div>
     </>
-  );
-  const Skeleton4 = () => (
+  ));
+  const Skeleton4 = React.memo(() => (
     <>
       <div className='flex items-start font-bold border border-transparent'>
         Book an Appointment
@@ -160,11 +161,11 @@ const patientPortal = () => {
             setSelected={setSelectedDr} appointments={appointments}
             setAppointments={setAppointments} className="pl-4"
           />
-          <AppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
+          <DoctorAppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
         </div>
       </div>
     </>
-  );
+  ));
   const items = [
     {
       description: 'Contact your doctor if something is wrong',
@@ -223,4 +224,4 @@ const patientPortal = () => {
   )
 }
 
-export default patientPortal
+export default React.memo(patientPortal)

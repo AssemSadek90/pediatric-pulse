@@ -137,7 +137,7 @@ const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUse
                             </div>
                             <LabelInputContainer className="mb-4">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" name="password" value={formData.password} onChange={handleChange} required placeholder="" type="password" />
+                                <Input id="password" name="password" value={formData.password} onChange={handleChange} placeholder="" type="password" />
                             </LabelInputContainer>
                             {/* <LabelInputContainer className="mb-4">
                                 <Label htmlFor="profilePicture">Profile Picture</Label>
@@ -164,4 +164,4 @@ const ChangeProfileInfo = ({ openModalProfile, setOpenModalProfile, user, setUse
     )
 }
 
-export default ChangeProfileInfo
+export default React.memo(ChangeProfileInfo)
