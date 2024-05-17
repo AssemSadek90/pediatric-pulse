@@ -110,7 +110,7 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     # Construct the user data dictionary using the schema structure
    # Construct the user data dictionary using the schema structure
     user_data = {
-        "id": user.userId,
+        "userId": user.userId,
         "firstName": user.firstName,
         "lastName": user.lastName,
         "email": user.email,
@@ -125,7 +125,7 @@ async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase
     return user_data
 
 
-@router.get('/get/all/users/{adminId}', description="This route returns all users", response_model=list[schemas.User])
+@router.get('/get/all/users/{adminId}', description="This route returns all users", response_model=list[schemas._User])
 async def get_all_users(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
@@ -189,7 +189,7 @@ async def update_user(user: schemas.updateUser, userId: int, token: str, db: ses
 
     user= db.query(models.User).filter(models.User.userId == userId).first()
     newUser ={
-        "id": user.userId,
+        "userId": user.userId,
         "userName": user.userName,
         "email": user.email,
         "firstName": user.firstName,
@@ -244,7 +244,7 @@ async def update_user(user: schemas.udate_user, adminId: int, token: str, db: se
 
     User= db.query(models.User).filter(models.User.userId == user.userId).first()
     newUser ={
-        "id": User.userId,
+        "userId": User.userId,
         "userName": User.userName,
         "email": User.email,
         "firstName": User.firstName,

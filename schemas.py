@@ -4,8 +4,19 @@ from typing import Optional
 from pydantic import BaseModel
 from typing import Optional
 
-class User(BaseModel):
+class _User (BaseModel):
     id: int
+    firstName: str
+    lastName: str
+    email: str
+    userName: str
+    createdAt: str
+    phone: str
+    age: Optional[int]
+    profilePicture: Optional[str]
+    role: str
+class User(BaseModel):
+    userId: int
     firstName: str
     lastName: str
     email: str
