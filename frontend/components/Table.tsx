@@ -3,6 +3,7 @@ import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 import { MdOutlineEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import styles from "@/styles/Table.module.css"
 
 
 const Table = (
@@ -51,8 +52,8 @@ const Table = (
         return <div style={{ width: header.size }} className="flex p-2 items-center justify-center">{header.label}</div>
     })
     return (
-        <div style={{ width, height }}>
-            <div className="flex bg-neutral-200 rounded-t-xl py-1 divide-x divide-neutral-300 font-bold sticky top-0 z-10 w-full">
+        <div className={styles.table_container} style={{ width, height }}>
+            <div className="flex bg-neutral-200 border border-neutral-400 rounded-t-xl py-1 divide-x divide-neutral-300 font-bold sticky top-0 z-10 w-full">
                 {tableHeaders}
                 <div className='w-[200px] flex justify-center'>
                     <button onClick={() => setAddModal(true)} className='px-4 py-2 rounded-3xl text-sm font-bold hover:bg-green-100 hover:transition duration-150 ease-linear flex items-center'>
@@ -65,6 +66,7 @@ const Table = (
                 itemCount={data.length}
                 itemSize={rowHeight}
                 width={width}
+                className='border border-neutral-400 rounded-b-xl'
             >
                 {Row}
             </List>
