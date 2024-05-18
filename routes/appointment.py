@@ -66,6 +66,7 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
             "appointmentId": apointment.id,
             "parentId": user.userId,
             "patientId": patient.id,
+            "doctorId": apointment.doctorId,
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
@@ -116,13 +117,13 @@ async def get_appointment(adminId: int, token: str, db: session = Depends(DataBa
         patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
         Data.append({
-            "appointmentId": apointment.id,
+            "id": apointment.id,
             "parentId": user.userId,
             "patientId": patient.id,
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
-            "dctorId": doctor.id,
+            "doctorId": doctor.id,
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
