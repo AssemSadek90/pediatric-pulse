@@ -63,7 +63,7 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
         user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
         Data.append({
-            "appointmentId": apointment.id,
+            "id": apointment.id,
             "parentId": user.userId,
             "patientId": patient.id,
             "doctorId": apointment.doctorId,
