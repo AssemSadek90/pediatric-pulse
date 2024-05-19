@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:project_name/routes.dart';
 
 class AddPatient extends StatefulWidget {
@@ -98,10 +97,14 @@ class _AddPatientState extends State<AddPatient> {
             color: Colors.white,
           ),
           onPressed: () {
-            Get.off(() =>  PatientPortal(
+            Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>  PatientPortal(
               token: widget.token,
               userId: widget.parentId,
-            ));
+            )));
           },
         ),
         title: Text(

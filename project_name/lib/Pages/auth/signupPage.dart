@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
@@ -204,11 +203,15 @@ Future<void> signUp() async {
               ),
               onPressed: () async {
                 await signUp();
-                Get.off(() =>  PatientPortal(
+                Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PatientPortal(
                   token: token,
                   userId: userId,
                   )
-                );
+                ));
                 
               },
               child: Text(

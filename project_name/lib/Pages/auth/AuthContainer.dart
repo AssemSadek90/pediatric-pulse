@@ -20,7 +20,7 @@ class AuthContainer extends StatefulWidget {
 
 /// The state for the AuthContainer widget.
 class _AuthContainerState extends State<AuthContainer> {
-  String? access_token; // Variable to store the access token
+  late String? access_token; // Variable to store the access token
   late String? role = widget.role;
   late int? userId;
 

@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:project_name/Pages/Patient/AddAppointment.dart';
 import 'package:project_name/Pages/Patient/Drawer/Drawer.dart';
-import 'package:project_name/Pages/auth/AuthContainer.dart';
 import 'package:project_name/Pages/auth/StartingScreen.dart';
 import 'package:project_name/Pages/features/AppointmentView.dart';
-import 'package:project_name/Pages/features/NaveBar.dart';
 import 'package:project_name/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -136,8 +134,14 @@ class _PatientPortalState extends State<PatientPortal> {
         children: [
           FloatingActionButton(
             onPressed: () async{
-              // Get.to(() => 
-              // ));
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>  AddAppointment(
+                      token: widget.token,
+                      parentId: userId,
+                      )));
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(
@@ -154,7 +158,11 @@ class _PatientPortalState extends State<PatientPortal> {
               await prefs.remove('accessToken');
               await prefs.remove('role');
               await prefs.remove('userId');
-              Get.off(() => const StartingScreen());
+              Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const StartingScreen()));
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(

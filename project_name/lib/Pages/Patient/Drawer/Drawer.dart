@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:project_name/Pages/Patient/Drawer/AddPatient.dart';
 import 'package:project_name/Pages/Patient/Drawer/PatientData.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditUser.dart';
@@ -90,7 +90,11 @@ class _EnddrawerState extends State<Enddrawer> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Get.off(() => EditUser(
+                      Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditUser(
                             userId: parentId,
                             token: widget.token,
                             userName: widget.userName,
@@ -100,7 +104,7 @@ class _EnddrawerState extends State<Enddrawer> {
                             lastName: widget.lastName,
                             phone: widget.phone,
                             pic: widget.userPic,
-                          ));
+                          )));
                     }, 
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -137,10 +141,14 @@ class _EnddrawerState extends State<Enddrawer> {
                           color: Colors.white,
                           size: 38,
                         ), onPressed: () { 
-                          Get.off(() => AddPatient(
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddPatient(
                             parentId: parentId,
                             token: widget.token,
-                          ));
+                          )));
                          },
                       ),
                     ],

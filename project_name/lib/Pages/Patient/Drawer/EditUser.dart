@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:project_name/routes.dart';
 
 class EditUser extends StatefulWidget {
@@ -167,10 +166,14 @@ class _EditUserState extends State<EditUser> {
             color: Colors.white,
           ),
           onPressed: () {
-            Get.off(() =>  PatientPortal(
+            Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>  PatientPortal(
               token: widget.token,
               userId: widget.userId,
-            ));
+            )));
           },
         ),
         title: Text(
@@ -191,10 +194,14 @@ class _EditUserState extends State<EditUser> {
             onPressed: () async{
               // Save button action
               await updateuser();
-              Get.off(() =>  PatientPortal(
+              Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>  PatientPortal(
               token: widget.token,
               userId: widget.userId,
-            ));
+            )));
 
             },
           ),

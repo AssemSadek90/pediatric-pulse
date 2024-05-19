@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/auth/AuthContainer.dart';
-import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'package:project_name/routes.dart';
-import 'package:project_name/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -149,7 +145,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               onPressed: () async {
                 await login();
-                    Get.off(() =>  AuthContainer( role: Data[0]['role'],));
+                    Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AuthContainer( role: Data[0]['role'],)));
                 },
               child: Text(
                 'Login',

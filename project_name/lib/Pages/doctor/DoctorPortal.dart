@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/auth/StartingScreen.dart';
 import 'package:project_name/Pages/doctor/EditDoctor.dart';
@@ -121,7 +120,11 @@ class _DoctorPortalState extends State<DoctorPortal> {
         children: [
           FloatingActionButton(
             onPressed: () async{
-              Get.to(() => EditProfilePage(
+              Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfilePage(
                 token: widget.token!,
                 doctorId: widget.doctorId!,
                 pic: doctorPic!,
@@ -130,7 +133,7 @@ class _DoctorPortalState extends State<DoctorPortal> {
                 price: doctorPrice!,
                 firstName: doctorFirstName!,
                 lastName: doctorLastName!,
-              ));
+              )));
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(
@@ -150,7 +153,11 @@ class _DoctorPortalState extends State<DoctorPortal> {
               await prefs.remove('accessToken');
               await prefs.remove('role');
               await prefs.remove('userId');
-              Get.off(() => const StartingScreen());
+              Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const StartingScreen()));
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(

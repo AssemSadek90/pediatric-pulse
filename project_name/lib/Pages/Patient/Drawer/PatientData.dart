@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
 
@@ -58,7 +57,11 @@ class _PatientViewState extends State<PatientView> {
                     height: 24,
                   ),
                   onPressed: () async {
-                    Get.to(() => EditPatient(
+                    Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditPatient(
                       parentId: data['parentId'],
                       patientId: data['id'],
                       token: widget.token,
@@ -66,7 +69,7 @@ class _PatientViewState extends State<PatientView> {
                       lastName: data['lastName'],
                       gender: data['gender'],
                       age: data['age'],
-                    ));
+                    )));
                   },
                 ),
                 
