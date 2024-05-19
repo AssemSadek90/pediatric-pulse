@@ -159,9 +159,6 @@ async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.g
         "userName": user.userName,
         "createdAt": str(user.createdAt),
         "profilePicture": user.profilePicture,
-        "role": user.role,
-        "rating": user.rating,
-        "numberOfRating": user.numberOfRating,
         "price": user.price
     }
         new_doctors.append(newDoctor)
@@ -239,7 +236,7 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
     }
     return newDoctor
 
-@router.put("/update/doctor/admin/{adminId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
+@router.put("/update/doctor/admin/{adminId}", description="This route updates the doctor's info")
 async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId ,token)
     if not token_data:
@@ -284,9 +281,6 @@ async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, 
         "userName": user.userName,
         "createdAt": str(user.createdAt),
         "profilePicture": user.profilePicture,
-        "role": user.role,
-        "rating": user.rating,
-        "numberOfRating": user.numberOfRating,
         "price": user.price
     }
 
