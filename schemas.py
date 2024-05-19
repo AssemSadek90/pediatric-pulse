@@ -50,13 +50,13 @@ class doctorList(BaseModel):
 
 class PatientResponse(BaseModel):
     id: Optional[int]
-    lastName: Optional[str]
-    parentLastName: Optional[str]
-    gender: Optional[str]
     age: Optional[int]
     firstName: Optional[str]
+    lastName: Optional[str]
     parentFirstName: Optional[str]
+    parentLastName: Optional[str]
     parentPhoneNumber: Optional[str]
+    gender: Optional[str]
     parentId: Optional[int] 
 class UserLoginResponse(BaseModel):
     accessToken: str
