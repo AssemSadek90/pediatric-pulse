@@ -245,7 +245,7 @@ async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, 
     admin = db.query(models.User).filter(models.User.userId == adminId).first()
     if admin.role != "admin":
         raise HTTPException( status_code=401, detail= "unauthorized")
-
+    
     # Hash the password before creating the user
     X = db.query(models.Doctor).filter(models.Doctor.userName == doctor.userName, models.Doctor.id != doctor.doctorId).first()
     if X:

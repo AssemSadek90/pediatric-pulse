@@ -151,20 +151,8 @@ async def getAllPatients(adminId: int, token: str, db: session = Depends(DataBas
         raise HTTPException( status_code=401, detail= "unauthorized")
     
     patients = db.query(models.Patient).all()
-    patientsData = []
-    for patient in patients:
-        parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
-        pic = parent.profilePicture if parent.profilePicture is not None else "https://i.imgur.com/9g7aq8u.png"
-        new_patient = {
-            "parentPic": pic,
-            "patientFirstName": patient.firstName,
-            "patientLastName": patient.lastName,
-            "parentFirstName": parent.firstName,
-            "parentLastName": parent.lastName,
-            "patientId": patient.id,   
-        }
-        patientsData.append(new_patient)
-    return patientsData
+    
+    return patients
 
 
 
