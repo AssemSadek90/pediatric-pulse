@@ -48,33 +48,46 @@ class _LoginPageState extends State<LoginPage> {
       'password': password,
     });
     try {
-    final response = await http.post(url, headers: headers, body: body);
+      final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 200) {
-      // Successful login, handle response here
-      print('Login successful');
-      Data = jsonDecode(response.body) as List<dynamic>;
-      token = Data[0]['accessToken'];
-      userId = Data[0]['userId'];
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', Data[0]['accessToken']);
-      await prefs.setString('role', Data[0]['role']);
-      await prefs.setInt('userId', Data[0]['userId']);
-      print(Data[0]['role']);
-      print(Data[0]['userId']);
-      print(Data[0]['accessToken']);
-      
-    } else {
-      // Error in login, handle error response here
-      print('Login failed');
-      print('Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        // Successful login, handle response here
+        print('Login successful');
+        Data = jsonDecode(response.body) as List<dynamic>;
+        token = Data[0]['accessToken'];
+        userId = Data[0]['userId'];
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', Data[0]['accessToken']);
+        await prefs.setString('role', Data[0]['role']);
+        await prefs.setInt('userId', Data[0]['userId']);
+
+        // Clear text fields after successful login
+        _usernameController.clear();
+        _passwordController.clear();
+
+        print(Data[0]['role']);
+        print(Data[0]['userId']);
+        print(Data[0]['accessToken']);
+        
+      } else {
+        // Error in login, handle error response here
+        print('Login failed');
+        print('Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+
+        // Show a snackbar with an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid username or password. Please try again.'),
+          ),
+        );
+      }
+    } catch (e) {
+      // Exception occurred, handle exception here
+      print('Exception occurred during login: $e');
     }
-  } catch (e) {
-    // Exception occurred, handle exception here
-    print('Exception occurred during login: $e');
   }
-  }
+
 
   @override
   Widget build(BuildContext context) {
