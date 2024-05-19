@@ -100,55 +100,66 @@ class _AppointmentViewState extends State<AppointmentView> {
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
+        child: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+            Row(
               children: [
-                if (widget.data['parentPic'] != null)
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(widget.data['parentPic']),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                else
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage('assets/icon/profile.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        widget.data['patientFirstName'],
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (widget.data['parentPic'] != null)
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(widget.data['parentPic']),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: AssetImage('assets/icon/profile.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            widget.data['patientFirstName'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            ' ($name)',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
                       Text(
-                        ' ($name)',
+                        date,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -156,27 +167,22 @@ class _AppointmentViewState extends State<AppointmentView> {
                       ),
                     ],
                   ),
-                  Text(
-                    date,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
+                ),
+                Spacer(), // Spacer to push buttons to the end
+                widget.isParent == true ? IconButton(
+                  icon: Image(
+                    image: AssetImage('assets/icon/remove.png'),
+                    width: 24,
+                    height: 24,
                   ),
-                ],
-              ),
+                  onPressed: () async {
+                    await _confirmDeleteAppointment();
+                  },
+                ) : Container(),
+            
+              ],
             ),
-            Spacer(), // Spacer to push buttons to the end
-            widget.isParent == true ? IconButton(
-              icon: Image(
-                image: AssetImage('assets/icon/remove.png'),
-                width: 24,
-                height: 24,
-              ),
-              onPressed: () async {
-                await _confirmDeleteAppointment();
-              },
-            ) : Container(),
+            Divider(color: const Color.fromARGB(255, 194, 193, 193),)
           ],
         ),
       ),

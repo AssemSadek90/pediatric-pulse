@@ -21,15 +21,14 @@ class _AddAppointmentState extends State<AddAppointment> {
   int? selectedDoctorId;
   String? selectedPatientName;
   String? selectedDoctorName;
-  late String? appointmentDate = '';
-  late int? from = 0;
-  late int? to = from! + 1;
+  String? appointmentDate;
+  int? from;
   late String FromAm = 'AM';
   late String ToAm = 'AM';
   late bool isSelected = false;
 
   final List<String> weekDays = [
-    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+    'Mon', 'Tues', 'Wednes', 'Thurs', 'Fri', 'Satur', 'Sun'
   ];
 
   final List<String> timeSlots = [
@@ -42,7 +41,6 @@ class _AddAppointmentState extends State<AddAppointment> {
     getPatient();
     _doctorList();
     getAllAppointments();
-    
   }
 
   Future<void> getPatient() async {
@@ -90,8 +88,7 @@ class _AddAppointmentState extends State<AddAppointment> {
     }
   }
 
-
-  Future<void> addAppointment() async{
+  Future<void> addAppointment() async {
     final url = Uri.parse(routes.addAppointments(widget.token!));
     final headers = {
       'accept': 'application/json',
@@ -101,15 +98,119 @@ class _AddAppointmentState extends State<AddAppointment> {
     final body = jsonEncode({
       'parentId': widget.parentId!,
       'doctorId': selectedDoctorId!,
-      "patientId":selectedPatientId!,
-      "appointmentDate":appointmentDate!,
-      "From":"$from",
-      "To": "${from! +1}",
+      "patientId": selectedPatientId!,
+      "appointmentDate": "${appointmentDate!}day",
+      "From": "$from",
+      "To": "${from! + 1}",
       "isTaken": true
     });
 
-   await http.post(url, headers: headers, body: body);
+    await http.post(url, headers: headers, body: body);
+  }
 
+  Future<void> _confirmAddAppointment() async {
+    // Helper function to show a dialog
+    Future<bool?> _showConfirmationDialog(String title, String content, bool isTrue) {
+      
+      return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: [
+              isTrue
+              ?Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text(
+                      'Confirm',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
+              )
+              :TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+            ],
+          );
+        },
+      );
+    }
+
+    // Check if the selected patient is missing
+    if (selectedPatientId == null || selectedPatientId == 0) {
+      bool? patientSelected = await _showConfirmationDialog(
+        'Select Patient',
+        'Please select a patient first.',
+        false,
+      );
+      if (patientSelected == false) return;
+    }
+
+
+    // Check if the selected doctor is missing
+    if (selectedDoctorId == null || selectedDoctorId == 0) {
+      bool? doctorSelected = await _showConfirmationDialog(
+        'Select Doctor',
+        'Please select a doctor first.',
+        false,
+      );
+      if (doctorSelected == false) return;
+    }
+
+
+    // Check if the appointment date and time are missing
+    if (appointmentDate == null || from == null) {
+      bool? appointmentSelected = await _showConfirmationDialog(
+        'Select Appointment',
+        'Please select a day and time for the appointment.',
+        false,
+      );
+      if (appointmentSelected == false) return;
+    }
+
+    // If all fields are provided, confirm addition of the appointment
+    bool? confirmed = await _showConfirmationDialog(
+      'Confirm Addition',
+      'Are you sure you want to add this appointment?',
+      true,
+    );
+
+    if (confirmed == true) {
+      await addAppointment();
+      // Navigate back to PatientPortal
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PatientPortal(
+            token: widget.token,
+            userId: widget.parentId,
+          ),
+        ),
+      );
+    }
   }
 
   void _showSelectionBottomSheet(
@@ -159,13 +260,14 @@ class _AddAppointmentState extends State<AddAppointment> {
       },
     );
   }
+
   bool isSlotTaken(String day, String time) {
     if (selectedDoctorId == null) return false;
 
     for (var appointment in appointmentList) {
       if (appointment['doctorId'] == selectedDoctorId &&
           appointment['appointmentDate'] == day &&
-          '${appointment['From']}'== time.toString() &&
+          '${appointment['From']}' == time.toString() &&
           appointment['isTaken'] == true) {
         return true;
       }
@@ -213,18 +315,8 @@ class _AddAppointmentState extends State<AddAppointment> {
             child: Text("Save", style: TextStyle(
               color: Colors.white,
             ),),
-            onPressed: () async{
-              // Save button action
-              await addAppointment();
-              Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>  PatientPortal(
-              token: widget.token,
-              userId: widget.parentId,
-            )));
-
+            onPressed: () async {
+              await _confirmAddAppointment();
             },
           ),
         ],
@@ -236,10 +328,6 @@ class _AddAppointmentState extends State<AddAppointment> {
           children: [
             Column(
               children: [
-                SizedBox(height: 10,),
-                Center(
-                  child: Text('You want to add Appointment to your child: ${selectedPatientName??"(not selcted yet)"} with ${selectedDoctorName??"(not selcted yet)"} at ${appointmentDate??"(not selcted yet)"} from ${from??"(not selcted yet)"} to ${from !+ 1??"(not selcted yet)"}')
-                ),
                 SizedBox(height: 10,),
                 Center(
                   child: Text(
@@ -338,6 +426,10 @@ class _AddAppointmentState extends State<AddAppointment> {
                       fontSize: 22,
                     ),
                   ),
+                ),
+                SizedBox(height: 10,),
+                Center(
+                  child: Text('You want to add Appointment at ${appointmentDate ?? "(not selected yet)"} from ${from ?? "(not selected yet)"} to ${from != null ? from! + 1 : "(not selected yet)"}')
                 ),
                 SizedBox(height: 10),
                 Table(
