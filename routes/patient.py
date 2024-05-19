@@ -141,7 +141,7 @@ async def get_patient_info(patientId: int, doctorId: int, token: str, db: sessio
     return newPatient
 
 
-@router.get('/get/all/patients/{adminId}', description="This route returns all the patients", response_model = list[schemas.patientList])
+@router.get('/get/all/patients/{adminId}', description="This route returns all the patients", response_model = list[schemas.PatientResponse])
 async def getAllPatients(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
