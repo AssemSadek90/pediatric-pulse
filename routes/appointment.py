@@ -109,7 +109,7 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
 
 
 @router.get('/get/all/appointments', description="This route returns all appointments")
-async def get_appointment(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(db: session = Depends(DataBase.get_db)):
     
     appointments = db.query(models.Appointment).all()
     Data = []
