@@ -64,6 +64,51 @@ async def CreateUser(user: schemas.addPatient, token:str, db: session = Depends(
     return new_patient
 
 
+@router.post("/add/patient/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request to add a new patient.", response_model=schemas.PatientResponse)
+async def CreateUser(user: schemas.addPatient, adminId: int ,token:str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Check if the parent user exists
+    parent_user = db.query(models.User).filter(models.User.userId == user.parentId).first()
+    if parent_user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {user.parentId} not found.")
+
+    # Create a new instance of the Patient model with the hashed password
+    new_patient = models.Patient(
+        firstName=user.firstName,
+        lastName=user.lastName,
+        parentFirstName=parent_user.firstName,
+        parentLastName=parent_user.lastName,
+        parentPhoneNumber=parent_user.PhoneNumber,
+        parentId=user.parentId,
+        age=user.age,
+        gender=user.gender
+    )
+
+    # Add the new_patient instance to the session
+    db.add(new_patient)
+    # Commit the session to persist the changes
+    db.commit()
+    # Refresh the new_patient instance to ensure it has the latest data from the database
+    db.refresh(new_patient)
+
+    # Create a new medical record for the patient
+    new_medical_record = models.MedicalRecord(
+        patientId = new_patient.id,
+    )
+    try:
+        db.add(new_medical_record)
+        db.commit()
+        db.refresh(new_medical_record)
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error creating medical record: {e}")
+
+    # Return the response with the newly created patient
+    return new_patient
+
 
 
 @router.get("/get/patients/{parentId}", description="This route returns patient data via parentId and takes the token in the header", response_model=list[schemas.PatientResponse])
