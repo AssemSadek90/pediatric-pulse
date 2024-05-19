@@ -5,8 +5,9 @@ import { Label } from '../ui/label';
 import { cn } from '@/utils/cn';
 import AutocompleteIntroduction from '../ui/DoctorsDropDown';
 import AppointmentDate from '../ui/AppointmentDate';
-import DoctorSelector from '../ui/DoctorsDropDown';
+import DoctorSelector from '@/components/DoctorSelector';
 import DoctorAppointmentTable from '../appointmentTable'
+import axios from 'axios';
 interface Appointment {
   id: number,
   parentId: number,
@@ -54,12 +55,25 @@ const Appointment = () => {
         { value: 'chocolate', label: 'Chocolate' },
       ])
     
-    const [day, setDay] = React.useState(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-    const [month, setMonth] = React.useState(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'])
-    const [hour, setHour] = React.useState(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
-    const [currentPatient, setCurrentPatient] = React.useState({} as Patient | undefined)
-const [appointments, setAppointments] = React.useState([] as Appointment[])
-const [selectedDr, setSelectedDr] = React.useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0, } as Doctor)
+  const [doctorList, setDoctorList] = React.useState([] as Doctor[])
+  const [currentPatient, setCurrentPatient] = React.useState({} as Patient | undefined)
+  const [appointments, setAppointments] = React.useState([] as Appointment[])
+  const [selectedDr, setSelectedDr] = React.useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0, } as Doctor)
+
+
+async function fetchDoctorList() {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_NAME}/doctorList`,
+      { headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      } })
+      setDoctorList(response.data)
+      console.log(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+}
 React.useEffect(() => {
   setAppointments([
     {
@@ -111,6 +125,7 @@ React.useEffect(() => {
     parentPhoneNumber: "1234567890",
     gender: "male",
     parentId: 1})
+  fetchDoctorList()
 }, [setAppointments]);
   return (
     <form className= 'm-5 w-screen rounded-md shadow-lg flex-col   bg-zinc-200' >
@@ -131,7 +146,12 @@ React.useEffect(() => {
         </LabelInputContainer>
         <LabelInputContainer>
             
-            <div><DoctorSelector/></div>
+            <div className=' mt-5 mb-5'><DoctorSelector
+            message='Choose a doctor '
+            doctorList={doctorList} selected={selectedDr}
+            setSelected={setSelectedDr} appointments={appointments}
+            setAppointments={setAppointments} className="pl-4 h-fit"
+          /></div>
 
         </LabelInputContainer>
         
