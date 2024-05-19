@@ -5,10 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/Pages/doctor/DoctorPortal.dart';
 import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:project_name/routes.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditUser extends StatefulWidget {
   final int userId;
   final String? token;
   final String? userName;
@@ -18,13 +18,13 @@ class EditProfilePage extends StatefulWidget {
   final String? firstName;
   final String? lastName;
   final String? phone;
-  const EditProfilePage ({Key? key, required this.userId, required this.token, this.userName, this.email, this.pic, this.age, this.firstName, this.lastName, this.phone}) : super(key: key);
+  const EditUser ({Key? key, required this.userId, required this.token, this.userName, this.email, this.pic, this.age, this.firstName, this.lastName, this.phone}) : super(key: key);
   
   @override   
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _EditUserState createState() => _EditUserState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _EditUserState extends State<EditUser> {
   bool contentVisibility = true;
   bool showActiveCommunities = true;
   final double coverHight = 200.0;
@@ -36,17 +36,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _emailController;
   late TextEditingController _priceController;
   late TextEditingController _phoneController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
   late var pic = widget.pic;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
-    _emailController = TextEditingController();
-    _priceController = TextEditingController();
-    _phoneController = TextEditingController(); 
+    _usernameController = TextEditingController(text: widget.userName);
+    _passwordController = TextEditingController(); // No need to auto-fill password for security reasons
+    _emailController = TextEditingController(text: widget.email);
+    _priceController = TextEditingController(text: widget.age.toString());
+    _phoneController = TextEditingController(text: widget.phone);
+    _firstNameController = TextEditingController(text: widget.firstName);
+    _lastNameController = TextEditingController(text: widget.lastName);
   }
+
 
   @override
   void dispose() {
@@ -55,6 +60,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _emailController.dispose();
     _priceController.dispose();
     _phoneController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
@@ -68,9 +75,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var  username;
     var  password;
     var  email;
+    var  firstName;
+    var  lastName;
     var  age;
     var  profilePic;
-    var phoneNumber;
+    var  phoneNumber;
+    print('passed data is: ${widget.userId} $username $email $firstName $lastName $phoneNumber $age $profilePic');
     if (_usernameController.text.isEmpty) {
       username = widget.userName;
     }
@@ -95,22 +105,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
     else {
           age = int.parse(_priceController.text);
     }
+    if(_firstNameController.text.isEmpty) {
+      firstName = widget.firstName;
+    }
+    else {
+      firstName = _firstNameController.text;
+    }
+    if(_lastNameController.text.isEmpty) {
+      lastName = widget.lastName;
+    }
+    else {
+      lastName = _lastNameController.text;
+    }
     if(pic == null) {
       profilePic = widget.pic;
     }
     else {
       profilePic = pic;
     }
-    print(username + " " + profilePic + " " + email + " " + password + " " + age.toString() + " " + widget.firstName + " " + widget.lastName);
+    if(_phoneController.text.isEmpty) {
+      phoneNumber = widget.phone;
+    }
+    else {
+      phoneNumber = _phoneController.text;
+    }
+
+
     final body = jsonEncode({
       'userName': username,
       'email': email,
       'password': password,
-      'firstName': widget.firstName,
-      'lastName': widget.lastName,
-      'price': age,
-      'profilePic': profilePic,
-      'phoneNumber':phoneNumber
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber':phoneNumber,
+      'age': age,
+      'profilePicture': profilePic,
     });
     try {
       final response = await http.put(url, headers: headers, body: body);
@@ -129,6 +158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+     
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -137,7 +167,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Get.off(() =>  PatientPortal(
+              token: widget.token,
+              userId: widget.userId,
+            ));
           },
         ),
         title: Text(
@@ -158,12 +191,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             onPressed: () async{
               // Save button action
               await updateuser();
-              // Navigator.pushReplacement(
-              //   context,
-              //   new MaterialPageRoute(
-              //     builder: (BuildContext context) => new PatientPortal(token: widget.token, userId: widget.userId),
-              //   ),
-              // );
+              Get.off(() =>  PatientPortal(
+              token: widget.token,
+              userId: widget.userId,
+            ));
 
             },
           ),
@@ -193,11 +224,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               hintText: 'Enter your username',
               hintStyle: TextStyle(color: Color(0xFF787878)),
               border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+                borderRadius: BorderRadius.circular(20),
+              ),
               filled: true, // Fill the background
               fillColor: Color.fromARGB(255, 250, 242, 242),
-          ),
+            ),
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -207,11 +238,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               hintText: 'Enter your email',
               hintStyle: TextStyle(color: Color(0xFF787878)),
               border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+                borderRadius: BorderRadius.circular(20),
+              ),
               filled: true, // Fill the background
               fillColor: Color.fromARGB(255, 250, 242, 242),
-          ),
+            ),
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -221,11 +252,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
               hintText: 'Enter your password',
               hintStyle: TextStyle(color: Color(0xFF787878)),
               border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+                borderRadius: BorderRadius.circular(20),
+              ),
               filled: true, // Fill the background
               fillColor: Color.fromARGB(255, 250, 242, 242),
+            ),
           ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            controller: _firstNameController,
+            decoration: InputDecoration(
+              labelText: "First Name",
+              hintText: 'Enter your First Name',
+              hintStyle: TextStyle(color: Color(0xFF787878)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
+            ),
+          ),
+          SizedBox(height: 10.0),
+          TextFormField(
+            controller: _lastNameController,
+            decoration: InputDecoration(
+              labelText: "Last Name",
+              hintText: 'Enter your Last Name',
+              hintStyle: TextStyle(color: Color(0xFF787878)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true, // Fill the background
+              fillColor: Color.fromARGB(255, 250, 242, 242),
+            ),
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -235,11 +294,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               hintText: 'Enter your Age',
               hintStyle: TextStyle(color: Color(0xFF787878)),
               border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+                borderRadius: BorderRadius.circular(20),
+              ),
               filled: true, // Fill the background
               fillColor: Color.fromARGB(255, 250, 242, 242),
-          ),
+            ),
           ),
           SizedBox(height: 10.0),
           TextFormField(
@@ -249,16 +308,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
               hintText: 'Enter your Phone Number',
               hintStyle: TextStyle(color: Color(0xFF787878)),
               border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+                borderRadius: BorderRadius.circular(20),
+              ),
               filled: true, // Fill the background
               fillColor: Color.fromARGB(255, 250, 242, 242),
+            ),
           ),
-          ),
+          
         ]
       ),
     );
   }
+
 
   Widget buildTop() {
     final top = coverHight - profileHight / 2;

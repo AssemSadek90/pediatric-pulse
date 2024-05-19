@@ -197,7 +197,7 @@ class _DoctorPortalState extends State<DoctorPortal> {
                       itemBuilder: (context, index) {
                         var Data = Datas[index];
                         print("Data: $Data");
-                        return  AppointmentView(data:Data);
+                        return  AppointmentView(data:Data, token: widget.token,);
                       },
                     ),
                   ),

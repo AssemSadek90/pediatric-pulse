@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:project_name/Pages/Patient/PatientPortal.dart';
+import 'package:project_name/routes.dart';
+import 'dart:convert';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 String formatHour(String hour) {
   int h = int.parse(hour);
@@ -10,13 +15,81 @@ String formatHour(String hour) {
 
 class AppointmentView extends StatefulWidget {
   final Map<String, dynamic> data;
-  const AppointmentView({Key? key, required this.data}) : super(key: key);
+  final bool isParent;
+  final String? token;
+  final VoidCallback? onDelete;
+
+  AppointmentView({Key? key, required this.data, this.isParent = false, required this.token, this.onDelete}) : super(key: key);
 
   @override
   State<AppointmentView> createState() => _AppointmentViewState();
 }
 
 class _AppointmentViewState extends State<AppointmentView> {
+  late int id = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _deleteAppointment() async {
+    final url = Uri.parse(routes.deleteAppointment(widget.data['id'], widget.data['parentId'], widget.token!));
+    print('Delete Appointment Data: ${widget.data['patientId']} ${widget.token!}');
+    final response = await http.delete(url);
+    print("response status: " + response.statusCode.toString());
+    if (response.statusCode == 200) {
+      print('Appointment Deleted Successfully');
+      if (widget.onDelete != null) {
+        widget.onDelete!(); // Trigger the callback
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+  Future<void> _confirmDeleteAppointment() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this appointment?'),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(fontSize: 18),
+                    ),
+                ),
+              ],
+            ),
+          ],
+        );
+
+      },
+    );
+
+    if (confirmed == true) {
+      await _deleteAppointment();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var name = "${widget.data['parentFirstName']} ${widget.data['parentLastName']}";
@@ -93,10 +166,17 @@ class _AppointmentViewState extends State<AppointmentView> {
                 ],
               ),
             ),
-            const Divider(
-              color: Color.fromARGB(255, 0, 0, 0),
-              thickness: 10,
-            ),
+            Spacer(), // Spacer to push buttons to the end
+            widget.isParent == true ? IconButton(
+              icon: Image(
+                image: AssetImage('assets/icon/remove.png'),
+                width: 24,
+                height: 24,
+              ),
+              onPressed: () async {
+                await _confirmDeleteAppointment();
+              },
+            ) : Container(),
           ],
         ),
       ),

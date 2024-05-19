@@ -20,24 +20,68 @@ class NavBar extends StatelessWidget {
           iconSize: 28, // tab button icon size
           tabBackgroundColor: Color.fromARGB(255, 255, 181, 97), // selected tab background color
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          onTabChange: (index){
+            // Handle tab change
+          },
           tabs: [
             GButton(
-              icon: Icons.home,
-              text: 'Home',
+              icon: Icons.circle, // You need to provide a placeholder icon
+              text: 'Appointments',
+              leading: Row(
+                children: [
+                  Image.asset(
+                    'assets/icon/table.png',
+                    width: 28,
+                    height: 28,
+                     // optional: color the icon
+                  ),
+                ]
+              ),
             ),
             GButton(
-              icon: Icons.search,
+              icon: Icons.circle, // You need to provide a placeholder icon
               text: 'Search',
+              leading: Row(
+                children: [
+                  Image.asset(
+                    'assets/icon/table.png',
+                    width: 28,
+                    height: 28,
+                  ),
+                  SizedBox(width: 6), // Adjust the width as per your requirement
+                ],
+              ),
             ),
             GButton(
-              icon: Icons.bookmark,
+              icon: Icons.circle, // You need to provide a placeholder icon
               text: 'Bookmark',
+              leading: Row(
+                children: [
+                  Image.asset(
+                    'assets/icon/table.png',
+                    width: 28,
+                    height: 28,
+                  ),
+                  SizedBox(width: 6), // Adjust the width as per your requirement
+                ],
+              ),
             ),
             GButton(
-              icon: Icons.settings,
+              icon: Icons.circle, // You need to provide a placeholder icon
               text: 'Settings',
-            ),]
-          ),
+              leading: Row(
+                children: [
+                  Image.asset(
+                    'assets/icon/table.png',
+                    width: 28,
+                    height: 28, // optional: color the icon
+                  ),
+                  SizedBox(width: 6), // Adjust the width as per your requirement
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
