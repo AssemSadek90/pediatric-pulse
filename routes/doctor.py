@@ -242,7 +242,7 @@ async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, 
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     
-    admin = db.query(models.User).filter(models.User.id == adminId).first()
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
     if admin.role != "admin":
         raise HTTPException( status_code=401, detail= "unauthorized")
 
