@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               onPressed: () async {
                 await login();
-                    Get.off(() =>  AuthContainer());
+                    Get.off(() =>  AuthContainer( role: Data[0]['role'],));
                 },
               child: Text(
                 'Login',

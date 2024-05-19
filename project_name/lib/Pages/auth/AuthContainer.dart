@@ -8,8 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A StatefulWidget that determines the authentication state and navigates accordingly.
 class AuthContainer extends StatefulWidget {
   /// Constructor for the AuthContainer widget.
+  final String? role;
   const AuthContainer({
     super.key,
+    this.role,
   });
 
   @override
@@ -19,7 +21,7 @@ class AuthContainer extends StatefulWidget {
 /// The state for the AuthContainer widget.
 class _AuthContainerState extends State<AuthContainer> {
   String? access_token; // Variable to store the access token
-  String? role;
+  late String? role = widget.role;
   late int? userId;
 
   @override
