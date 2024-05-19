@@ -154,7 +154,7 @@ async def get_all_appointments(staffId: int, token: str, db: session = Depends(D
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
-            "dctorId": doctor.id,
+            "dctorId": apointment.doctorId,
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
