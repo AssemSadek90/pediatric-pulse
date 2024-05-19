@@ -1,5 +1,7 @@
 from fastapi import HTTPException, status, Depends, APIRouter
 from sqlalchemy.orm import session
+from typing import List
+import pprint
 
 import sys
 
@@ -105,65 +107,81 @@ async def get_appointment(doctorId: int, userId: int, token: str, db: session = 
     return Data
 
 
-@router.get("/get/all/appointments/table/{adminId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient", response_model=list[schemas.allAppointment])
+@router.get("/get/all/appointments/table/{adminId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
 async def get_appointment(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
-        raise HTTPException( status_code=401, detail= "unauthorized")
+        raise HTTPException(status_code=401, detail="unauthorized")
+    
     appointments = db.query(models.Appointment).all()
     Data = []
-    for apointment in appointments:
-        user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
-        patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
-        doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
-        Data.append({
-            "id": apointment.id,
+    
+    for appointment in appointments:
+        user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
+        
+        appointment_data = {
+            "appointmentId": appointment.id,
             "parentId": user.userId,
             "patientId": patient.id,
             "doctorId": doctor.id,
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
-            "doctorId": doctor.id,
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": apointment.appointmentDate,
-            "From": apointment.From,
-            "To": apointment.To,
-            "isTaken": apointment.isTaken,
-        })
-    return Data
+            "appointmentDate": appointment.appointmentDate,
+            "From": appointment.From,
+            "To": appointment.To,
+            "isTaken": appointment.isTaken,
+        }
+        
+        Data.append(appointment_data)
+    
+    return Data 
 
-@router.get('/get/all/appointments/{staffId}', description="This route returns all appointments", response_model=list[schemas.allAppointment])
+
+@router.get('/get/all/appointments/{staffId}', description="This route returns all appointments")
 async def get_all_appointments(staffId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(staffId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
+    
     appointments = db.query(models.Appointment).all()
     Data = []
-    for apointment in appointments:
-        user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
-        patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
-        doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
-        Data.append({
-            "appointmentId": apointment.id,
+    
+    for appointment in appointments:
+        user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
+        
+        appointment_data = {
+            "appointmentId": appointment.id,
             "parentId": user.userId,
             "patientId": patient.id,
             "doctorId": doctor.id,
             "patientFirstName": patient.firstName,
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
-            "dctorId": apointment.doctorId,
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": apointment.appointmentDate,
-            "From": apointment.From,
-            "To": apointment.To,
-            "isTaken": apointment.isTaken,
-        })
+            "appointmentDate": appointment.appointmentDate,
+            "From": appointment.From,
+            "To": appointment.To,
+            "isTaken": appointment.isTaken,
+        }
+        
+        Data.append(appointment_data)
+    
+    # Print the response structure for inspection
+    pprint.pprint(Data)
+
     return Data
+
+
 
 @router.put('/update/appointments/{adminId}/{appointmentId}', description="This route updates the appointment's info")
 async def update_appointments(
