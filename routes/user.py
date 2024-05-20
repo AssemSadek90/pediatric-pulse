@@ -195,8 +195,17 @@ async def getUserTotalPrice(adminId: int, token: str, db: session = Depends(Data
     if admin.role != 'admin':
         raise HTTPException( status_code=401, detail= "unauthorized")
     users = db.query(models.User).all()
-    totalPrice = len(users)
-    return {"totalNumberOfUsers":totalPrice}
+    customers = 0
+    admins = 0
+    staff = 0
+    for user in users:
+        if user.role == 'customer':
+            customers += 1
+        elif user.role == 'admin':
+            admins += 1
+        elif user.role =='staff':
+            staff += 1
+    return {"totalNumberOfCustomers":customers, "totalNumberOfAdmins":admins, "totalNumberOfStaff":staff}
 
 @router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
 async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
