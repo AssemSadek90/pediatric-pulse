@@ -245,8 +245,34 @@ async def get_appointment(adminId: int, token: str, db: session = Depends(DataBa
         
         Data.append(appointment_data)
     
-    return Data 
+    return Data
 
+@router.get('/get/appointment/{appointmentId}/{adminId}') 
+async def get_appointment(appointmentId:int, adminId:int, token:str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="unauthorized")
+    
+    appointment = db.query(models.Appointment).all().filter(models.Appointment.id == appointmentId).first()
+    user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
+    patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
+    doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
+        
+    appointment_data = {
+        "id": appointment.id,
+        "patientFirstName": patient.firstName,
+        "parentFirstName": user.firstName,
+        "parentLastName": user.lastName,
+        "doctorFirstName": doctor.firstName,
+        "doctorLastName": doctor.lastName,
+        "doctorId": doctor.id,
+        "appointmentDate": appointment.appointmentDate,
+        "From": appointment.From,
+        "To": appointment.To,
+    }
+        
+    
+    return appointment_data 
 
 @router.get('/get/all/appointments/{staffId}', description="This route returns all appointments")
 async def get_all_appointments(staffId: int, token: str, db: session = Depends(DataBase.get_db)):
