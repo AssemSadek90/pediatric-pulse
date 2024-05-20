@@ -253,7 +253,7 @@ async def get_appointment(appointmentId:int, adminId:int, token:str, db: session
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
     
-    appointment = db.query(models.Appointment).all().filter(models.Appointment.id == appointmentId).first()
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointmentId).first()
     user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
     patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
     doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
