@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:project_name/routes.dart';
 
 
 class PatientView extends StatefulWidget {
   final Map<String, dynamic> data;
   final String? token;
-  const PatientView({super.key, required this.data, required this.token});
+  final int? parentId;
+  final VoidCallback? onDelete;
+  const PatientView({super.key, required this.data, required this.parentId, required this.token, this.onDelete});
 
   @override
   State<PatientView> createState() => _PatientViewState();
@@ -14,6 +19,7 @@ class PatientView extends StatefulWidget {
 
 class _PatientViewState extends State<PatientView> {
   late var data = widget.data;
+  late var patientId = data['id'];
 
 
   @override
@@ -22,6 +28,19 @@ class _PatientViewState extends State<PatientView> {
   
   }
 
+  Future<void> _deletePatient() async {
+    final url = Uri.parse(routes.deletePatient(widget.parentId!, patientId, widget.token!));
+    final response = await http.delete(url);
+    print("response status: " + response.statusCode.toString());
+    if (response.statusCode == 200) {
+      print('Appointment Deleted Successfully');
+      if (widget.onDelete != null) {
+        widget.onDelete!(); // Trigger the callback
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +77,7 @@ class _PatientViewState extends State<PatientView> {
                   ),
                   onPressed: () async {
                     Navigator.pop(context);
+               
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -72,6 +92,14 @@ class _PatientViewState extends State<PatientView> {
                     )));
                   },
                 ),
+                 IconButton(
+                  icon: Image(
+                    image: AssetImage('assets/icon/remove.png'),
+                    width: 24,
+                    height: 24,
+                    ), onPressed: () async{ await _deletePatient();
+                    Navigator.pop(context);},
+                  ),
                 
               ],
             ),

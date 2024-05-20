@@ -29,6 +29,7 @@ class Enddrawer extends StatefulWidget {
 class _EnddrawerState extends State<Enddrawer> {
   late var Datas = []; 
   late int parentId = widget.parentId;
+  late int patientId = 0;
   
   
 
@@ -40,6 +41,9 @@ class _EnddrawerState extends State<Enddrawer> {
     getPatient();
   }
   
+
+  
+
   Future<void> getPatient() async {
     final url = Uri.parse(routes.yourPatients(widget.parentId, widget.token!));
     final response = await http.get(url);
@@ -49,6 +53,7 @@ class _EnddrawerState extends State<Enddrawer> {
         final data = json.decode(response.body);
         setState(() {
           Datas = data;
+          
         });
         print('Parient Data: $Datas');
       }
@@ -113,8 +118,8 @@ class _EnddrawerState extends State<Enddrawer> {
                           'Edit Profile',
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                        SizedBox(width: 5,),
-                        Image(image: AssetImage('assets/icon/editProfile.png'), width: 20, height: 20,)
+                        SizedBox(width: 10,),
+                        Image(image: AssetImage('assets/icon/image.png'), width: 20, height: 20,)
                       ],
                     ),
                     )
@@ -166,7 +171,9 @@ class _EnddrawerState extends State<Enddrawer> {
                 itemCount: Datas.length,
                 itemBuilder: (context, index) {
                   var Data = Datas[index];
-                  return PatientView(data: Data, token: widget.token,);
+                  return PatientView(data: Data,parentId: widget.parentId,token: widget.token, onDelete: () {
+                                    setState(() {}); // Reload the widget after deletion
+                                  },);
                 },
               ),
             ],

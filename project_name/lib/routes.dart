@@ -14,8 +14,9 @@ class routes {
   static String updatePatient(int patientId, int parentId, String token) => '$baseUrl/update/patient/$patientId/$parentId?token=$token';
   static String addPatient(String token) => '$baseUrl/add/patient?token=$token';
   static const String doctorList = '$baseUrl/doctorList';
-  static String getAllAppointments(int id, String token) => '$baseUrl/get/all/appointments/table/$id?token=$token';
+  static const String getAllAppointments = '$baseUrl/get/all/appointments';
   static String addAppointments(String token) => '$baseUrl/add/appointment?token=$token';
+  static String deletePatient(int parentId, int patientId, String token) => '$baseUrl/delete/patient/$patientId/$parentId?token=$token';
 }
 
 

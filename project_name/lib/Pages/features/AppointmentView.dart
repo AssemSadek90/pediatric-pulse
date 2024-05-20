@@ -92,7 +92,14 @@ class _AppointmentViewState extends State<AppointmentView> {
 
   @override
   Widget build(BuildContext context) {
-    var name = "${widget.data['parentFirstName']} ${widget.data['parentLastName']}";
+    String capitalize(String s) => s[0].toUpperCase() + s.substring(1).toLowerCase();
+    String capitalizeFirstLetters(String text) {
+      return text.split(' ').map((word) => capitalize(word)).join(' ');
+    }
+
+    var parentName = capitalizeFirstLetters("${widget.data['parentFirstName']} ${widget.data['parentLastName']}");
+    var doctorName = capitalizeFirstLetters("${widget.data['doctorFirstName']} ${widget.data['doctorLastName']}");
+
     var from = formatHour(widget.data['From']); // Format 'From' time to AM/PM
     var to = formatHour(widget.data['To']); // Format 'To' time to AM/PM
     var date = '${widget.data['appointmentDate']} From: $from To: $to';
@@ -107,32 +114,59 @@ class _AppointmentViewState extends State<AppointmentView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (widget.data['parentPic'] != null)
-                      Container(
-                        width: 64,
-                        height: 64,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(widget.data['parentPic']),
-                            fit: BoxFit.cover,
+                  children: <Widget>[
+                    if (widget.isParent == false) ...[
+                      if (widget.data['parentPic'] != null)
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage(widget.data['parentPic']),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage('assets/icon/profile.png'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      )
-                    else
-                      Container(
-                        width: 64,
-                        height: 64,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/icon/profile.png'),
-                            fit: BoxFit.cover,
+                    ] else ...[
+                      if (widget.data['doctorPic'] != null)
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage(widget.data['doctorPic']),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage('assets/icon/profile.png'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ]
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
@@ -140,31 +174,67 @@ class _AppointmentViewState extends State<AppointmentView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.data['patientFirstName'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                      if(widget.isParent == false) ...[
+                        Row(
+                          children: [
+                            Text(
+                              capitalizeFirstLetters("${widget.data['patientFirstName']}"),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
-                          ),
-                          Text(
-                            ' ($name)',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                            Text(
+                              ' ($parentName)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
+                          ],
+                        ),
+                        Text(
+                          date,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
-                        ],
-                      ),
-                      Text(
-                        date,
+                        ),
+                      ]
+                      else ...[
+                        Text('Dr.${doctorName}', 
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                                fontSize: 18,
+                        )
                         ),
-                      ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.data['patientFirstName'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              ' ($parentName)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          date,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                  
                     ],
                   ),
                 ),
