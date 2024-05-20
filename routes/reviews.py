@@ -68,10 +68,47 @@ async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(
     return reviewsData
 
 
+@router.get("/get/reviews/barchart/{doctorId}/{adminId}", status_code=status.HTTP_200_OK, description="This is a get request to get all reviews of a patient", response_model=List[schemas.barChart])
+async def get_reviews_barchart(doctorId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    reviewsData = []
+    i = 5
+    while i > 0:
+        reviews = db.query(models.reviews).filter(models.reviews.doctorId == doctorId, models.reviews.rating == i).all()
+        reviewData = {
+            "number": len(reviews),
+            "stars": i
+        }
+        reviewsData.append(reviewData)
+        i -= 1
+        if i > 5:
+            break
+    return reviewsData
+
+
 
 @router.get('/get/doctor/avg/rating/{doctorId}', status_code=status.HTTP_200_OK, description="This route returns the average rating of a doctor", response_model = schemas.avgRating)
 async def getAvgRating(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(doctorId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    reviews = db.query(models.reviews).filter(models.reviews.doctorId == doctorId).all()
+    totalRating = 0.0
+    for review in reviews:
+        totalRating += review.rating
+    avgRating = round(float(totalRating/len(reviews)),2)
+    newData = {
+        "avgRating": avgRating,
+        "count": len(reviews),
+    }
+    return newData
+
+
+@router.get('/get/doctor/avg/rating/{doctorId}/{adminId}', status_code=status.HTTP_200_OK, description="This route returns the average rating of a doctor", response_model = schemas.avgRating)
+async def getAvgRating(doctorId: int,adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
     reviews = db.query(models.reviews).filter(models.reviews.doctorId == doctorId).all()
