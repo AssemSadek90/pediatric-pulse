@@ -52,6 +52,41 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
     
     return{"message": "Appointment added successfully"}
 
+
+@router.post("/add/appointment/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
+async def add_appointment(appointment: schemas.addApointment, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+
+    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.From == appointment.From).filter(models.Appointment.To == appointment.To).first()
+    if Appointment:
+        return {"message": " Appointment already exists"}
+    new_appointment = models.Appointment(
+        parentId = appointment.parentId,
+        doctorId = appointment.doctorId,
+        patientId = appointment.patientId,
+        appointmentDate = appointment.appointmentDate,
+        From = appointment.From,
+        To = appointment.To,
+        isTaken = appointment.isTaken
+    )
+    db.add(new_appointment)
+    db.commit()
+    db.refresh(new_appointment)
+    if not db.query(models.MRAccess).filter(models.MRAccess.patientId == appointment.patientId).filter(models.MRAccess.doctorId == appointment.doctorId).first():
+        mra = models.MRAccess(
+            patientId = appointment.patientId,
+            doctorId = appointment.doctorId
+        )
+        db.add(mra)
+        db.commit()
+        db.refresh(mra)
+    
+    return{"message": "Appointment added successfully"}
+
 @router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
 async def get_appointment(parentId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(parentId, token)
