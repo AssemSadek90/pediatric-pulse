@@ -70,24 +70,24 @@ const changePatientInfo = ({ currentPatient }: { currentPatient: Patient | undef
         });
     };
     return (
-        <div className='max-w-md w-full p-2 mx-auto my-auto rounded-none md:rounded-2xl shadow-input bg-white dark:bg-black flex flex-col'>
-            <form className="bg-white" onSubmit={handleSubmit}>
+        <div className='max-w-md w-full p-2 pt-6 mx-auto my-auto rounded-none md:rounded-2xl shadow-input bg-white dark:bg-black flex flex-col'>
+            <form className="bg-white ml-2" onSubmit={handleSubmit}>
                 <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
                     <LabelInputContainer>
-                        <Label htmlFor="firstname">Firstname</Label>
+                        <Label htmlFor="firstname">Patient Firstname</Label>
                         <Input id="firstname" name='firstName' value={formData.firstName} onChange={handleChange} required placeholder={currentPatient?.firstName} type="text" />
                     </LabelInputContainer>
                     <LabelInputContainer>
-                        <Label htmlFor="lastname">Lastname</Label>
+                        <Label htmlFor="lastname">Patient Lastname</Label>
                         <Input id="lastname" name='lastName' value={formData.lastName} onChange={handleChange} required placeholder={currentPatient?.lastName} type="text" />
                     </LabelInputContainer>
                 </div>
                 <LabelInputContainer className="mb-4">
-                    <Label htmlFor="age">Age</Label>
+                    <Label htmlFor="age">Patient Age</Label>
                     <Input id="age" name='age' value={formData.age} onChange={handleChange} required placeholder={currentPatient?.age?.toString()} type="number" />
                 </LabelInputContainer>
                 <LabelInputContainer className="mb-4">
-                    <Label htmlFor="gender">Gender</Label>
+                    <Label htmlFor="gender">Patient Gender</Label>
                     <Input id="gender" name='gender' value={formData.gender} onChange={handleChange} required placeholder={currentPatient?.gender} type="text" />
                 </LabelInputContainer>
                 <div className='flex justify-center'>

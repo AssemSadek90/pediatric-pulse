@@ -93,7 +93,7 @@ const SideAppointments = () => {
                 <div className='w-[95%] h-20 text-black bg-neutral-50 border rounded-xl p-4 flex justify-between items-center'>
                     <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
                         <span>
-                            <img className='h-12 w-12 rounded-full min-w-12' src={doctor?.profilePicture} alt='DocPic' />
+                            <img className='h-12 w-12 rounded-full object-cover min-w-12' src={doctor?.profilePicture} alt='DocPic' />
                         </span>
                         <span className='text-neutral-700 font-semibold hover:text-black'>Dr.{formatName(doctor?.firstName)} {formatName(doctor?.lastName)}
                         </span>

@@ -9,6 +9,7 @@ import MedicalRecord from "@/components/medicalRecord"
 import DoctorSelector from '@/components/DoctorSelector';
 import DoctorAppointmentTable from "@/components/appointmentTable";
 import ChangeProfileInfo from "@/components/changeProfileInfo";
+import Image from "next/image";
 import RatingCards from "@/components/ratingCards"
 import { CircularProgress } from '@mui/material';
 import SideAppointments from '@/components/sideAppointments';
@@ -134,10 +135,15 @@ const patientPortal = () => {
   ));
   const Skeleton2 = React.memo(() => (
     <>
-      <div className='flex items-start font-bold border border-transparent'>
-        Change your patient's data
+      <div className='flex items-center justify-between font-bold border border-transparent'>
+        <span>Change your patient's data</span>
+        <span className='text-xs font-light'>{`(Select patient to edit)`}</span>
       </div>
-      <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+      <div className="flex-col w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <div className='flex flex-col items-center justify-center space-y-4'>
+          <Image className="w-48 h-48 rounded-full object-cover" src={user?.profilePicture ?? "/default.jpg"} alt='' width={1080} height={1080} />
+          <div className='text-lg font-bold mb-6'>Mr.{formatName(user?.firstName ?? "") + " " + formatName(user?.lastName ?? "")}</div>
+        </div>
         <ChangePatientInfo currentPatient={currentPatient} />
       </div>
     </>
@@ -203,7 +209,7 @@ const patientPortal = () => {
           />
           {openModal && <AddPatient openModal={openModal} setOpenModal={setOpenModal} />}
           {openModalProfile && <ChangeProfileInfo openModalProfile={openModalProfile} setOpenModalProfile={setOpenModalProfile} user={user} setUser={setUser} />}
-          <section className="h-lvh w-screen">
+          <section className="h-lvh w-[100%]">
             <BentoGrid className="w-[95%] mx-auto h-lvh md:auto-rows-[20rem]">
               {items.map((item, i) => (
                 <BentoGridItem

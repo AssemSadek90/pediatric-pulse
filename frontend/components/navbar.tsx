@@ -91,7 +91,7 @@ const Navbar = ({
   };
 
   return (
-    <nav className="bg-black w-screen h-24 grid grid-cols-2 items-center px-6 md:px-12 lg:px-24 sticky top-0 z-50">
+    <nav className="bg-black w-[100%] h-24 grid grid-cols-2 items-center px-6 md:px-12 lg:px-24 sticky top-0 z-50">
       <div className="">
         <Link className="lg:w-72 lg:h-24 md:w-48 md:h-16 w-48 h-16 flex" href="/">
           <Image
@@ -125,7 +125,7 @@ const Navbar = ({
               {user?.firstName} {user?.lastName}
             </div>
             <Image
-              className="lg:w-20 lg:h-20 md:w-16 md:h-16 w-12 h-12 md:p-1 lg:p-2 rounded-full"
+              className="lg:w-20 lg:h-20 md:w-16 md:h-16 w-12 h-12 md:p-1 lg:p-2 rounded-full object-cover"
               src={user?.profilePicture ? user.profilePicture : "/default.jpg"}
               alt="Profile Pic"
               width={1080}
