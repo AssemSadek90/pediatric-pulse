@@ -75,6 +75,8 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
             "parentLastName": user.lastName,
             "parentPic": user.profilePicture,
             "doctorPic": doctor.profilePicture,
+            "doctorFirstName": doctor.firstName,
+            "doctorLastName": doctor.lastName,
             "appointmentDate": apointment.appointmentDate,
             "From": apointment.From,
             "To": apointment.To,
