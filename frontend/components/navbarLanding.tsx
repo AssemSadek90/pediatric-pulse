@@ -5,7 +5,7 @@ import styles from "@/styles/navbar.module.css";
 
 const NavbarLanding = () => {
     return (
-        <nav className="bg-black w-screen h-24 grid grid-cols-2 items-center px-6 md:px-12 lg:px-24 sticky top-0 z-50">
+        <nav className="bg-black w-[100%] h-24 grid grid-cols-2 items-center px-6 md:px-12 lg:px-24 sticky top-0 z-50">
             <div className="">
                 <Link className="lg:w-72 lg:h-24 md:w-48 md:h-16 w-48 h-16 flex" href="/">
                     <Image

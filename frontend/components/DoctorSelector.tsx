@@ -68,7 +68,7 @@ const DoctorSelector = ({
                         <div className="relative">
                             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <span className="flex items-center">
-                                    <img src={selected.thumbnail} alt="/default.jpg" className="h-5 w-5 flex-shrink-0 rounded-full" />
+                                    <img src={selected.thumbnail} alt="/default.jpg" className="h-5 w-5 flex-shrink-0 rounded-full object-cover" />
                                     <span className="ml-3">{formatFullName(selected.title)}</span>
                                     {selected.id === 0 ? <span className=''>Please select a Doctor</span> : ""}
                                     <span className='ml-4 text-sm font-light'>{`${selected.avarageRating}`}</span>

@@ -92,7 +92,7 @@ const DoctorReviews = () => {
             {doctor.profilePicture ? <div className='flex flex-col justify-start items-center'>
                 <div className='flex flex-col items-center justify-center'>
                     <div className='flex items-center justify-center'>
-                        <Image className='w-48 h-48 rounded-full mb-2' alt="/default.jpg" src={doctor.profilePicture ? doctor.profilePicture : "/default.jpg"} width={1080} height={1080} />
+                        <Image className='w-48 h-48 object-cover rounded-full mb-2' alt="/default.jpg" src={doctor.profilePicture ? doctor.profilePicture : "/default.jpg"} width={1080} height={1080} />
                     </div>
                     <div className='flex space-x-2'>
                         <p className='text-lg'>{`Dr. ${formatName(doctor.firstName ? doctor.firstName : "") + " " + formatName(doctor.lastName ? doctor.lastName : "")}`}</p>
