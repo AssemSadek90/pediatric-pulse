@@ -198,10 +198,12 @@ async def getDoctorsTotalPrice(adminId: int, token: str, db: session = Depends(D
     admin = db.query(models.User).filter(models.User.userId == adminId).first()
     if admin.role != 'admin':
         raise HTTPException( status_code=401, detail= "unauthorized")
-    users = db.query(models.Doctor).all()
+    Appointments = db.query(models.Appointment).all()
     totalPrice = 0
-    for user in users:
-        totalPrice = totalPrice + user.price
+    for Appointment in Appointments:
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == Appointment.doctorId).first()
+        price = doctor.price
+        totalPrice = totalPrice + price
     return {'totalPrice':totalPrice}
 
 @router.get('/get/Number/of/doctors/{adminId}', description="This route returns the doctor's reviews")
