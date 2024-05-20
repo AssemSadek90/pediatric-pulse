@@ -328,6 +328,15 @@ async def delete_user(userId: int, adminId: int, token: str, db: session = Depen
     user = db.query(models.User).filter(models.User.userId == userId).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    appointments = db.query(models.Appointment).filter(models.Appointment.parentId == userId).all()
+    for appointment in appointments:
+        db.delete(appointment)
+    
+    patients = db.query(models.Patient).filter(models.Patient.parentId == userId).all()
+    for patient in patients:
+        db.delete(patient)
+    
     db.delete(user)
     db.commit()
     return{"message": "User deleted successfully"}
