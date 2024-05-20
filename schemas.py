@@ -274,6 +274,7 @@ class updateMedicalRecord(BaseModel):
 
 
 class updateAppointment(BaseModel):
+    doctorId: Optional[int] = None
     appointmentDate: Optional[str] = None
     From: Optional[str] = None
     To: Optional[str] = None

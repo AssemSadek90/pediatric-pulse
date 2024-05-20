@@ -268,10 +268,11 @@ async def update_appointments(
         raise HTTPException(status_code=404, detail="Appointment not found")
 
     update_data = {
+        "doctorId":appointment.doctorId if appointment.doctorId is not None else existing_appointment.doctorId,
         "appointmentDate": appointment.appointmentDate if appointment.appointmentDate is not None else existing_appointment.appointmentDate,
         "From": appointment.From if appointment.From is not None else existing_appointment.From,
         "To": appointment.To if appointment.To is not None else existing_appointment.To,
-        "isTaken": appointment.isTaken if appointment.isTaken is not None else existing_appointment.isTaken
+        "isTaken": True
     }
 
     appointment_query.update(update_data)
