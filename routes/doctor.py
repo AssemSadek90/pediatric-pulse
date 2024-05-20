@@ -351,6 +351,11 @@ async def delete_doctor(doctorId: int, adminId: int, token: str, db: session = D
     doctor = db.query(models.Doctor).filter(models.Doctor.id == doctorId).first()
     if not doctor:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Doctor not found.")
+    
+    appointments = db.query(models.Appointment).filter(models.Appointment.doctorId == doctorId).all()
+    for appointment in appointments:
+        db.delete(appointment)
+
     db.delete(doctor)
     db.commit()
     return{"message": "Doctor deleted successfully"}
