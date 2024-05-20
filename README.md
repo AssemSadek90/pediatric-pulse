@@ -72,7 +72,7 @@ The mobile application aims to enhance user experience by providing access to th
     ```
 4. Run the application:
     ```bash
-    npx run dev
+    npm run dev
     ```
 5. Open your web browser and go to:
     ```
