@@ -33,7 +33,7 @@ const valueFormatter = (value: number | null) => `${value} people`;
 const DoctorReviews = () => {
     const [dataset, setDataSet] = useState();
     const [doctor, setDoctor] = useState({} as DoctorObj);
-    const [avgReviews, setAvgReviews] = useState<any>();
+    const [avgReviews, setAvgReviews] = useState<any>({ count: 0, avgRating: 0 });
 
     const headers = useMemo(() => ({
         "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const DoctorReviews = () => {
     }, [fetchDoctor, fetchBarChart, fetchAvgReviews]);
     return (
         <>
-            {avgReviews ? <div className='flex flex-col justify-start items-center'>
+            {doctor.profilePicture ? <div className='flex flex-col justify-start items-center'>
                 <div className='flex flex-col items-center justify-center'>
                     <div className='flex items-center justify-center'>
                         <Image className='w-48 h-48 rounded-full mb-2' alt="/default.jpg" src={doctor.profilePicture ? doctor.profilePicture : "/default.jpg"} width={1080} height={1080} />

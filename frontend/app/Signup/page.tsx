@@ -62,7 +62,7 @@ const signup = () => {
       // localStorage.setItem("userId", "1")
       if (response.status === 201 || response.status === 200) {
         setLoading(false)
-        router.push(`/Home/DoctorPortal/${localStorage.getItem('userId')}`)
+        router.push(`/Home/PatientPortal/${localStorage.getItem('userId')}`)
       }
       else {
         setLoading(false)
