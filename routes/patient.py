@@ -200,6 +200,31 @@ async def getAllPatients(adminId: int, token: str, db: session = Depends(DataBas
     return patients
 
 
+@router.get('/get/all/patientsObj/{adminId}', description="This route returns all the patients")
+async def getAllPatients(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != "admin":
+        raise HTTPException( status_code=401, detail= "unauthorized")
+
+    patients = db.query(models.Patient).all()
+    patientsData = []
+    for patient in patients:
+        parent = db.query(models.User).filter(models.User.userId == patient.parentId).first()
+        pic = parent.profilePicture if parent.profilePicture is not None else "https://i.imgur.com/9g7aq8u.png"
+        new_patient = {
+            "parentPic": pic,
+            "patientFirstName": patient.firstName,
+            "patientLastName": patient.lastName,
+            "parentFirstName": parent.firstName,
+            "parentLastName": parent.lastName,
+            "patientId": patient.id,   
+        }
+        patientsData.append(new_patient)
+    return patientsData
+
 
 @router.put("/update/patient/{patientId}/{parentId}", description="This route updates the patient's info", response_model=schemas.Patient)
 async def update_doctor_pic(patient: schemas.updatePatient, patientId: int, parentId: int, token: str, db: session = Depends(DataBase.get_db)):
