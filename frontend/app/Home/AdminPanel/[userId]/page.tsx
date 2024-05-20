@@ -21,6 +21,10 @@ import AddPatient from '@/components/AdminComponents/AddPatient';
 import EditPatient from '@/components/AdminComponents/EditPatient';
 import AddAppointment from '@/components/AdminComponents/AddAppointment';
 import EditAppointment from '@/components/AdminComponents/EditAppointment';
+import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
+import DoctorSelectorAdmin from '@/components/AdminComponents/DoctorSelectorAdmin';
+import DoctorReviewsAdmin from '@/components/AdminComponents/DoctorReviewsAdmin';
+import ReviewStatistics from '@/components/AdminComponents/reviewStatistics';
 
 
 interface User {
@@ -64,7 +68,14 @@ interface Doctor {
   profilePicture: string,
   price: number
 }; //list
-
+interface DoctorStat {
+  title: string;
+  link: string;
+  thumbnail: string;
+  numberOfReviews: number;
+  avarageRating: number;
+  id: number;
+};
 
 const adminPanel = () => {
   const router = useRouter();
@@ -101,6 +112,11 @@ const adminPanel = () => {
   const [openModalAppointmentAdd, setOpenModalAppointmentAdd] = useState(false)
   const [openModalAppointmentEdit, setOpenModalAppointmentEdit] = useState(false)
   const [appointmentToDelete, setAppointmentToDelete] = useState<any>()
+
+  // Statistics States
+  const [doctorListStat, setDoctorListStat] = useState([{ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0 }] as DoctorStat[])
+  const [selected, setSelected] = useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0 } as DoctorStat)
+  const [doctorToView, setDoctorToView] = useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0 } as DoctorStat)
 
   const handlePageLoad = () => {
     if (localStorage.getItem("role") !== "admin") {
@@ -206,7 +222,6 @@ const adminPanel = () => {
       { label: "Gender", size: 120 },
       { label: "PID", size: 50 },
     ];//1070
-
   const headersAppointment =
     [
       { label: "ID", size: 50 },
@@ -338,6 +353,20 @@ const adminPanel = () => {
     fetchAppointment(id)
   };
 
+  // Statistics Functions
+  async function fetchDoctorListStat() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_NAME}/doctorList`,
+      { headers }
+    );
+    if (!response.ok) {
+      console.log("Error: Request sent no data")
+    }
+    const data = await response.json();
+    setDoctorListStat(data);
+
+  };
+
   useEffect(() => {
     handlePageLoad()
     fetchUserList()
@@ -345,6 +374,7 @@ const adminPanel = () => {
     fetchDoctorList()
     fetchPatientListAdmin()
     fetchAppointmentList()
+    fetchDoctorListStat()
   }, []);
   // Assem
   const SkeletonUser = React.memo(() => (
@@ -367,7 +397,7 @@ const adminPanel = () => {
     </>
   ));
   const SkeletonMedicalRecord = React.memo(() => (
-    <div className='mx-auto my-auto'>
+    <div className='mx-auto my-auto p-2 border border-neutral-300 rounded-2xl'>
       <div className='flex items-center justify-between font-bold border border-transparent'>
         <span>Patient Medical Record</span>
         <span><PatientSelector className='' message='Please select a Patient' selected={selectedPat} setSelected={setSelectedPat} setCurrentPatient={setCurrentPatient} patientList={patientList} /></span>
@@ -378,12 +408,6 @@ const adminPanel = () => {
     </div>
   ));
 
-  // Mostafa
-  const SkeletonReviews = React.memo(() => (
-    <>
-
-    </>
-  ));
   const SkeletonPatient = React.memo(() => (
     <>
       {openModalPatientAdd && <AddPatient openModal={openModalPatientAdd} setOpenModal={setOpenModalPatientAdd} />}
@@ -445,6 +469,22 @@ const adminPanel = () => {
   ));
 
 
+  const SkeletonStatistics = React.memo(() => (
+    <div className='w-[400px] h-[400px] mx-auto my-[8%] p-2 border border-neutral-300 rounded-2xl'>
+      <div className='flex items-center justify-between text-sm font-semibold border border-transparent'>
+        <span>Review doctors</span>
+        <DoctorSelectorAdmin className="h-3" setDoctorToView={setDoctorToView} message='' doctorList={doctorListStat} selected={selected} setSelected={setSelected} />
+      </div>
+      <div className="flex-col w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+        <DoctorReviewsAdmin doctor={selected} />
+      </div>
+      <div className=''>
+        <ReviewStatistics />
+      </div>
+    </div>
+  ));
+
+
   return (
     <>
       {hasAccess ?
@@ -460,6 +500,7 @@ const adminPanel = () => {
               {section === 2 && <SkeletonPatient />}
               {section === 3 && <SkeletonMedicalRecord />}
               {section === 4 && <SkeletonAppointment />}
+              {section === 5 && <SkeletonStatistics />}
 
             </div>
           </div>
