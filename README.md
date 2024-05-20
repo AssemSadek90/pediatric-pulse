@@ -88,15 +88,8 @@ The mobile application aims to enhance user experience by providing access to th
 ## API Documentation
 
 For detailed API documentation, please refer to our API documentation:
-[API Documentation](#) (Replace `#` with the actual link to your API documentation)
+[API Documentation](https://pediatric-pulse.onrender.com) (Replace `#` with the actual link to your API documentation)
 
-## Contributing
-
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for more information on how to get involved.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
