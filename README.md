@@ -64,7 +64,7 @@ The mobile application aims to enhance user experience by providing access to th
     ```
 2. Navigate to the project directory:
     ```bash
-    cd pediatric-clinic
+    cd frontend
     ```
 3. Install dependencies:
     ```bash
@@ -95,5 +95,5 @@ For detailed API documentation, please refer to our API documentation:
 
 If you have any questions or need further assistance, feel free to reach out:
 
-- Email: omarsaied2112@gmail.com
+- Email: omarsaied2112@gmail.com && abdelhamid.ssen@gmail.com
 - Issues: [GitHub Issues](https://github.com/3marsaied/pediatric-pulse)
