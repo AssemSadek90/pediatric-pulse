@@ -36,7 +36,7 @@ const DoctorAppointmentTableDrPortal = () => {
 
     fetchMyAppointmentList();
 
-  });
+  }, []);
 
 
   async function fetchMyAppointmentList() {
@@ -96,7 +96,7 @@ const DoctorAppointmentTableDrPortal = () => {
                           <div className='w-[100%] h-10 text-black bg-neutral-50 rounded-xl flex justify-center items-center'>
                             <div className='flex max-w-[13rem] flex-row space-x-4 items-center'>
                               <span>
-                                <img className='h-9 w-9 rounded-full min-w-9' src={appointment?.parentPic} alt='PatPic' />
+                                <img className='h-9 w-9 rounded-full object-cover min-w-9' src={appointment?.parentPic} alt='PatPic' />
                               </span>
                               <span className='text-neutral-700 font-semibold hover:text-black'>{formatName(appointment?.patientFirstName ?? 'N/A')} {formatName(appointment?.parentFirstName ?? 'N/A')}
                               </span>
