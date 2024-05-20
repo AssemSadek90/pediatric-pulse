@@ -59,7 +59,7 @@ const Appointment = () => {
   const [currentPatient, setCurrentPatient] = React.useState({} as Patient | undefined)
   const [appointments, setAppointments] = React.useState([] as Appointment[])
   const [selectedDr, setSelectedDr] = React.useState({ title: "", link: "", thumbnail: "/default.jpg", numberOfReviews: 0, avarageRating: 0, id: 0, } as Doctor)
-
+  const [patientID, setPatientID] = React.useState(Number)
 
 async function fetchDoctorList() {
     try {
@@ -107,14 +107,7 @@ React.useEffect(() => {
       isTaken: true
     }
   ])
-  setSelectedDr({
-    title: "Dr. John Doe",
-    link: "https://www.google.com",
-    thumbnail: "/default.jpg",
-    numberOfReviews: 0,
-    avarageRating: 0,
-    id: 1
-  })
+  
   setCurrentPatient({
     id: 1,
     age: 10,
@@ -127,6 +120,9 @@ React.useEffect(() => {
     parentId: 1})
   fetchDoctorList()
 }, [setAppointments]);
+  const handlePatientID = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPatientID(Number(e.target.value))
+  }
   return (
     <form className= 'm-5 w-screen rounded-md shadow-lg flex-col   bg-zinc-200' >
         <div className='m-5 text-3xl from-neutral-800 '> Patient  Scheduling </div>
@@ -138,11 +134,11 @@ React.useEffect(() => {
         </LabelInputContainer>
         <LabelInputContainer>
             <Label> Patient Last Name </Label>
-            <Input id='lastname' name='lastname' placeholder='Last Name' type='text' />
+            <Input id='lastname'  name='lastname' placeholder='Last Name' type='text' />
         </LabelInputContainer>
         <LabelInputContainer>
-            <Label> Patient Code</Label>
-            <Input id='patientcode' name='patientcode' placeholder='Patient Code' type='number' />
+            <Label> Patient ID</Label>
+            <Input id='patientcode' value={patientID} onChange={handlePatientID} name='patientcode' placeholder='Patient Code' type='number' />
         </LabelInputContainer>
         <LabelInputContainer>
             
@@ -160,15 +156,15 @@ React.useEffect(() => {
         <div className='mt-5' >
         <LabelInputContainer>
             <Label className='ml-3'> Pick appointment</Label>
-            <DoctorAppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={currentPatient?.id} />
+            <DoctorAppointmentTable selectedDrId={selectedDr.id} appointments={appointments} currentPatientId={patientID} />
         </LabelInputContainer>
         </div>
-        <div className='flex justify-end mr-2 mt-10 mb-1'>
+        {/* <div className='flex justify-end mr-2 mt-10 mb-1'>
           <button
               className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-1/5 text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
               type="submit"
             > Submit  </button>
-        </div>
+        </div> */}
     </form>
   )
 }
