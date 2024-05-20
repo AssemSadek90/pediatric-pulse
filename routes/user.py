@@ -186,6 +186,18 @@ async def get_all_users(adminId: int, token: str, db: session = Depends(DataBase
 
     return newUsers
 
+@router.get('/get/Number/of/users/{adminId}', description="This route returns the doctor's reviews")
+async def getUserTotalPrice(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+    token_data = oauth2.verify_access_token(adminId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    admin = db.query(models.User).filter(models.User.userId == adminId).first()
+    if admin.role != 'admin':
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    users = db.query(models.User).all()
+    totalPrice = len(users)
+    return {"totalNumberOfUsers":totalPrice}
+
 @router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
 async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
     token_data = oauth2.verify_access_token(userId ,token)
