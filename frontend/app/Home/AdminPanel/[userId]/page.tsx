@@ -470,13 +470,17 @@ const adminPanel = () => {
 
 
   const SkeletonStatistics = React.memo(() => (
-    <div className='w-[400px] h-[400px] mx-auto my-[8%] p-2 border border-neutral-300 rounded-2xl'>
-      <div className='flex items-center justify-between text-sm font-semibold border border-transparent'>
-        <span>Review doctors</span>
-        <DoctorSelectorAdmin className="h-3" setDoctorToView={setDoctorToView} message='' doctorList={doctorListStat} selected={selected} setSelected={setSelected} />
-      </div>
-      <div className="flex-col w-full h-full min-h-[6rem] rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
-        <DoctorReviewsAdmin doctor={selected} />
+    <div className='w-[1200px] h-[800px] flex space-y-4 justify-between items-center mx-auto my-auto p-2 border border-neutral-300 rounded-2xl'>
+      <div className='flex flex-col space-y-4 justify-center items-center w-full h-full text-sm font-semibold '>
+        <div className="min-h-[6rem] space-y-4 rounded-xl bg-dot-black/[0.2] font-bold border border-transparent ">
+          <div className='flex space-y-4 items-center justify-between'>
+            <span>Review doctors</span>
+            <DoctorSelectorAdmin className="h-3" setDoctorToView={setDoctorToView} message='' doctorList={doctorListStat} selected={selected} setSelected={setSelected} />
+          </div>
+          <div>
+            <DoctorReviewsAdmin doctor={selected} />
+          </div>
+        </div>
       </div>
       <div className=''>
         <ReviewStatistics />

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { PieChart } from '@mui/x-charts/PieChart';
 
 const reviewStatistics = () => {
     const [countUsers, setCountUsers] = useState<any>()
@@ -66,22 +67,41 @@ const reviewStatistics = () => {
         fetchNumPatients()
     }, []);
     return (
-        <div className='flex flex-col space-y-4'>
-            <div>
-                <div>total number of Users: {countUsers?.totalNumberOfCustomers + countUsers?.totalNumberOfAdmins + countUsers?.totalNumberOfStaff}</div>
-                <div>total number of Customers: {countUsers?.totalNumberOfCustomers}</div>
-                <div>total number of Admins: {countUsers?.totalNumberOfAdmins}</div>
-                <div>total number of Staff: {countUsers?.totalNumberOfStaff}</div>
+        <div>
+            <div className='text-xl font-bold'>Clinic Statistics</div>
+            <div className='flex flex-col space-y-4'>
+                <div>
+                    <PieChart series={[
+                        {
+                            data: [
+                                { id: 0, value: countUsers?.totalNumberOfCustomers, label: 'Customers' },
+                                { id: 1, value: countUsers?.totalNumberOfAdmins, label: 'Admins' },
+                                { id: 2, value: countUsers?.totalNumberOfStaff, label: 'Staff' },
+                            ],
+                            highlightScope: { faded: 'global', highlighted: 'item' },
+                            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                        },
+                    ]}
+                        width={400}
+                        height={200}
+                    />
+                </div>
+                <div>
+                    <div>total number of Users: {countUsers?.totalNumberOfCustomers + countUsers?.totalNumberOfAdmins + countUsers?.totalNumberOfStaff}</div>
+                    <div>total number of Customers: {countUsers?.totalNumberOfCustomers}</div>
+                    <div>total number of Admins: {countUsers?.totalNumberOfAdmins}</div>
+                    <div>total number of Staff: {countUsers?.totalNumberOfStaff}</div>
+                </div>
+
+                <div>total number of Doctors: {countDoctors?.totalNumberOfDoctors}</div>
+
+                <div>total number of Patients: {countPatients?.totalNumberOfPatients}</div>
+                <div>
+                    <div>total revenue generated: {totalPrice?.totalPrice}</div>
+                    <div>total profit generated: {totalPrice?.totalPrice * 0.6} EGP</div>
+                </div>
+
             </div>
-
-            <div>total number of Doctors: {countDoctors?.totalNumberOfDoctors}</div>
-
-            <div>total number of Patients: {countPatients?.totalNumberOfPatients}</div>
-            <div>
-                <div>total revenue generated: {totalPrice?.totalPrice}</div>
-                <div>total profit generated: {totalPrice?.totalPrice * 0.6}</div>
-            </div>
-
         </div>
     )
 }

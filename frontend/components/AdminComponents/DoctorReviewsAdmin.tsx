@@ -64,13 +64,15 @@ const DoctorReviews = ({ doctor }: { doctor: DoctorStat }) => {
     ;
     useEffect(() => {
         fetchBarChart();
-        fetchAvgReviews();
-        console.log("Component mounted or updated");
+        if (doctor.id !== 0) { fetchAvgReviews(); }
     }, [fetchBarChart, fetchAvgReviews]);
     return (
         <>
             {doctor.thumbnail ? <div className='flex flex-col justify-start items-center'>
                 <div className='flex flex-col items-center justify-center'>
+                    <div className='flex items-center justify-center'>
+                        <Image className='w-48 h-48 object-cover rounded-full mb-2' alt="/default.jpg" src={doctor.thumbnail ?? "/default.jpg"} width={1080} height={1080} />
+                    </div>
                     <div className='flex space-x-2'>
                         <p className='text-sm'>{`${doctor.title}`}</p>
                         {avgReviews && <span className='flex justify-center text-sm lg:text-[1rem] space-x-2'>
