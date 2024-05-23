@@ -81,14 +81,14 @@ The mobile application aims to enhance user experience by providing access to th
 
 #### Mobile Application
 - Download the APK file from the link below:
-  [Download APK](https://drive.google.com/uc?export=download&id=1SytD4rQxmdjy4ixm1Odtz4UqUjFXSlVc
-) (Replace `#` with the actual link to your APK file)
+  [Download APK](https://drive.google.com/uc?export=download&id=1SytD4rQxmdjy4ixm1Odtz4UqUjFXSlVc)
+  
 - Install the APK on your Android device.
 
 ## API Documentation
 
 For detailed API documentation, please refer to our API documentation:
-[API Documentation](https://pediatric-pulse.onrender.com) (Replace `#` with the actual link to your API documentation)
+[API Documentation](https://pediatric-pulse.onrender.com)
 
 
 ## Contact
