@@ -21,6 +21,10 @@ The mobile application aims to enhance user experience by providing access to th
 ## Features
 
 ### Web Application
+- Landing Page
+  Demo:
+    ![Demo Video](GIFs/landingPageDemo.gif)
+  
 - **Patient Portal:**
   - Appointment scheduling
   - Medical record access
