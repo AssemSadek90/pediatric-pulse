@@ -60,7 +60,7 @@ The mobile application aims to enhance user experience by providing access to th
 #### Web Application
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/pediatric-clinic.git
+    git clone https://github.com/AssemSadek90/pediatric-pulse.git
     ```
 2. Navigate to the project directory:
     ```bash
@@ -70,11 +70,15 @@ The mobile application aims to enhance user experience by providing access to th
     ```bash
     npm install
     ```
-4. Run the application:
+4. Create .env.local file and add to it:
+    ```bash
+    NEXT_PUBLIC_SERVER_NAME=https://pediatric-pulse.onrender.com
+    ```
+5. Run the application:
     ```bash
     npm run dev
     ```
-5. Open your web browser and go to:
+6. Open your web browser and go to:
     ```
     http://localhost:3000
     ```
