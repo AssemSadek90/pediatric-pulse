@@ -25,17 +25,26 @@ The mobile application aims to enhance user experience by providing access to th
   - Appointment scheduling
   - Medical record access
   - Doctor communication
+ Demo:
+    ![Demo Video](GIFs/patientPortalDemo.gif)
+
 - **Doctor Portal:**
   - Patient information management
   - Appointment management
   - Medical history access
-- **Staff Portal:**
-  - Administrative task management
-  - Patient flow coordination
+Demo:
+    ![Demo Video](GIFs/doctorPortalDemo.gif)
+
 - **Admin Panel:**
   - User role management
   - System performance monitoring
   - Clinic settings configuration
+Demo:
+    ![Demo Video](GIFs/adminPanelDemo.gif)
+
+- **Staff Portal:**
+  - Administrative task management
+  - Patient flow coordination
 
 ### Mobile Application
 - **Patient Portal:**
